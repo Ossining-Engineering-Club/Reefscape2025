@@ -1,3 +1,5 @@
 package frc.robot.subsystems.coralholder;
 
-public class CoralHolderConstants {}
+public class CoralHolderConstants {
+
+}
