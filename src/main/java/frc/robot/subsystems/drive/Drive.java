@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-//Apicella's comment, feel free to remove =)
+// Apicella's comment, feel free to remove =)
 
 package frc.robot.subsystems.drive;
 
