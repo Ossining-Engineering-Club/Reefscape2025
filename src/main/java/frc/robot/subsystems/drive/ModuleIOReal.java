@@ -14,27 +14,29 @@
 package frc.robot.subsystems.drive;
 
 import static frc.robot.subsystems.drive.DriveConstants.*;
-import static frc.robot.util.SparkUtil.*;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
-import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Voltage;
+
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
 
@@ -46,20 +48,13 @@ public class ModuleIOReal implements ModuleIO {
   private final Rotation2d zeroRotation;
 
   // Hardware objects
-  private final SparkBase driveSpark;
+  private final TalonFX driveTalon;
   private final SparkMax turnSparkMax;
-  private final RelativeEncoder driveEncoder;
   private final RelativeEncoder turnEncoder;
   private final CANcoder absEncoder;
 
   // Closed loop controllers
-  private final SparkClosedLoopController driveController;
   private final SparkClosedLoopController turnController;
-
-  // Queue inputs from odometry thread
-  private final Queue<Double> timestampQueue;
-  private final Queue<Double> drivePositionQueue;
-  private final Queue<Double> turnPositionQueue;
 
   // Connection debouncers
   private final Debouncer driveConnectedDebounce = new Debouncer(0.5);
@@ -74,16 +69,15 @@ public class ModuleIOReal implements ModuleIO {
           case 3 -> backRightZeroRotation;
           default -> new Rotation2d();
         };
-    driveSpark =
-        new SparkFlex(
+    driveTalon =
+        new TalonFX(
             switch (module) {
               case 0 -> frontLeftDriveCanId;
               case 1 -> frontRightDriveCanId;
               case 2 -> backLeftDriveCanId;
               case 3 -> backRightDriveCanId;
               default -> 0;
-            },
-            MotorType.kBrushless);
+            });
     turnSparkMax =
         new SparkMax(
             switch (module) {
@@ -94,54 +88,24 @@ public class ModuleIOReal implements ModuleIO {
               default -> 0;
             },
             MotorType.kBrushless);
-    driveEncoder = driveSpark.getEncoder();
     turnEncoder = turnSparkMax.getEncoder();
-    absEncoder = 
+    absEncoder =
         new CANcoder(
             switch (module) {
-                case 0 -> frontLeftAbsCanId;
-                case 1 -> frontRightAbsCanId;
-                case 2 -> backLeftAbsCanId;
-                case 3 -> backRightAbsCanId;
-                default -> 0;
+              case 0 -> frontLeftAbsCanId;
+              case 1 -> frontRightAbsCanId;
+              case 2 -> backLeftAbsCanId;
+              case 3 -> backRightAbsCanId;
+              default -> 0;
             });
-    driveController = driveSpark.getClosedLoopController();
     turnController = turnSparkMax.getClosedLoopController();
 
     // Configure drive motor
-    var driveConfig = new SparkFlexConfig();
-    driveConfig
-        .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(driveMotorCurrentLimit)
-        .voltageCompensation(12.0);
-    driveConfig
-        .encoder
-        .positionConversionFactor(driveEncoderPositionFactor)
-        .velocityConversionFactor(driveEncoderVelocityFactor)
-        .uvwMeasurementPeriod(10)
-        .uvwAverageDepth(2);
-    driveConfig
-        .closedLoop
-        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(
-            driveKp, 0.0,
-            driveKd, 0.0);
-    driveConfig
-        .signals
-        .primaryEncoderPositionAlwaysOn(true)
-        .primaryEncoderPositionPeriodMs((int) (1000.0 / odometryFrequency))
-        .primaryEncoderVelocityAlwaysOn(true)
-        .primaryEncoderVelocityPeriodMs(20)
-        .appliedOutputPeriodMs(20)
-        .busVoltagePeriodMs(20)
-        .outputCurrentPeriodMs(20);
-    tryUntilOk(
-        driveSpark,
-        5,
-        () ->
-            driveSpark.configure(
-                driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
-    tryUntilOk(driveSpark, 5, () -> driveEncoder.setPosition(0.0));
+    var driveConfig = new TalonFXConfiguration();
+    driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    driveConfig.Feedback.SensorToMechanismRatio = DriveConstants.driveSensorMechanismRatio;
+    driveTalon.getConfigurator().apply(driveConfig, 0.25);
+    driveTalon.setPosition(0.0, 0.25);
 
     // Configure turn motor
     var turnConfig = new SparkMaxConfig();
@@ -156,24 +120,8 @@ public class ModuleIOReal implements ModuleIO {
         .positionWrappingEnabled(true)
         .positionWrappingInputRange(turnPIDMinInput, turnPIDMaxInput)
         .pidf(turnKp, 0.0, turnKd, 0.0);
-    turnConfig
-        .signals
-        .appliedOutputPeriodMs(20)
-        .busVoltagePeriodMs(20)
-        .outputCurrentPeriodMs(20);
-    tryUntilOk(
-        turnSparkMax,
-        5,
-        () ->
-            turnSparkMax.configure(
-                turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
-
-    // Create odometry queues
-    timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
-    drivePositionQueue =
-        SparkOdometryThread.getInstance().registerSignal(driveSpark, driveEncoder::getPosition);
-    turnPositionQueue =
-        SparkOdometryThread.getInstance().registerSignal(turnSparkMax, turnEncoder::getPosition);
+    turnConfig.signals.appliedOutputPeriodMs(20).busVoltagePeriodMs(20).outputCurrentPeriodMs(20);
+    turnSparkMax.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     turnEncoder.setPosition(absEncoder.getPosition().getValueAsDouble());
   }
@@ -181,63 +129,26 @@ public class ModuleIOReal implements ModuleIO {
   @Override
   public void updateInputs(ModuleIOInputs inputs) {
     // Update drive inputs
-    sparkStickyFault = false;
-    ifOk(driveSpark, driveEncoder::getPosition, (value) -> inputs.drivePositionRad = value);
-    ifOk(driveSpark, driveEncoder::getVelocity, (value) -> inputs.driveVelocityRadPerSec = value);
-    ifOk(
-        driveSpark,
-        new DoubleSupplier[] {driveSpark::getAppliedOutput, driveSpark::getBusVoltage},
-        (values) -> inputs.driveAppliedVolts = values[0] * values[1]);
-    ifOk(driveSpark, driveSpark::getOutputCurrent, (value) -> inputs.driveCurrentAmps = value);
-    inputs.driveConnected = driveConnectedDebounce.calculate(!sparkStickyFault);
+    inputs.drivePositionRad = driveTalon.getPosition().getValueAsDouble();
+    inputs.driveVelocityRadPerSec = driveTalon.getVelocity().getValueAsDouble();
+    inputs.driveAppliedVolts = driveTalon.getMotorVoltage().getValueAsDouble();
+    inputs.driveCurrentAmps = driveTalon.getSupplyCurrent().getValueAsDouble();
 
     // Update turn inputs
-    sparkStickyFault = false;
-    ifOk(
-        turnSparkMax,
-        turnEncoder::getPosition,
-        (value) -> inputs.turnPosition = new Rotation2d(value).minus(zeroRotation));
-    ifOk(turnSparkMax, turnEncoder::getVelocity, (value) -> inputs.turnVelocityRadPerSec = value);
-    ifOk(
-        turnSparkMax,
-        new DoubleSupplier[] {turnSparkMax::getAppliedOutput, turnSparkMax::getBusVoltage},
-        (values) -> inputs.turnAppliedVolts = values[0] * values[1]);
-    ifOk(turnSparkMax, turnSparkMax::getOutputCurrent, (value) -> inputs.turnCurrentAmps = value);
-    inputs.turnConnected = turnConnectedDebounce.calculate(!sparkStickyFault);
-
-    // Update odometry inputs
-    inputs.odometryTimestamps =
-        timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
-    inputs.odometryDrivePositionsRad =
-        drivePositionQueue.stream().mapToDouble((Double value) -> value).toArray();
-    inputs.odometryTurnPositions =
-        turnPositionQueue.stream()
-            .map((Double value) -> new Rotation2d(value).minus(zeroRotation))
-            .toArray(Rotation2d[]::new);
-    timestampQueue.clear();
-    drivePositionQueue.clear();
-    turnPositionQueue.clear();
+    inputs.turnPosition = new Rotation2d(turnEncoder.getPosition()).minus(zeroRotation);
+    inputs.turnVelocityRadPerSec = turnEncoder.getVelocity();
+    inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
+    inputs.turnCurrentAmps = turnSparkMax.getOutputCurrent();
   }
 
   @Override
-  public void setDriveOpenLoop(double output) {
-    driveSpark.setVoltage(output);
+  public void setDriveVoltage(double voltage) {
+    driveTalon.setVoltage(voltage);
   }
 
   @Override
-  public void setTurnOpenLoop(double output) {
-    turnSparkMax.setVoltage(output);
-  }
-
-  @Override
-  public void setDriveVelocity(double velocityRadPerSec) {
-    double ffVolts = driveKs * Math.signum(velocityRadPerSec) + driveKv * velocityRadPerSec;
-    driveController.setReference(
-        velocityRadPerSec,
-        ControlType.kVelocity,
-        ClosedLoopSlot.kSlot0,
-        ffVolts,
-        ArbFFUnits.kVoltage);
+  public void setTurnVoltage(double voltage) {
+    turnSparkMax.setVoltage(voltage);
   }
 
   @Override
