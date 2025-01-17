@@ -16,7 +16,7 @@ package frc.robot.subsystems.drive;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 import static frc.robot.util.SparkUtil.*;
 
-import com.revrobotics.AbsoluteEncoder;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
@@ -47,9 +47,10 @@ public class ModuleIOReal implements ModuleIO {
 
   // Hardware objects
   private final SparkBase driveSpark;
-  private final SparkBase turnSpark;
+  private final SparkMax turnSpark;
   private final RelativeEncoder driveEncoder;
-  private final AbsoluteEncoder turnEncoder;
+  private final RelativeEncoder turnEncoder;
+  private final CANcoder absEncoder;
 
   // Closed loop controllers
   private final SparkClosedLoopController driveController;
@@ -94,7 +95,16 @@ public class ModuleIOReal implements ModuleIO {
             },
             MotorType.kBrushless);
     driveEncoder = driveSpark.getEncoder();
-    turnEncoder = turnSpark.getAbsoluteEncoder();
+    turnEncoder = turnSpark.getEncoder();
+    absEncoder = 
+        new CANcoder(
+            switch (module) {
+                case 0 -> frontLeftAbsCanId;
+                case 1 -> frontRightAbsCanId;
+                case 2 -> backLeftAbsCanId;
+                case 3 -> backRightAbsCanId;
+                default -> 0;
+            });
     driveController = driveSpark.getClosedLoopController();
     turnController = turnSpark.getClosedLoopController();
 
