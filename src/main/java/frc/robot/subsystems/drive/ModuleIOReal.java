@@ -47,7 +47,7 @@ public class ModuleIOReal implements ModuleIO {
 
   // Hardware objects
   private final SparkBase driveSpark;
-  private final SparkMax turnSpark;
+  private final SparkMax turnSparkMax;
   private final RelativeEncoder driveEncoder;
   private final RelativeEncoder turnEncoder;
   private final CANcoder absEncoder;
@@ -84,7 +84,7 @@ public class ModuleIOReal implements ModuleIO {
               default -> 0;
             },
             MotorType.kBrushless);
-    turnSpark =
+    turnSparkMax =
         new SparkMax(
             switch (module) {
               case 0 -> frontLeftTurnCanId;
@@ -95,7 +95,7 @@ public class ModuleIOReal implements ModuleIO {
             },
             MotorType.kBrushless);
     driveEncoder = driveSpark.getEncoder();
-    turnEncoder = turnSpark.getEncoder();
+    turnEncoder = turnSparkMax.getEncoder();
     absEncoder = 
         new CANcoder(
             switch (module) {
@@ -106,7 +106,7 @@ public class ModuleIOReal implements ModuleIO {
                 default -> 0;
             });
     driveController = driveSpark.getClosedLoopController();
-    turnController = turnSpark.getClosedLoopController();
+    turnController = turnSparkMax.getClosedLoopController();
 
     // Configure drive motor
     var driveConfig = new SparkFlexConfig();
@@ -162,10 +162,10 @@ public class ModuleIOReal implements ModuleIO {
         .busVoltagePeriodMs(20)
         .outputCurrentPeriodMs(20);
     tryUntilOk(
-        turnSpark,
+        turnSparkMax,
         5,
         () ->
-            turnSpark.configure(
+            turnSparkMax.configure(
                 turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     // Create odometry queues
@@ -173,7 +173,7 @@ public class ModuleIOReal implements ModuleIO {
     drivePositionQueue =
         SparkOdometryThread.getInstance().registerSignal(driveSpark, driveEncoder::getPosition);
     turnPositionQueue =
-        SparkOdometryThread.getInstance().registerSignal(turnSpark, turnEncoder::getPosition);
+        SparkOdometryThread.getInstance().registerSignal(turnSparkMax, turnEncoder::getPosition);
 
     turnEncoder.setPosition(absEncoder.getPosition().getValueAsDouble());
   }
@@ -194,15 +194,15 @@ public class ModuleIOReal implements ModuleIO {
     // Update turn inputs
     sparkStickyFault = false;
     ifOk(
-        turnSpark,
+        turnSparkMax,
         turnEncoder::getPosition,
         (value) -> inputs.turnPosition = new Rotation2d(value).minus(zeroRotation));
-    ifOk(turnSpark, turnEncoder::getVelocity, (value) -> inputs.turnVelocityRadPerSec = value);
+    ifOk(turnSparkMax, turnEncoder::getVelocity, (value) -> inputs.turnVelocityRadPerSec = value);
     ifOk(
-        turnSpark,
-        new DoubleSupplier[] {turnSpark::getAppliedOutput, turnSpark::getBusVoltage},
+        turnSparkMax,
+        new DoubleSupplier[] {turnSparkMax::getAppliedOutput, turnSparkMax::getBusVoltage},
         (values) -> inputs.turnAppliedVolts = values[0] * values[1]);
-    ifOk(turnSpark, turnSpark::getOutputCurrent, (value) -> inputs.turnCurrentAmps = value);
+    ifOk(turnSparkMax, turnSparkMax::getOutputCurrent, (value) -> inputs.turnCurrentAmps = value);
     inputs.turnConnected = turnConnectedDebounce.calculate(!sparkStickyFault);
 
     // Update odometry inputs
@@ -226,7 +226,7 @@ public class ModuleIOReal implements ModuleIO {
 
   @Override
   public void setTurnOpenLoop(double output) {
-    turnSpark.setVoltage(output);
+    turnSparkMax.setVoltage(output);
   }
 
   @Override
