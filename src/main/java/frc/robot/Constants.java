@@ -35,4 +35,8 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
-} // Hello individuals
+  
+  // Field constants
+  public static final double kFieldLengthMeters = 17.548225; // x
+  public static final double kFieldWidthMeters = 8.0518; // y
+}

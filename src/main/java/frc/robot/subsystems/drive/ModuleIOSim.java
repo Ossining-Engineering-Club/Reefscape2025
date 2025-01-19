@@ -19,7 +19,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 /** Physics sim implementation of module IO. */
@@ -72,42 +71,28 @@ public class ModuleIOSim implements ModuleIO {
     turnSim.update(0.02);
 
     // Update drive inputs
-    inputs.driveConnected = true;
     inputs.drivePositionRad = driveSim.getAngularPositionRad();
     inputs.driveVelocityRadPerSec = driveSim.getAngularVelocityRadPerSec();
     inputs.driveAppliedVolts = driveAppliedVolts;
     inputs.driveCurrentAmps = Math.abs(driveSim.getCurrentDrawAmps());
 
     // Update turn inputs
-    inputs.turnConnected = true;
     inputs.turnPosition = new Rotation2d(turnSim.getAngularPositionRad());
     inputs.turnVelocityRadPerSec = turnSim.getAngularVelocityRadPerSec();
     inputs.turnAppliedVolts = turnAppliedVolts;
     inputs.turnCurrentAmps = Math.abs(turnSim.getCurrentDrawAmps());
-
-    // Update odometry inputs (50Hz because high-frequency odometry in sim doesn't matter)
-    inputs.odometryTimestamps = new double[] {Timer.getFPGATimestamp()};
-    inputs.odometryDrivePositionsRad = new double[] {inputs.drivePositionRad};
-    inputs.odometryTurnPositions = new Rotation2d[] {inputs.turnPosition};
   }
 
   @Override
-  public void setDriveOpenLoop(double output) {
+  public void setDriveVoltage(double voltage) {
     driveClosedLoop = false;
-    driveAppliedVolts = output;
+    driveAppliedVolts = voltage;
   }
 
   @Override
-  public void setTurnOpenLoop(double output) {
+  public void setTurnVoltage(double voltage) {
     turnClosedLoop = false;
-    turnAppliedVolts = output;
-  }
-
-  @Override
-  public void setDriveVelocity(double velocityRadPerSec) {
-    driveClosedLoop = true;
-    driveFFVolts = driveSimKs * Math.signum(velocityRadPerSec) + driveSimKv * velocityRadPerSec;
-    driveController.setSetpoint(velocityRadPerSec);
+    turnAppliedVolts = voltage;
   }
 
   @Override

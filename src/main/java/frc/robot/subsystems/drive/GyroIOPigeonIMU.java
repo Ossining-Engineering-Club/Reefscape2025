@@ -1,4 +1,4 @@
-// Copyright 2021-2025 FRC 6328
+// Copyright 2021-2024 FRC 6328
 // http://github.com/Mechanical-Advantage
 //
 // This program is free software; you can redistribute it and/or
@@ -13,16 +13,21 @@
 
 package frc.robot.subsystems.drive;
 
+import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 import edu.wpi.first.math.geometry.Rotation2d;
-import org.littletonrobotics.junction.AutoLog;
 
-public interface GyroIO {
-  @AutoLog
-  public static class GyroIOInputs {
-    public boolean connected = false;
-    public Rotation2d yawPosition = new Rotation2d();
-    public double yawVelocityRadPerSec = 0.0;
+/** IO implementation for PigeonIMU */
+public class GyroIOPigeonIMU implements GyroIO {
+  private final PigeonIMU pigeon = new PigeonIMU(DriveConstants.pigeonCanId);
+
+  public GyroIOPigeonIMU() {
+    pigeon.setYaw(0.0);
   }
 
-  public default void updateInputs(GyroIOInputs inputs) {}
+  @Override
+  public void updateInputs(GyroIOInputs inputs) {
+    inputs.connected = pigeon.getState() == PigeonState.Ready;
+    inputs.yawPosition = Rotation2d.fromDegrees(pigeon.getYaw());
+  }
 }
