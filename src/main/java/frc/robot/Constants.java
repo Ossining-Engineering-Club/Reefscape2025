@@ -15,6 +15,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 
+// steve was here
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
  * on a roboRIO. Change the value of "simMode" to switch between "sim" (physics sim) and "replay"
@@ -34,7 +35,7 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
-
+  
   // Field constants
   public static final double kFieldLengthMeters = 17.548225; // x
   public static final double kFieldWidthMeters = 8.0518; // y
