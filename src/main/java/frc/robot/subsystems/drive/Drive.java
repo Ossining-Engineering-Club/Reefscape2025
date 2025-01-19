@@ -28,7 +28,6 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -93,7 +92,7 @@ public class Drive extends SubsystemBase {
         this::getChassisSpeeds,
         this::runVelocity,
         new PPHolonomicDriveController(
-            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+            new PIDConstants(7.0, 0.0, 0.0), new PIDConstants(8.0, 0.0, 0.0)),
         ppConfig,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
@@ -145,13 +144,13 @@ public class Drive extends SubsystemBase {
 
     // update odometry
     poseEstimator.update(
-      gyroInputs.yawPosition,
-      new SwerveModulePosition[] {
-        modules[0].getPosition(),
-        modules[1].getPosition(),
-        modules[2].getPosition(),
-        modules[3].getPosition()
-      });
+        gyroInputs.yawPosition,
+        new SwerveModulePosition[] {
+          modules[0].getPosition(),
+          modules[1].getPosition(),
+          modules[2].getPosition(),
+          modules[3].getPosition()
+        });
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
