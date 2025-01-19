@@ -30,7 +30,6 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 /**
@@ -48,10 +47,6 @@ public class ModuleIOReal implements ModuleIO {
 
   // Closed loop controllers
   private final SparkClosedLoopController turnController;
-
-  // Connection debouncers
-  private final Debouncer driveConnectedDebounce = new Debouncer(0.5);
-  private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
 
   public ModuleIOReal(int module) {
     zeroRotation =
