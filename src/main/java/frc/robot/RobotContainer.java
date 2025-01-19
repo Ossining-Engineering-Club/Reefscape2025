@@ -29,6 +29,8 @@ import frc.robot.subsystems.drive.GyroIOPigeonIMU;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionConstants;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -40,6 +42,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Vision vision;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -52,35 +55,41 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
+        vision = new Vision(VisionConstants.FRONT_CAMERA);
         drive =
             new Drive(
                 new GyroIOPigeonIMU(),
                 new ModuleIOReal(0),
                 new ModuleIOReal(1),
                 new ModuleIOReal(2),
-                new ModuleIOReal(3));
+                new ModuleIOReal(3),
+                vision);
         break;
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
+        vision = new Vision(VisionConstants.FRONT_CAMERA);
         drive =
             new Drive(
                 new GyroIO() {},
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim(),
-                new ModuleIOSim());
+                new ModuleIOSim(),
+                vision);
         break;
 
       default:
         // Replayed robot, disable IO implementations
+        vision = new Vision(VisionConstants.FRONT_CAMERA);
         drive =
             new Drive(
                 new GyroIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                new ModuleIO() {});
+                new ModuleIO() {},
+                vision);
         break;
     }
 
