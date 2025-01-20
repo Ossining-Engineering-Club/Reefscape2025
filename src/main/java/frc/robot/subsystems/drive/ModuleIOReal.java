@@ -104,8 +104,8 @@ public class ModuleIOReal implements ModuleIO {
         .voltageCompensation(12.0);
     turnConfig
         .encoder
-        .positionConversionFactor(1/turnMotorReduction * turnEncoderPositionFactor)
-        .velocityConversionFactor(1/turnMotorReduction * turnEncoderVelocityFactor);
+        .positionConversionFactor(1.0/turnMotorReduction * turnEncoderPositionFactor)
+        .velocityConversionFactor(1.0/turnMotorReduction * turnEncoderVelocityFactor);
     turnConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
