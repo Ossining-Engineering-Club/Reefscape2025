@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.coralpivot.CoralPivot;
 import frc.robot.subsystems.coralpivot.CoralPivotIO;
-import frc.robot.subsystems.coralpivot.CoralPivotReal;
+import frc.robot.subsystems.coralpivot.CoralPivotIOReal;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeonIMU;
@@ -34,7 +34,7 @@ import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIO;
-import frc.robot.subsystems.groundintakepivot.GroundIntakePivotReal;
+import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOReal;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -72,8 +72,8 @@ public class RobotContainer {
                 new ModuleIOReal(2),
                 new ModuleIOReal(3),
                 vision);
-        coralPivot = new CoralPivot(new CoralPivotReal());
-        groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotReal());
+        coralPivot = new CoralPivot(new CoralPivotIOReal());
+        groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOReal());
         break;
 
       case SIM:

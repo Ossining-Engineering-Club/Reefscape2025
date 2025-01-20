@@ -8,11 +8,11 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-public class CoralPivotReal implements CoralPivotIO {
+public class CoralPivotIOReal implements CoralPivotIO {
   private final SparkMax sparkMax;
   private final RelativeEncoder encoder;
 
-  public CoralPivotReal() {
+  public CoralPivotIOReal() {
     sparkMax = new SparkMax(canId, MotorType.kBrushless);
     encoder = sparkMax.getEncoder();
 

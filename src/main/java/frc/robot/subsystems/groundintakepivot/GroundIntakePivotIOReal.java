@@ -8,11 +8,11 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-public class GroundIntakePivotReal implements GroundIntakePivotIO {
+public class GroundIntakePivotIOReal implements GroundIntakePivotIO {
   private final SparkMax sparkMax;
   private final RelativeEncoder encoder;
 
-  public GroundIntakePivotReal() {
+  public GroundIntakePivotIOReal() {
     sparkMax = new SparkMax(canId, MotorType.kBrushless);
     encoder = sparkMax.getEncoder();
 
