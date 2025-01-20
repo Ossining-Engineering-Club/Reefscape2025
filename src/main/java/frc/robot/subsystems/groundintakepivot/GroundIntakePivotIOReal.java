@@ -3,6 +3,8 @@ package frc.robot.subsystems.groundintakepivot;
 import static frc.robot.subsystems.groundintakepivot.GroundIntakePivotConstants.*;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -22,6 +24,7 @@ public class GroundIntakePivotIOReal implements GroundIntakePivotIO {
         .encoder
         .positionConversionFactor(1.0 / motorReduction * encoderPositionFactor)
         .velocityConversionFactor(1.0 / motorReduction * encoderVelocityFactor);
+    sparkMax.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     encoder.setPosition(startAngle);
   }
