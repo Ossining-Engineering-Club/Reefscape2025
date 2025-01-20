@@ -24,7 +24,7 @@ public class CoralPivot extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Ground Intake Pivot", inputs);
+    Logger.processInputs("Coral Pivot", inputs);
   }
 
   public double getAngle() {
