@@ -1,5 +1,7 @@
 package frc.robot.subsystems.coralpivot;
 
+import edu.wpi.first.math.util.Units;
+
 public class CoralPivotConstants {
   // motor constants
   public static final int canId = 0;
@@ -13,7 +15,7 @@ public class CoralPivotConstants {
   public static final double kD = 0.0;
   public static final double kS = 0.1;
   public static final double kG = 0.1;
-  public static final double pidTolerance = 0.5;
+  public static final double pidTolerance = Units.degreesToRadians(0.5);
 
   // angle setpoints
   public static final double startAngle = 0.0;
