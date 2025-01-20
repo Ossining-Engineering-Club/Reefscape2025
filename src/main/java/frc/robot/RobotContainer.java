@@ -23,12 +23,18 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.coralpivot.CoralPivot;
+import frc.robot.subsystems.coralpivot.CoralPivotIO;
+import frc.robot.subsystems.coralpivot.CoralPivotIOReal;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeonIMU;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
+import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIO;
+import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOReal;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -43,6 +49,8 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
+  private final CoralPivot coralPivot;
+  private final GroundIntakePivot groundIntakePivot;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -64,6 +72,8 @@ public class RobotContainer {
                 new ModuleIOReal(2),
                 new ModuleIOReal(3),
                 vision);
+        coralPivot = new CoralPivot(new CoralPivotIOReal());
+        groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOReal());
         break;
 
       case SIM:
@@ -77,6 +87,8 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 vision);
+        coralPivot = new CoralPivot(new CoralPivotIO() {});
+        groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
         break;
 
       default:
@@ -90,6 +102,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 vision);
+        coralPivot = new CoralPivot(new CoralPivotIO() {});
+        groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
         break;
     }
 
