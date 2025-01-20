@@ -103,6 +103,10 @@ public class ModuleIOReal implements ModuleIO {
         .smartCurrentLimit(turnMotorCurrentLimit)
         .voltageCompensation(12.0);
     turnConfig
+        .encoder
+        .positionConversionFactor(1/turnMotorReduction * turnEncoderPositionFactor)
+        .velocityConversionFactor(1/turnMotorReduction * turnEncoderVelocityFactor);
+    turnConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .positionWrappingEnabled(true)
