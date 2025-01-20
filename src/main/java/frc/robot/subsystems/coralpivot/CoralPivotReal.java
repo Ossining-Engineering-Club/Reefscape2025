@@ -1,4 +1,4 @@
-package frc.robot.subsystems.groundintakepivot;
+package frc.robot.subsystems.coralpivot;
 
 import static frc.robot.subsystems.groundintakepivot.GroundIntakePivotConstants.*;
 
@@ -8,11 +8,11 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-public class GroundIntakePivotReal implements GroundIntakePivotIO {
+public class CoralPivotReal implements CoralPivotIO {
   private final SparkMax sparkMax;
   private final RelativeEncoder encoder;
 
-  public GroundIntakePivotReal() {
+  public CoralPivotReal() {
     sparkMax = new SparkMax(canId, MotorType.kBrushless);
     encoder = sparkMax.getEncoder();
 
@@ -27,7 +27,7 @@ public class GroundIntakePivotReal implements GroundIntakePivotIO {
   }
 
   @Override
-  public void updateInputs(GroundIntakePivotIOInputs inputs) {
+  public void updateInputs(CoralPivotIOInputs inputs) {
     inputs.appliedVolts = sparkMax.getAppliedOutput() * sparkMax.getBusVoltage();
     inputs.angleRadians = encoder.getPosition();
   }
