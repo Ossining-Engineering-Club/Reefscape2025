@@ -2,13 +2,11 @@ package frc.robot.subsystems.coralholder;
 
 public class CoralHolderConstants {
 
+  // Can ID
+  public static final int canid = 0;
+  // Motor Power Level
+  public static final double powerPercent = 0.10;
 
-    // Can ID
-    public static final int k_canId = 0;
-
-    // Motor Power Level
-    public static final double k_powerPercent = 0.10;
-
-    // Holder Break Beam 
-    public static final int k_beamId = 0;
+  // Holder Break Beam
+  public static final String coralholderbeamid = "Coral Holder BB";
 }
