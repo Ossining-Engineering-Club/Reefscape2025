@@ -13,6 +13,9 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -29,6 +32,14 @@ public final class Main {
    * <p>If you change your main robot class, change the parameter type.
    */
   public static void main(String... args) {
-    RobotBase.startRobot(Robot::new);
+    RobotBase.startRobot(() -> {
+      try {
+        return new Robot();
+      } catch (IOException | ParseException | org.json.simple.parser.ParseException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+            return null;
+    });
   }
 }

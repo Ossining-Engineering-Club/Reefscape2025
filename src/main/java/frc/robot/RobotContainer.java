@@ -14,8 +14,13 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,20 +28,18 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.coralpivot.CoralPivot;
-import frc.robot.subsystems.coralpivot.CoralPivotIO;
-import frc.robot.subsystems.coralpivot.CoralPivotIOReal;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeonIMU;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
-import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIO;
-import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOReal;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
+
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -49,8 +52,8 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
-  private final CoralPivot coralPivot;
-  private final GroundIntakePivot groundIntakePivot;
+  //   private final CoralPivot coralPivot;
+  //   private final GroundIntakePivot groundIntakePivot;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -59,7 +62,7 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
+  public RobotContainer() throws IOException, ParseException {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -72,8 +75,8 @@ public class RobotContainer {
                 new ModuleIOReal(2),
                 new ModuleIOReal(3),
                 vision);
-        coralPivot = new CoralPivot(new CoralPivotIOReal());
-        groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOReal());
+        // coralPivot = new CoralPivot(new CoralPivotIOReal());
+        // groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOReal());
         break;
 
       case SIM:
@@ -87,8 +90,8 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 vision);
-        coralPivot = new CoralPivot(new CoralPivotIO() {});
-        groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
+        // coralPivot = new CoralPivot(new CoralPivotIO() {});
+        // groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
         break;
 
       default:
@@ -102,8 +105,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 vision);
-        coralPivot = new CoralPivot(new CoralPivotIO() {});
-        groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
+        // coralPivot = new CoralPivot(new CoralPivotIO() {});
+        // groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
         break;
     }
 
@@ -135,8 +138,11 @@ public class RobotContainer {
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+ * @throws ParseException 
+ * @throws IOException 
+ * @throws FileVersionException 
    */
-  private void configureButtonBindings() {
+  private void configureButtonBindings() throws FileVersionException, IOException, ParseException {
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -146,21 +152,21 @@ public class RobotContainer {
             () -> -controller.getRightX()));
 
     // Lock to 0° when A button is held
-    controller
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
-                () -> new Rotation2d()));
+    // controller
+    //     .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -controller.getLeftY(),
+    //             () -> -controller.getLeftX(),
+    //             () -> new Rotation2d()));
 
     // Switch to X pattern when X button is pressed
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when B button is pressed
     controller
-        .b()
+        .a()
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -168,6 +174,13 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
+
+    // To coral L
+    PathPlannerPath pathL = PathPlannerPath.fromPathFile("L");
+    PathConstraints constraintsL =
+        new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    Command pathFindingCommandL = AutoBuilder.pathfindThenFollowPath(pathL, constraintsL);
+    controller.x().onTrue(pathFindingCommandL);
   }
 
   /**
