@@ -63,7 +63,12 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        vision = new Vision(VisionConstants.FRONT_CAMERA);
+        vision =
+            new Vision(
+                VisionConstants.FRONT_LEFT_CAMERA_CONFIG,
+                VisionConstants.FRONT_RIGHT_CAMERA_CONFIG,
+                VisionConstants.BACK_LEFT_CAMERA_CONFIG,
+                VisionConstants.BACK_RIGHT_CAMERA_CONFIG);
         drive =
             new Drive(
                 new GyroIOPigeonIMU(),
@@ -78,7 +83,12 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        vision = new Vision(VisionConstants.FRONT_CAMERA);
+        vision =
+            new Vision(
+                VisionConstants.FRONT_LEFT_CAMERA_CONFIG,
+                VisionConstants.FRONT_RIGHT_CAMERA_CONFIG,
+                VisionConstants.BACK_LEFT_CAMERA_CONFIG,
+                VisionConstants.BACK_RIGHT_CAMERA_CONFIG);
         drive =
             new Drive(
                 new GyroIO() {},
@@ -93,7 +103,12 @@ public class RobotContainer {
 
       default:
         // Replayed robot, disable IO implementations
-        vision = new Vision(VisionConstants.FRONT_CAMERA);
+        vision =
+            new Vision(
+                VisionConstants.FRONT_LEFT_CAMERA_CONFIG,
+                VisionConstants.FRONT_RIGHT_CAMERA_CONFIG,
+                VisionConstants.BACK_LEFT_CAMERA_CONFIG,
+                VisionConstants.BACK_RIGHT_CAMERA_CONFIG);
         drive =
             new Drive(
                 new GyroIO() {},
@@ -184,7 +199,8 @@ public class RobotContainer {
     PathPlannerPath pathCoralStation = PathPlannerPath.fromPathFile("Coral Station");
     PathConstraints constraintsCoralStation =
         new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
-    Command pathFindingCommandCoralStation = AutoBuilder.pathfindThenFollowPath(pathCoralStation, constraintsCoralStation);
+    Command pathFindingCommandCoralStation =
+        AutoBuilder.pathfindThenFollowPath(pathCoralStation, constraintsCoralStation);
     controller.y().onTrue(pathFindingCommandCoralStation);
   }
 

@@ -36,7 +36,6 @@ public final class Main {
           try {
             return new Robot();
           } catch (IOException | ParseException | org.json.simple.parser.ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
           }
           return null;

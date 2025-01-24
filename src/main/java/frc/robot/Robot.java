@@ -13,12 +13,9 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.commands.PathfindingCommand;
-import com.pathplanner.lib.pathfinding.Pathfinding;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.util.LocalADStarAK;
 import java.io.IOException;
 import java.text.ParseException;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -92,9 +89,7 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void robotInit() {
-    
-  }
+  public void robotInit() {}
 
   /** This function is called periodically during all modes. */
   @Override

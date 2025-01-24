@@ -21,15 +21,33 @@ public class VisionConstants {
   public static final AprilTagFieldLayout TAG_LAYOUT =
       AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
 
-  public static final CameraConfig FRONT_CAMERA =
+  public static final CameraConfig FRONT_LEFT_CAMERA_CONFIG =
       new CameraConfig(
-          "Arducam_OV9281_USB_Camera",
+          "OV9782_FL",
           new Transform3d(
-              // new Translation3d(-0.09, -0.004, .4587), // x, y, z meters
-              // new Rotation3d(0.0, Units.degreesToRadians(-4.0), Units.degreesToRadians(180.0))));
-              // // roll, pitch, yaw radians
-              new Translation3d(-0.246, 0.19, 0.208),
-              new Rotation3d(0, Units.degreesToRadians(-16.875), Units.degreesToRadians(180.0))));
+              new Translation3d(0.241, 0.235, 0.195),
+              new Rotation3d(0, Units.degreesToRadians(-21.875), Units.degreesToRadians(-35.0))));
+
+  public static final CameraConfig FRONT_RIGHT_CAMERA_CONFIG =
+      new CameraConfig(
+          "OV9281_FR",
+          new Transform3d(
+              new Translation3d(0.241, -0.235, 0.195),
+              new Rotation3d(0, Units.degreesToRadians(-21.875), Units.degreesToRadians(35.0))));
+
+  public static final CameraConfig BACK_LEFT_CAMERA_CONFIG =
+      new CameraConfig(
+          "OV9782_BL",
+          new Transform3d(
+              new Translation3d(-0.241, 0.235, 0.195),
+              new Rotation3d(0, Units.degreesToRadians(-21.875), Units.degreesToRadians(180.0+35.0))));
+
+  public static final CameraConfig BACK_RIGHT_CAMERA_CONFIG =
+      new CameraConfig(
+          "OV9782_BR",
+          new Transform3d(
+              new Translation3d(-0.241, -0.235, 0.195),
+              new Rotation3d(0, Units.degreesToRadians(-21.875), Units.degreesToRadians(180.0-35.0))));
 
   public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(1.5, 1.5, 7);
   public static final Matrix<N3, N1> MULTIPLE_TAG_STD_DEVS = VecBuilder.fill(0.3, 0.3, 4);
