@@ -1,3 +1,22 @@
 package frc.robot.subsystems.elevator;
 
-public class ElevatorConstants {}
+public class ElevatorConstants {
+  // motor constants
+  public static final int canId = 0;
+  public static final double motorReduction = 1.0 / 1.0;
+  public static final double encoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
+  public static final double encoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
+  public static final boolean isInverted = false;
+
+  // control system
+  public static final double kP = 1.0;
+  public static final double kD = 0.0;
+  public static final double kS = 0.1;
+  public static final double kG = 0.1;
+  public static final double pidTolerance = 0.002; // meters
+
+  // angle setpoints
+  public static final double startPosition = 0.0;
+  public static final double maxPosition = 0.0;
+  public static final double minPosition = 0.0;
+}
