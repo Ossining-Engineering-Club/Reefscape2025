@@ -93,8 +93,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
-    Pathfinding.setPathfinder(new LocalADStarAK());
-    PathfindingCommand.warmupCommand().schedule();
+    
   }
 
   /** This function is called periodically during all modes. */
