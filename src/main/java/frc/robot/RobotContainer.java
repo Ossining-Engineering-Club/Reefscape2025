@@ -173,12 +173,19 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // To coral L
+    // Pathfinding to coral L
     PathPlannerPath pathL = PathPlannerPath.fromPathFile("L");
     PathConstraints constraintsL =
         new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
     Command pathFindingCommandL = AutoBuilder.pathfindThenFollowPath(pathL, constraintsL);
     controller.x().onTrue(pathFindingCommandL);
+
+    // Pathfinding to coral loading station
+    PathPlannerPath pathCoralStation = PathPlannerPath.fromPathFile("Coral Station");
+    PathConstraints constraintsCoralStation =
+        new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    Command pathFindingCommandCoralStation = AutoBuilder.pathfindThenFollowPath(pathCoralStation, constraintsCoralStation);
+    controller.y().onTrue(pathFindingCommandCoralStation);
   }
 
   /**
