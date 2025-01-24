@@ -160,9 +160,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () -> -0.5 * controller.getLeftY(),
+            () -> -0.5 * controller.getLeftX(),
+            () -> -0.5 * controller.getRightX()));
 
     // Lock to 0° when A button is held
     // controller
@@ -188,20 +188,22 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
+    controller.b().onTrue(Commands.runOnce(() -> {}, drive));
+
     // Pathfinding to coral L
     PathPlannerPath pathL = PathPlannerPath.fromPathFile("L");
     PathConstraints constraintsL =
-        new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+        new PathConstraints(1.0, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
     Command pathFindingCommandL = AutoBuilder.pathfindThenFollowPath(pathL, constraintsL);
     controller.x().onTrue(pathFindingCommandL);
 
     // Pathfinding to coral loading station
-    PathPlannerPath pathCoralStation = PathPlannerPath.fromPathFile("Coral Station");
-    PathConstraints constraintsCoralStation =
-        new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
-    Command pathFindingCommandCoralStation =
-        AutoBuilder.pathfindThenFollowPath(pathCoralStation, constraintsCoralStation);
-    controller.y().onTrue(pathFindingCommandCoralStation);
+    // PathPlannerPath pathCoralStation = PathPlannerPath.fromPathFile("Coral Station");
+    // PathConstraints constraintsCoralStation =
+    //     new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    // Command pathFindingCommandCoralStation =
+    //     AutoBuilder.pathfindThenFollowPath(pathCoralStation, constraintsCoralStation);
+    // controller.y().onTrue(pathFindingCommandCoralStation);
   }
 
   /**

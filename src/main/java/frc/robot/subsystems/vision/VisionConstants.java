@@ -19,7 +19,7 @@ public class VisionConstants {
       Pose2d estimatedPose, double timestampSeconds, Matrix<N3, N1> standardDev) {}
 
   public static final AprilTagFieldLayout TAG_LAYOUT =
-      AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
+      AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
   public static final CameraConfig FRONT_LEFT_CAMERA_CONFIG =
       new CameraConfig(
@@ -54,7 +54,7 @@ public class VisionConstants {
   public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(1.5, 1.5, 7);
   public static final Matrix<N3, N1> MULTIPLE_TAG_STD_DEVS = VecBuilder.fill(0.3, 0.3, 4);
 
-  public static final boolean IGNORE_YAW = true;
+  public static final boolean IGNORE_YAW = false;
 
   public static final double MAX_HEIGHT = 0.305;
   public static final double MAX_ANGLE = 0.3;

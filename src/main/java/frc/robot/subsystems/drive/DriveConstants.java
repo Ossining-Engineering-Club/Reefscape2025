@@ -22,8 +22,8 @@ import edu.wpi.first.math.system.plant.DCMotor;
 public class DriveConstants {
   public static final double maxSpeedMetersPerSec = 4.8;
   public static final double odometryFrequency = 50.0; // Hz
-  public static final double trackWidth = 0.55; // meters
-  public static final double wheelBase = 0.455; // meters
+  public static final double trackWidth = 0.455; // meters
+  public static final double wheelBase = 0.55; // meters
   public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
   public static final Translation2d[] moduleTranslations =
       new Translation2d[] {
@@ -35,29 +35,35 @@ public class DriveConstants {
 
   // Zeroed rotation values for each module, see setup instructions
   public static final Rotation2d frontLeftZeroRotation =
-      new Rotation2d(.7209709703 + Math.PI / 2.0);
+      new Rotation2d(-1.31157364 + Math.PI / 2.0);
   public static final Rotation2d frontRightZeroRotation =
+      new Rotation2d(.7209709703 + Math.PI / 2.0);
+  public static final Rotation2d backLeftZeroRotation = new Rotation2d(1.44807786 + Math.PI / 2.0);
+  public static final Rotation2d backRightZeroRotation =
       new Rotation2d(-.9955535133 + Math.PI / 2.0);
-  public static final Rotation2d backLeftZeroRotation = new Rotation2d(-1.31157364 + Math.PI / 2.0);
-  public static final Rotation2d backRightZeroRotation = new Rotation2d(1.44807786 + Math.PI / 2.0);
+
+  // FL -> BL
+  // FR -> FL
+  // BL -> BR
+  // BR -> FR
 
   // Device CAN IDs
   public static final int pigeonCanId = 60;
 
-  public static final int frontLeftDriveCanId = 2;
-  public static final int frontRightDriveCanId = 4;
-  public static final int backLeftDriveCanId = 6;
-  public static final int backRightDriveCanId = 8;
+  public static final int frontLeftDriveCanId = 6;
+  public static final int frontRightDriveCanId = 2;
+  public static final int backLeftDriveCanId = 8;
+  public static final int backRightDriveCanId = 4;
 
-  public static final int frontLeftTurnCanId = 1;
-  public static final int frontRightTurnCanId = 3;
-  public static final int backLeftTurnCanId = 5;
-  public static final int backRightTurnCanId = 7;
+  public static final int frontLeftTurnCanId = 5;
+  public static final int frontRightTurnCanId = 1;
+  public static final int backLeftTurnCanId = 7;
+  public static final int backRightTurnCanId = 3;
 
-  public static final int frontLeftAbsCanId = 9;
-  public static final int frontRightAbsCanId = 10;
-  public static final int backLeftAbsCanId = 11;
-  public static final int backRightAbsCanId = 12;
+  public static final int frontLeftAbsCanId = 11;
+  public static final int frontRightAbsCanId = 9;
+  public static final int backLeftAbsCanId = 12;
+  public static final int backRightAbsCanId = 10;
 
   // Drive motor configuration
   public static final int driveMotorCurrentLimit = 50;
