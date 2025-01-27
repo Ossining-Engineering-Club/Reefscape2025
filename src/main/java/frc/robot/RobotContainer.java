@@ -17,7 +17,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,6 +38,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -206,5 +209,21 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  // defines the poses for each component of the robot model in Advantage Scope
+  public void robotContainerPeriodic() {
+    Logger.recordOutput(
+        "Zeroed Component Poses",
+        new Pose3d[] {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()});
+    Logger.recordOutput(
+        "Final Component Poses",
+        new Pose3d[] {
+          new Pose3d(0.1016, 0, 0.1439333418, new Rotation3d(0, 0, 0)),
+          new Pose3d(0.1016, 0, 0.1959848252, new Rotation3d(0, 0, 0)),
+          new Pose3d(0.0873125, 0, 0.2404348252, new Rotation3d(0, 0, 0)),
+          new Pose3d(0.291373916, 0, 0.6305888582, new Rotation3d(0, 0, 0)),
+          new Pose3d(0.2873375, 0, 0.2328333418, new Rotation3d(0, 0, 0)),
+        });
   }
 }
