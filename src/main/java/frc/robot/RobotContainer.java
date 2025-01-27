@@ -190,20 +190,41 @@ public class RobotContainer {
 
     controller.b().onTrue(Commands.runOnce(() -> {}, drive));
 
+    // Pathfinding to coral A
+    PathPlannerPath pathA = PathPlannerPath.fromPathFile("A");
+    PathConstraints constraintsA =
+        new PathConstraints(2.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    Command pathFindingCommandA = AutoBuilder.pathfindThenFollowPath(pathA, constraintsA);
+    //controller.x().onTrue(pathFindingCommandA);
+
+    // Pathfinding to coral B
+    PathPlannerPath pathB = PathPlannerPath.fromPathFile("B");
+    PathConstraints constraintsB =
+        new PathConstraints(2.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    Command pathFindingCommandB = AutoBuilder.pathfindThenFollowPath(pathB, constraintsB);
+    //controller.x().onTrue(pathFindingCommandB);
+
+    // Pathfinding to coral K
+    PathPlannerPath pathK = PathPlannerPath.fromPathFile("K");
+    PathConstraints constraintsK =
+        new PathConstraints(2.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    Command pathFindingCommandK = AutoBuilder.pathfindThenFollowPath(pathK, constraintsK);
+    //controller.x().onTrue(pathFindingCommandK);
+
     // Pathfinding to coral L
     PathPlannerPath pathL = PathPlannerPath.fromPathFile("L");
     PathConstraints constraintsL =
-        new PathConstraints(2.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+        new PathConstraints(2.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
     Command pathFindingCommandL = AutoBuilder.pathfindThenFollowPath(pathL, constraintsL);
     controller.x().onTrue(pathFindingCommandL);
 
     // Pathfinding to coral loading station
-    // PathPlannerPath pathCoralStation = PathPlannerPath.fromPathFile("Coral Station");
-    // PathConstraints constraintsCoralStation =
-    //     new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
-    // Command pathFindingCommandCoralStation =
-    //     AutoBuilder.pathfindThenFollowPath(pathCoralStation, constraintsCoralStation);
-    // controller.y().onTrue(pathFindingCommandCoralStation);
+    PathPlannerPath pathCoralStation = PathPlannerPath.fromPathFile("Coral Station");
+    PathConstraints constraintsCoralStation =
+        new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    Command pathFindingCommandCoralStation =
+        AutoBuilder.pathfindThenFollowPath(pathCoralStation, constraintsCoralStation);
+    //controller.y().onTrue(pathFindingCommandCoralStation);
   }
 
   /**
