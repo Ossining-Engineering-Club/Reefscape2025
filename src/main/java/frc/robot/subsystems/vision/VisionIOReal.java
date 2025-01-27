@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.subsystems.vision.VisionConstants.CameraConfig;
 import java.util.List;
 import org.photonvision.PhotonCamera;
@@ -23,7 +24,7 @@ public class VisionIOReal implements VisionIO {
   }
 
   @Override
-  public void updateInputs(VisionIOInputs inputs) {
+  public void updateInputs(VisionIOInputs inputs, Pose2d robotPoseMeters) {
     PhotonPipelineResult result = camera.getLatestResult();
     var optionalEstimate = estimator.update(result);
     if (optionalEstimate.isPresent()) {

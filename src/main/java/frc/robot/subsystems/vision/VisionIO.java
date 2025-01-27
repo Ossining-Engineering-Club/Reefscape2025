@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import org.littletonrobotics.junction.AutoLog;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -15,5 +16,5 @@ public interface VisionIO {
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(VisionIOInputs inputs) {}
+  public default void updateInputs(VisionIOInputs inputs, Pose2d robotPoseMeters) {}
 }

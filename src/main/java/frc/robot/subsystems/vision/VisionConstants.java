@@ -58,4 +58,6 @@ public class VisionConstants {
 
   public static final double MAX_HEIGHT = 0.305;
   public static final double MAX_ANGLE = 0.3;
+
+  public static final double cameraDiagonalFOV = Math.hypot(1280, 800) * 70.0 / 1280.0;
 }

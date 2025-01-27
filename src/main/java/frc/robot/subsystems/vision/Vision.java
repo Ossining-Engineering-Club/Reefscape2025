@@ -32,7 +32,8 @@ public class Vision extends SubsystemBase {
           ios[i] = new VisionIOReal(configs[i]);
           break;
         case SIM:
-          ios[i] = new VisionIOSim();
+          // ios[i] = new VisionIOSim(configs[i]);
+          ios[i] = new VisionIO() {};
           break;
         case REPLAY:
           ios[i] = new VisionIO() {};
@@ -48,16 +49,17 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    for (int i = 0; i < ios.length; i++) {
-      ios[i].updateInputs(inputs[i]);
-      Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
-    }
+    for (int i = 0; i < ios.length; i++) {}
   }
 
-  public PoseEstimate[] getEstimatedGlobalPoses() {
+  public PoseEstimate[] getEstimatedGlobalPoses(Pose2d robotPoseMeters) {
     List<PoseEstimate> estimates = new ArrayList<>();
     Set<Pose3d> detectedTagPoses = new HashSet<Pose3d>();
     for (int i = 0; i < ios.length; i++) {
+      // updating vision io inputs
+      ios[i].updateInputs(inputs[i], robotPoseMeters);
+      Logger.processInputs("Vision/" + configs[i].name(), inputs[i]);
+
       // adding detected tags to list to be logged
       for (int tagId : inputs[i].tagIds) {
         VisionConstants.TAG_LAYOUT

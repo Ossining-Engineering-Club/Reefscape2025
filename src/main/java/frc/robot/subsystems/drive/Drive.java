@@ -180,7 +180,7 @@ public class Drive extends SubsystemBase {
         });
 
     // correct odometry with vision
-    updateEstimates(vision.getEstimatedGlobalPoses());
+    updateEstimates(vision.getEstimatedGlobalPoses(getPose()));
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
