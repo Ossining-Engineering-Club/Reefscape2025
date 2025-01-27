@@ -17,5 +17,5 @@ public final class AutoTeleopConstants {
       };
 
   public static final PathConstraints alignmentConstraints =
-      new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+      new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
 }

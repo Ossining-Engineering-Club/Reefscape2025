@@ -71,17 +71,17 @@ public class Vision extends SubsystemBase {
 
       boolean addedPose = false;
       if (inputs[i].estimateIsPresent) {
-        // // don't use if estimate is outside the field
-        // if (!(inputs[i].estimatedPose.getX() > 0.0
-        //     && inputs[i].estimatedPose.getX() <= Constants.kFieldLengthMeters
-        //     && inputs[i].estimatedPose.getY() > 0.0
-        //     && inputs[i].estimatedPose.getY() <= Constants.kFieldWidthMeters)) continue;
-        // // don't use if estimate is too high, or too tilted
-        // if (Math.abs(inputs[i].estimatedPose.getZ()) > VisionConstants.MAX_HEIGHT) continue;
-        // if (Math.abs(inputs[i].estimatedPose.getRotation().getX()) > VisionConstants.MAX_ANGLE)
-        //   continue;
-        // if (Math.abs(inputs[i].estimatedPose.getRotation().getY()) > VisionConstants.MAX_ANGLE)
-        //   continue;
+        // don't use if estimate is outside the field
+        if (!(inputs[i].estimatedPose.getX() > 0.0
+            && inputs[i].estimatedPose.getX() <= Constants.kFieldLengthMeters
+            && inputs[i].estimatedPose.getY() > 0.0
+            && inputs[i].estimatedPose.getY() <= Constants.kFieldWidthMeters)) continue;
+        // don't use if estimate is too high, or too tilted
+        if (Math.abs(inputs[i].estimatedPose.getZ()) > VisionConstants.MAX_HEIGHT) continue;
+        if (Math.abs(inputs[i].estimatedPose.getRotation().getX()) > VisionConstants.MAX_ANGLE)
+          continue;
+        if (Math.abs(inputs[i].estimatedPose.getRotation().getY()) > VisionConstants.MAX_ANGLE)
+          continue;
 
         Matrix<N3, N1> stddevs =
             getEstimationStdDevs(inputs[i].estimatedPose.toPose2d(), inputs[i].tagIds);
