@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.53925,
-        "y": 5.67275
+        "x": 3.765,
+        "y": 5.272
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.66425,
-        "y": 5.45624364905389
+        "x": 3.89,
+        "y": 5.055493649053891
       },
       "isLocked": false,
       "linkedName": null
@@ -47,7 +47,7 @@
   "reversed": false,
   "folder": "TeleOp Alignments",
   "idealStartingState": {
-    "velocity": 3.0,
+    "velocity": 0.5,
     "rotation": -59.99999999999999
   },
   "useDefaultConstraints": false

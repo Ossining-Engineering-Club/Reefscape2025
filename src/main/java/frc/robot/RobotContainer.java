@@ -193,7 +193,7 @@ public class RobotContainer {
     // Pathfinding to coral L
     PathPlannerPath pathL = PathPlannerPath.fromPathFile("L");
     PathConstraints constraintsL =
-        new PathConstraints(1.0, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+        new PathConstraints(2.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
     Command pathFindingCommandL = AutoBuilder.pathfindThenFollowPath(pathL, constraintsL);
     controller.x().onTrue(pathFindingCommandL);
 
