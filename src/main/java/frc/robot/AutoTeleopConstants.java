@@ -4,8 +4,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.util.Units;
 
 public final class AutoTeleopConstants {
-  public static record AlignmentConfig(String pathName, int button) {}
-  ;
+  public static record AlignmentConfig(String pathName, int button) {};
 
   public static final AlignmentConfig[] alignmentConfigs =
       new AlignmentConfig[] {
