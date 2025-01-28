@@ -27,7 +27,7 @@ public class GroundIntakePivotConstants {
   public static final double startAngle = Units.degreesToRadians(80);
   public static final double maxAngle = Units.degreesToRadians(80);
   public static final double minAngle = 0.0;
-  public static final double stowAngle = Units.degreesToRadians(90);
+  public static final double stowAngle = Units.degreesToRadians(70);
   public static final double extendAngle = Units.degreesToRadians(35);
   public static final double avoidanceAngle = 0.0;
 

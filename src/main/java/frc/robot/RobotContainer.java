@@ -29,7 +29,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.groundintakepivot.GroundIntakePivotGoToAngle;
+import frc.robot.commands.IntakeCoral;
+import frc.robot.commands.PlaceCoralSetup;
 import frc.robot.subsystems.coralpivot.CoralPivot;
 import frc.robot.subsystems.coralpivot.CoralPivotIO;
 import frc.robot.subsystems.coralpivot.CoralPivotIOReal;
@@ -41,7 +42,6 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
-import frc.robot.subsystems.groundintakepivot.GroundIntakePivotConstants;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIO;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOReal;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOSim;
@@ -204,16 +204,8 @@ public class RobotContainer {
 
     controller.b().onTrue(Commands.runOnce(() -> {}, drive));
 
-    controller
-        .x()
-        .onTrue(
-            new GroundIntakePivotGoToAngle(
-                groundIntakePivot, GroundIntakePivotConstants.stowAngle));
-    controller
-        .y()
-        .onTrue(
-            new GroundIntakePivotGoToAngle(
-                groundIntakePivot, GroundIntakePivotConstants.extendAngle));
+    controller.x().onTrue(new IntakeCoral(coralPivot, groundIntakePivot));
+    controller.y().onTrue(new PlaceCoralSetup(coralPivot, groundIntakePivot));
 
     // Pathfinding
     for (AlignmentConfig alignmentConfig : AutoTeleopConstants.alignmentConfigs) {
