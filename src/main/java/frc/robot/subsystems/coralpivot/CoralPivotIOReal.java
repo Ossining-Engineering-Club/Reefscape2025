@@ -1,6 +1,6 @@
 package frc.robot.subsystems.coralpivot;
 
-import static frc.robot.subsystems.groundintakepivot.GroundIntakePivotConstants.*;
+import static frc.robot.subsystems.coralpivot.CoralPivotConstants.*;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;

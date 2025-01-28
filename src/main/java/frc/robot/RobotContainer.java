@@ -28,6 +28,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.coralpivot.CoralPivotGoToAngle;
+import frc.robot.subsystems.coralpivot.CoralPivot;
+import frc.robot.subsystems.coralpivot.CoralPivotConstants;
+import frc.robot.subsystems.coralpivot.CoralPivotIO;
+import frc.robot.subsystems.coralpivot.CoralPivotIOReal;
+import frc.robot.subsystems.coralpivot.CoralPivotIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeonIMU;
@@ -51,7 +57,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
-  //   private final CoralPivot coralPivot;
+  private final CoralPivot coralPivot;
   //   private final GroundIntakePivot groundIntakePivot;
 
   // Controller
@@ -80,7 +86,7 @@ public class RobotContainer {
                 new ModuleIOReal(2),
                 new ModuleIOReal(3),
                 vision);
-        // coralPivot = new CoralPivot(new CoralPivotIOReal());
+        coralPivot = new CoralPivot(new CoralPivotIOReal());
         // groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOReal());
         break;
 
@@ -100,7 +106,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 vision);
-        // coralPivot = new CoralPivot(new CoralPivotIO() {});
+        coralPivot = new CoralPivot(new CoralPivotIOSim());
         // groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
         break;
 
@@ -120,7 +126,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 vision);
-        // coralPivot = new CoralPivot(new CoralPivotIO() {});
+        coralPivot = new CoralPivot(new CoralPivotIO() {});
         // groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
         break;
     }
@@ -193,6 +199,9 @@ public class RobotContainer {
 
     controller.b().onTrue(Commands.runOnce(() -> {}, drive));
 
+    controller.x().onTrue(new CoralPivotGoToAngle(coralPivot, CoralPivotConstants.intakeAngle));
+    controller.y().onTrue(new CoralPivotGoToAngle(coralPivot, CoralPivotConstants.placeAngle));
+
     // Pathfinding
     for (AlignmentConfig alignmentConfig : AutoTeleopConstants.alignmentConfigs) {
       PathPlannerPath path = PathPlannerPath.fromPathFile(alignmentConfig.pathName());
@@ -222,7 +231,11 @@ public class RobotContainer {
           new Pose3d(0.1016, 0, 0.1439333418, new Rotation3d(0, 0, 0)),
           new Pose3d(0.1016, 0, 0.1959848252, new Rotation3d(0, 0, 0)),
           new Pose3d(0.0873125, 0, 0.2404348252, new Rotation3d(0, 0, 0)),
-          new Pose3d(0.291373916, 0, 0.6305888582, new Rotation3d(0, 0, 0)),
+          new Pose3d(
+              0.291373916,
+              0,
+              0.6305888582,
+              new Rotation3d(0, -(coralPivot.getAngle() - Math.PI / 2.0), 0)),
           new Pose3d(0.2873375, 0, 0.2328333418, new Rotation3d(0, 0, 0)),
         });
   }
