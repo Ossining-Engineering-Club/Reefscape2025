@@ -31,7 +31,6 @@ import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCoral;
 import frc.robot.commands.PlaceCoralSetup;
-import frc.robot.commands.elevator.ElevatorGoToHeight;
 import frc.robot.subsystems.coralpivot.CoralPivot;
 import frc.robot.subsystems.coralpivot.CoralPivotIO;
 import frc.robot.subsystems.coralpivot.CoralPivotIOReal;
@@ -213,7 +212,7 @@ public class RobotContainer {
 
     controller.b().onTrue(Commands.runOnce(() -> {}, drive));
 
-    controller.x().onTrue(new IntakeCoral(coralPivot, groundIntakePivot));
+    controller.x().onTrue(new IntakeCoral(coralPivot, groundIntakePivot, elevator));
     controller.y().onTrue(new PlaceCoralSetup(coralPivot, groundIntakePivot));
 
     // Pathfinding

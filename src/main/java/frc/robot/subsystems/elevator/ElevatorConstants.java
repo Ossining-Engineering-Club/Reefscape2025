@@ -27,10 +27,11 @@ public class ElevatorConstants {
   public static final double maxHeight = 1.25;
   public static final double minHeight = 0.0;
   public static final double l1Height = 0.0;
-  public static final double l2Height = 0.0;
-  public static final double l3Height = 0.0;
-  public static final double l4Height = 0.0;
-  public static final double intakeHeight = 0.0;
+  public static final double l2Height = Units.inchesToMeters(0.255);
+  public static final double l3Height = Units.inchesToMeters(16.325);
+  public static final double l4Height = Units.inchesToMeters(45.735);
+  public static final double coralIntakeHeight = Units.inchesToMeters(17.744);
+  public static final double algaeIntakeHeight = 0.0;
   public static final double processorHeight = 0.0;
 
   // sim settings
