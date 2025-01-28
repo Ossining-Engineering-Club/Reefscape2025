@@ -31,6 +31,7 @@ import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCoral;
 import frc.robot.commands.PlaceCoralSetup;
+import frc.robot.commands.elevator.ElevatorGoToHeight;
 import frc.robot.subsystems.coralpivot.CoralPivot;
 import frc.robot.subsystems.coralpivot.CoralPivotIO;
 import frc.robot.subsystems.coralpivot.CoralPivotIOReal;
@@ -41,6 +42,10 @@ import frc.robot.subsystems.drive.GyroIOPigeonIMU;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOReal;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIO;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOReal;
@@ -64,6 +69,7 @@ public class RobotContainer {
   private final Vision vision;
   private final CoralPivot coralPivot;
   private final GroundIntakePivot groundIntakePivot;
+  private final Elevator elevator;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -93,6 +99,7 @@ public class RobotContainer {
                 vision);
         coralPivot = new CoralPivot(new CoralPivotIOReal());
         groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOReal());
+        elevator = new Elevator(new ElevatorIOReal());
         break;
 
       case SIM:
@@ -113,6 +120,7 @@ public class RobotContainer {
                 vision);
         coralPivot = new CoralPivot(new CoralPivotIOSim());
         groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
         break;
 
       default:
@@ -133,6 +141,7 @@ public class RobotContainer {
                 vision);
         coralPivot = new CoralPivot(new CoralPivotIO() {});
         groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
         break;
     }
 
@@ -233,13 +242,13 @@ public class RobotContainer {
     Logger.recordOutput(
         "Final Component Poses",
         new Pose3d[] {
-          new Pose3d(0.1016, 0, 0.1439333418, new Rotation3d(0, 0, 0)),
-          new Pose3d(0.1016, 0, 0.1959848252, new Rotation3d(0, 0, 0)),
-          new Pose3d(0.0873125, 0, 0.2404348252, new Rotation3d(0, 0, 0)),
+          new Pose3d(0.1016, 0, 0.1439333418 + elevator.getHeight() / 2.0, new Rotation3d(0, 0, 0)),
+          new Pose3d(0.1016, 0, 0.1959848252 + elevator.getHeight(), new Rotation3d(0, 0, 0)),
+          new Pose3d(0.0873125, 0, 0.2404348252 + elevator.getHeight(), new Rotation3d(0, 0, 0)),
           new Pose3d(
               0.291373916,
               0,
-              0.6305888582,
+              0.6305888582 + elevator.getHeight(),
               new Rotation3d(0, -(coralPivot.getAngle() - Math.PI / 2.0), 0)),
           new Pose3d(
               0.2873375,

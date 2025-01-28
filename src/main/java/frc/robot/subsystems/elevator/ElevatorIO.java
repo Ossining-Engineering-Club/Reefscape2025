@@ -6,7 +6,7 @@ public interface ElevatorIO {
   @AutoLog
   public static class ElevatorIOInputs {
     public double appliedVolts = 0.0;
-    public double positionMeters = 0.0;
+    public double heightMeters = 0.0;
   }
 
   /** Updates the set of loggable inputs. */

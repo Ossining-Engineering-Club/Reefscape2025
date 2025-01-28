@@ -17,7 +17,6 @@ public class GroundIntakePivot extends SubsystemBase {
   private final PIDController pid;
   private final ArmFeedforward feedforward;
 
-  private double feedforwardAppliedVolts = 0.0;
   private boolean usingPID = false;
   private int ticksSinceLastPID = 1000000;
 
