@@ -116,7 +116,7 @@ public class ModuleIOReal implements ModuleIO {
     turnSparkMax.configure(
         turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    turnEncoder.setPosition(absEncoder.getPosition().getValueAsDouble());
+    turnEncoder.setPosition(absEncoder.getPosition().getValueAsDouble() * 2 * Math.PI);
   }
 
   @Override

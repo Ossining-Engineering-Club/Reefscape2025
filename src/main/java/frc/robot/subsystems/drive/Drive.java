@@ -19,6 +19,7 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -122,6 +123,7 @@ public class Drive extends SubsystemBase {
                 (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
+    PathfindingCommand.warmupCommand().schedule();
   }
 
   @Override
@@ -178,7 +180,7 @@ public class Drive extends SubsystemBase {
         });
 
     // correct odometry with vision
-    updateEstimates(vision.getEstimatedGlobalPoses());
+    updateEstimates(vision.getEstimatedGlobalPoses(getPose()));
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);

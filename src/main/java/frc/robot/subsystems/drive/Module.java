@@ -42,7 +42,7 @@ public class Module {
     state.cosineScale(inputs.turnPosition);
 
     // Apply setpoints
-    io.setDriveVoltage(state.speedMetersPerSecond / DriveConstants.maxSpeedMetersPerSec);
+    io.setDriveVoltage(state.speedMetersPerSecond / DriveConstants.maxSpeedMetersPerSec * 12.0);
     io.setTurnPosition(state.angle);
   }
 
