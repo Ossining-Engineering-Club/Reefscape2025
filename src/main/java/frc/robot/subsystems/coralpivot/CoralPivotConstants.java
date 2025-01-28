@@ -24,9 +24,9 @@ public class CoralPivotConstants {
   public static final double pidTolerance = Units.degreesToRadians(0.5);
 
   // angle setpoints
-  public static final double startAngle = 0.0;
-  public static final double maxAngle = Math.PI / 2.0;
-  public static final double minAngle = -Math.PI / 2.0;
+  public static final double startAngle = Units.degreesToRadians(90);
+  public static final double maxAngle = Units.degreesToRadians(90);
+  public static final double minAngle = Units.degreesToRadians(-90);
   public static final double stowAngle = 0.0;
   public static final double intakeAngle = Units.degreesToRadians(-45.0);
   public static final double placeAngle = Units.degreesToRadians(45.0);

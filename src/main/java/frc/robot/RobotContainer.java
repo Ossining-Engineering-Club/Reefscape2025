@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,9 +29,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.coralpivot.CoralPivotGoToAngle;
+import frc.robot.commands.groundintakepivot.GroundIntakePivotGoToAngle;
 import frc.robot.subsystems.coralpivot.CoralPivot;
-import frc.robot.subsystems.coralpivot.CoralPivotConstants;
 import frc.robot.subsystems.coralpivot.CoralPivotIO;
 import frc.robot.subsystems.coralpivot.CoralPivotIOReal;
 import frc.robot.subsystems.coralpivot.CoralPivotIOSim;
@@ -40,6 +40,11 @@ import frc.robot.subsystems.drive.GyroIOPigeonIMU;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
+import frc.robot.subsystems.groundintakepivot.GroundIntakePivotConstants;
+import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIO;
+import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOReal;
+import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import java.io.IOException;
@@ -58,7 +63,7 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final CoralPivot coralPivot;
-  //   private final GroundIntakePivot groundIntakePivot;
+  private final GroundIntakePivot groundIntakePivot;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -87,7 +92,7 @@ public class RobotContainer {
                 new ModuleIOReal(3),
                 vision);
         coralPivot = new CoralPivot(new CoralPivotIOReal());
-        // groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOReal());
+        groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOReal());
         break;
 
       case SIM:
@@ -107,7 +112,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 vision);
         coralPivot = new CoralPivot(new CoralPivotIOSim());
-        // groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
+        groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOSim());
         break;
 
       default:
@@ -127,7 +132,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 vision);
         coralPivot = new CoralPivot(new CoralPivotIO() {});
-        // groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
+        groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
         break;
     }
 
@@ -199,8 +204,16 @@ public class RobotContainer {
 
     controller.b().onTrue(Commands.runOnce(() -> {}, drive));
 
-    controller.x().onTrue(new CoralPivotGoToAngle(coralPivot, CoralPivotConstants.intakeAngle));
-    controller.y().onTrue(new CoralPivotGoToAngle(coralPivot, CoralPivotConstants.placeAngle));
+    controller
+        .x()
+        .onTrue(
+            new GroundIntakePivotGoToAngle(
+                groundIntakePivot, GroundIntakePivotConstants.stowAngle));
+    controller
+        .y()
+        .onTrue(
+            new GroundIntakePivotGoToAngle(
+                groundIntakePivot, GroundIntakePivotConstants.extendAngle));
 
     // Pathfinding
     for (AlignmentConfig alignmentConfig : AutoTeleopConstants.alignmentConfigs) {
@@ -236,7 +249,14 @@ public class RobotContainer {
               0,
               0.6305888582,
               new Rotation3d(0, -(coralPivot.getAngle() - Math.PI / 2.0), 0)),
-          new Pose3d(0.2873375, 0, 0.2328333418, new Rotation3d(0, 0, 0)),
+          new Pose3d(
+              0.2873375,
+              0,
+              0.2328333418,
+              new Rotation3d(
+                  0,
+                  -(groundIntakePivot.getAngle() - Math.PI / 2.0) + Units.degreesToRadians(-15),
+                  0)),
         });
   }
 }
