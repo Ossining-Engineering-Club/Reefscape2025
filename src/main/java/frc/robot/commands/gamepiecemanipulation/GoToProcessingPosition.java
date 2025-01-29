@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.gamepiecemanipulation;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -15,8 +15,8 @@ import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotConstants;
 
-public class GoToProcessorPosition extends SequentialCommandGroup {
-  public GoToProcessorPosition(
+public class GoToProcessingPosition extends SequentialCommandGroup {
+  public GoToProcessingPosition(
       CoralPivot coralPivot, GroundIntakePivot groundIntakePivot, Elevator elevator) {
     addCommands(
         new ParallelCommandGroup(
