@@ -29,8 +29,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.IntakeCoral;
-import frc.robot.commands.PlaceCoralSetup;
+import frc.robot.commands.GoToProcessorPosition;
+import frc.robot.commands.IntakeGroundAlgae;
+import frc.robot.commands.IntakeReefAlgae;
 import frc.robot.subsystems.coralpivot.CoralPivot;
 import frc.robot.subsystems.coralpivot.CoralPivotIO;
 import frc.robot.subsystems.coralpivot.CoralPivotIOReal;
@@ -42,6 +43,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
@@ -210,10 +212,15 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    controller.b().onTrue(Commands.runOnce(() -> {}, drive));
+    // controller.b().onTrue(Commands.runOnce(() -> {}, drive));
 
-    controller.x().onTrue(new IntakeCoral(coralPivot, groundIntakePivot, elevator));
-    controller.y().onTrue(new PlaceCoralSetup(coralPivot, groundIntakePivot));
+    controller.x().onTrue(new GoToProcessorPosition(coralPivot, groundIntakePivot, elevator));
+    controller.y().onTrue(new IntakeGroundAlgae(groundIntakePivot, coralPivot, elevator));
+    controller
+        .b()
+        .onTrue(
+            new IntakeReefAlgae(
+                ElevatorConstants.upperAlgaeHeight, coralPivot, groundIntakePivot, elevator));
 
     // Pathfinding
     for (AlignmentConfig alignmentConfig : AutoTeleopConstants.alignmentConfigs) {

@@ -20,16 +20,16 @@ public class GroundIntakePivotConstants {
   public static final double simP = 10.0;
   public static final double simD = 0.0;
   public static final double simS = 0.0;
-  public static final double simG = 0.2;
+  public static final double simG = 0.198;
   public static final double pidTolerance = Units.degreesToRadians(0.5);
 
   // angle setpoints
   public static final double startAngle = Units.degreesToRadians(80);
   public static final double maxAngle = Units.degreesToRadians(80);
   public static final double minAngle = 0.0;
-  public static final double stowAngle = Units.degreesToRadians(70);
+  public static final double stowAngle = Units.degreesToRadians(77.5);
   public static final double extendAngle = Units.degreesToRadians(35);
-  public static final double avoidanceAngle = Units.degreesToRadians(20);
+  public static final double avoidanceAngle = Units.degreesToRadians(0);
 
   // sim settings
   public static final DCMotor gearbox = DCMotor.getFalcon500(1);

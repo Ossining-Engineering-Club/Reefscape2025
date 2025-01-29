@@ -31,7 +31,9 @@ public class ElevatorConstants {
   public static final double l3Height = Units.inchesToMeters(16.325);
   public static final double l4Height = Units.inchesToMeters(45.735);
   public static final double coralIntakeHeight = Units.inchesToMeters(17.744);
-  public static final double algaeIntakeHeight = 0.0;
+  public static final double groundAlgaeHeight = 0.0;
+  public static final double lowerAlgaeHeight = Units.inchesToMeters(15.0);
+  public static final double upperAlgaeHeight = Units.inchesToMeters(15.0 + 16.07);
   public static final double processorHeight = 0.0;
 
   // sim settings
