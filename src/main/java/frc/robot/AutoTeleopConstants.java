@@ -4,8 +4,11 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.util.Units;
 
 public final class AutoTeleopConstants {
-  public static record AlignmentConfig(String pathName, int button) {};
-  public static record ReefAlgaeAlignmentConfig(String pathName, int button1, int button2) {};
+  public static record AlignmentConfig(String pathName, int button) {}
+  ;
+
+  public static record ReefAlgaeAlignmentConfig(String pathName, int button1, int button2) {}
+  ;
 
   public static final int aButton = 11;
   public static final int bButton = 8;
@@ -41,7 +44,7 @@ public final class AutoTeleopConstants {
         new AlignmentConfig("L", lButton),
       };
 
-  public static final ReefAlgaeAlignmentConfig[] reefAlgaeAlignmentConfigs = 
+  public static final ReefAlgaeAlignmentConfig[] reefAlgaeAlignmentConfigs =
       new ReefAlgaeAlignmentConfig[] {
         new ReefAlgaeAlignmentConfig("AB", aButton, bButton),
         new ReefAlgaeAlignmentConfig("CD", cButton, dButton),
@@ -53,22 +56,21 @@ public final class AutoTeleopConstants {
 
   public static final AlignmentConfig[] coralStationAlignmentConfigs =
       new AlignmentConfig[] {
-        new AlignmentConfig("Coral Station Left", 6),
-        new AlignmentConfig("Coral Station Right", 0)
+        new AlignmentConfig("Coral Station Left", 6), new AlignmentConfig("Coral Station Right", 0)
       };
-  
-  public static final AlignmentConfig processorAlignmentConfig = 
+
+  public static final AlignmentConfig processorAlignmentConfig =
       new AlignmentConfig("Processor", 0);
 
   public static final PathConstraints reefCoralAlignmentConstraints =
       new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
-  
+
   public static final PathConstraints reefAlgaeAlignmentConstraints =
       new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
   public static final PathConstraints coralStationAlignmentConstraints =
       new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
-  
+
   public static final PathConstraints processorAlignmentConstraints =
       new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
