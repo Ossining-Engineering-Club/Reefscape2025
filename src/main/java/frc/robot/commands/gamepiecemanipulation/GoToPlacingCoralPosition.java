@@ -2,6 +2,7 @@ package frc.robot.commands.gamepiecemanipulation;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.coralpivot.CoralPivotGoToAngle;
 import frc.robot.commands.elevator.ElevatorGoToHeight;
 import frc.robot.commands.groundintakepivot.GroundIntakePivotGoToAngle;
@@ -19,7 +20,9 @@ public class GoToPlacingCoralPosition extends SequentialCommandGroup {
       Elevator elevator) {
     addCommands(
         new ParallelCommandGroup(
-            new CoralPivotGoToAngle(coralPivot, CoralPivotConstants.placeAngle),
+            new SequentialCommandGroup(
+                new WaitCommand(1),
+                new CoralPivotGoToAngle(coralPivot, CoralPivotConstants.placeAngle)),
             new ElevatorGoToHeight(elevator, height),
             new GroundIntakePivotGoToAngle(
                 groundIntakePivot, GroundIntakePivotConstants.stowAngle)));

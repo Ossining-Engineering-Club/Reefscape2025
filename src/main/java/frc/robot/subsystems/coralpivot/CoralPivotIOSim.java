@@ -38,4 +38,9 @@ public class CoralPivotIOSim implements CoralPivotIO {
     appliedVolts = MathUtil.clamp(voltage, -12.0, 12.0);
     pivotSim.setInputVoltage(appliedVolts);
   }
+
+  @Override
+  public void resetSimState() {
+    pivotSim.setState(startAngle, 0.0);
+  }
 }

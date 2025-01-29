@@ -16,6 +16,7 @@ package frc.robot;
 import static frc.robot.AutoTeleopConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -27,15 +28,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.Mode;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
-import frc.robot.commands.gamepiecemanipulation.GoToProcessingPosition;
-import frc.robot.commands.gamepiecemanipulation.IntakeGroundAlgae;
-import frc.robot.commands.gamepiecemanipulation.IntakeReefAlgae;
 import frc.robot.subsystems.coralpivot.CoralPivot;
 import frc.robot.subsystems.coralpivot.CoralPivotIO;
 import frc.robot.subsystems.coralpivot.CoralPivotIOReal;
@@ -47,7 +45,6 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
@@ -150,27 +147,27 @@ public class RobotContainer {
         break;
     }
 
+    // Configure the button bindings
+    configureButtonBindings();
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Set up SysId routines
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    // Configure the button bindings
-    configureButtonBindings();
+    // autoChooser.addOption(
+    //     "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Forward)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Reverse)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
   /**
@@ -218,16 +215,28 @@ public class RobotContainer {
 
     // controller.b().onTrue(Commands.runOnce(() -> {}, drive));
 
-    controller.x().onTrue(new GoToProcessingPosition(coralPivot, groundIntakePivot, elevator));
-    controller.y().onTrue(new IntakeGroundAlgae(groundIntakePivot, coralPivot, elevator));
-    controller
-        .b()
-        .onTrue(
-            new IntakeReefAlgae(
-                ElevatorConstants.upperAlgaeHeight, coralPivot, groundIntakePivot, elevator));
+    // controller.x().onTrue(new GoToProcessingPosition(coralPivot, groundIntakePivot, elevator));
+    // controller.y().onTrue(new IntakeGroundAlgae(groundIntakePivot, coralPivot, elevator));
+    // controller
+    //     .b()
+    //     .onTrue(
+    //         new IntakeReefAlgae(
+    //             ElevatorConstants.upperAlgaeHeight, coralPivot, groundIntakePivot, elevator));
 
     // Pathfinding
     for (AlignmentConfig config : reefCoralAlignmentConfigs) {
+      NamedCommands.registerCommand(
+          config.pathName() + "_L1",
+          new AutoPlaceCoral(config, Level.L1, coralPivot, groundIntakePivot, elevator));
+      NamedCommands.registerCommand(
+          config.pathName() + "_L2",
+          new AutoPlaceCoral(config, Level.L2, coralPivot, groundIntakePivot, elevator));
+      NamedCommands.registerCommand(
+          config.pathName() + "_L3",
+          new AutoPlaceCoral(config, Level.L3, coralPivot, groundIntakePivot, elevator));
+      NamedCommands.registerCommand(
+          config.pathName() + "_L4",
+          new AutoPlaceCoral(config, Level.L4, coralPivot, groundIntakePivot, elevator));
       buttonBox
           .button(config.button())
           .and(buttonBox.button(l1Button))
@@ -246,16 +255,24 @@ public class RobotContainer {
           .onTrue(new AutoPlaceCoral(config, Level.L4, coralPivot, groundIntakePivot, elevator));
     }
     for (ReefAlgaeAlignmentConfig config : reefAlgaeAlignmentConfigs) {
+      NamedCommands.registerCommand(
+          config.pathName() + "_Algae",
+          new AutoGetReefAlgae(config, coralPivot, groundIntakePivot, elevator));
       buttonBox
           .button(config.button1())
           .and(buttonBox.button(config.button2()))
           .onTrue(new AutoGetReefAlgae(config, coralPivot, groundIntakePivot, elevator));
     }
     for (AlignmentConfig config : coralStationAlignmentConfigs) {
+      NamedCommands.registerCommand(
+          config.pathName(), new AutoGetCoral(config, coralPivot, groundIntakePivot, elevator));
       buttonBox
           .button(config.button())
           .onTrue(new AutoGetCoral(config, coralPivot, groundIntakePivot, elevator));
     }
+    NamedCommands.registerCommand(
+        "Process Algae",
+        new AutoProcessAlgae(processorAlignmentConfig, coralPivot, groundIntakePivot, elevator));
     buttonBox
         .button(processorAlignmentConfig.button())
         .onTrue(
@@ -269,7 +286,16 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    if (Constants.currentMode == Mode.SIM) {
+      resetSimState();
+    }
     return autoChooser.get();
+  }
+
+  public void resetSimState() {
+    coralPivot.resetSimState();
+    groundIntakePivot.resetSimState();
+    elevator.resetSimState();
   }
 
   // defines the poses for each component of the robot model in Advantage Scope

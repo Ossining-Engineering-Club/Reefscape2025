@@ -1,6 +1,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.path.PathConstraints;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public final class AutoTeleopConstants {
@@ -23,10 +25,10 @@ public final class AutoTeleopConstants {
   public static final int kButton = 5;
   public static final int lButton = 7;
 
-  public static final int l1Button = 0;
-  public static final int l2Button = 0;
-  public static final int l3Button = 0;
-  public static final int l4Button = 0;
+  public static final int l1Button = 2;
+  public static final int l2Button = 1;
+  public static final int l3Button = 3;
+  public static final int l4Button = 4;
 
   public static final AlignmentConfig[] reefCoralAlignmentConfigs =
       new AlignmentConfig[] {
@@ -61,6 +63,9 @@ public final class AutoTeleopConstants {
 
   public static final AlignmentConfig processorAlignmentConfig =
       new AlignmentConfig("Processor", 0);
+
+  public static final Pose2d clearProcessorPose =
+      new Pose2d(5.99, 0.51 + 0.536575, Rotation2d.fromDegrees(-90.0));
 
   public static final PathConstraints reefCoralAlignmentConstraints =
       new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
