@@ -223,7 +223,7 @@ public class RobotContainer {
                 ElevatorConstants.upperAlgaeHeight, coralPivot, groundIntakePivot, elevator));
 
     // Pathfinding
-    for (AlignmentConfig alignmentConfig : AutoTeleopConstants.alignmentConfigs) {
+    for (AlignmentConfig alignmentConfig : AutoTeleopConstants.reefAlignmentConfigs) {
       PathPlannerPath path = PathPlannerPath.fromPathFile(alignmentConfig.pathName());
       Command pathFindingCommand =
           AutoBuilder.pathfindThenFollowPath(path, AutoTeleopConstants.alignmentConstraints);
