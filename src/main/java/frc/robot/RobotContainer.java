@@ -34,6 +34,7 @@ import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
+import frc.robot.commands.groundintakepivot.GroundIntakePivotGoToAngle;
 import frc.robot.subsystems.coralpivot.CoralPivot;
 import frc.robot.subsystems.coralpivot.CoralPivotIO;
 import frc.robot.subsystems.coralpivot.CoralPivotIOReal;
@@ -49,6 +50,7 @@ import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
+import frc.robot.subsystems.groundintakepivot.GroundIntakePivotConstants;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIO;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOReal;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOSim;
@@ -213,7 +215,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // controller.b().onTrue(Commands.runOnce(() -> {}, drive));
+    controller.b().onTrue(Commands.runOnce(() -> {}, drive));
 
     // controller.x().onTrue(new GoToProcessingPosition(coralPivot, groundIntakePivot, elevator));
     // controller.y().onTrue(new IntakeGroundAlgae(groundIntakePivot, coralPivot, elevator));
@@ -222,6 +224,16 @@ public class RobotContainer {
     //     .onTrue(
     //         new IntakeReefAlgae(
     //             ElevatorConstants.upperAlgaeHeight, coralPivot, groundIntakePivot, elevator));
+    // controller
+    //     .x()
+    //     .onTrue(
+    //         new GroundIntakePivotGoToAngle(
+    //             groundIntakePivot, GroundIntakePivotConstants.extendAngle));
+    // controller
+    //     .y()
+    //     .onTrue(
+    //         new GroundIntakePivotGoToAngle(
+    //             groundIntakePivot, GroundIntakePivotConstants.stowAngle));
 
     // Pathfinding
     for (AlignmentConfig config : reefCoralAlignmentConfigs) {
