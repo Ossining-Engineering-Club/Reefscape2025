@@ -18,6 +18,11 @@ public class GroundIntakeRoller extends SubsystemBase {
     rollerMotor.setVoltage(GroundIntakeRollerConstants.motorVoltage);
   }
 
+  /** Reverses intake motor */
+  public void reverseMotor() {
+    rollerMotor.setVoltage(GroundIntakeRollerConstants.reverseVoltage);
+  }
+
   /** Sets motor voltage to zero */
   public void stopMotor() {
     rollerMotor.setVoltage(0.0);
