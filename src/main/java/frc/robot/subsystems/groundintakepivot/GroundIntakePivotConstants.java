@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 public class GroundIntakePivotConstants {
   // motor constants
   public static final int canId = 0;
-  public static final double motorReduction = 50.0 / 1.0;
+  public static final double motorReduction = 125.0 / 1.0;
   public static final double encoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
   public static final double encoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
   public static final boolean isInverted = false;
@@ -17,19 +17,19 @@ public class GroundIntakePivotConstants {
   public static final double kD = 0.0;
   public static final double kS = 0.1;
   public static final double kG = 0.1;
-  public static final double simP = 10.0;
+  public static final double simP = 30.0;
   public static final double simD = 0.0;
   public static final double simS = 0.0;
-  public static final double simG = 0.2;
+  public static final double simG = 0.0792;
   public static final double pidTolerance = Units.degreesToRadians(0.5);
 
   // angle setpoints
   public static final double startAngle = Units.degreesToRadians(80);
   public static final double maxAngle = Units.degreesToRadians(80);
   public static final double minAngle = 0.0;
-  public static final double stowAngle = Units.degreesToRadians(70);
+  public static final double stowAngle = Units.degreesToRadians(77.5);
   public static final double extendAngle = Units.degreesToRadians(35);
-  public static final double avoidanceAngle = 0.0;
+  public static final double avoidanceAngle = Units.degreesToRadians(0);
 
   // sim settings
   public static final DCMotor gearbox = DCMotor.getFalcon500(1);

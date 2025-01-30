@@ -16,7 +16,6 @@ public class CoralPivot extends SubsystemBase {
   private final PIDController pid;
   private final ArmFeedforward feedforward;
 
-  private double feedforwardAppliedVolts = 0.0;
   private boolean usingPID = false;
   private int ticksSinceLastPID = 1000000;
 
@@ -82,5 +81,9 @@ public class CoralPivot extends SubsystemBase {
 
   public void setVoltage(double voltage) {
     io.setVoltage(voltage);
+  }
+
+  public void resetSimState() {
+    io.resetSimState();
   }
 }

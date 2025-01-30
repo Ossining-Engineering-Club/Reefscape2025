@@ -26,13 +26,13 @@ public class ElevatorIOReal implements ElevatorIO {
         .velocityConversionFactor(1.0 / motorReduction * encoderVelocityFactor);
     sparkMax.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    encoder.setPosition(startPosition);
+    encoder.setPosition(startHeight);
   }
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
     inputs.appliedVolts = sparkMax.getAppliedOutput() * sparkMax.getBusVoltage();
-    inputs.positionMeters = encoder.getPosition();
+    inputs.heightMeters = encoder.getPosition();
   }
 
   @Override

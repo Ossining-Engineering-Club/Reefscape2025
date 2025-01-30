@@ -14,4 +14,6 @@ public interface GroundIntakePivotIO {
 
   /** Sets voltage of motor */
   public default void setVoltage(double voltage) {}
+
+  public default void resetSimState() {}
 }
