@@ -3,11 +3,8 @@ package frc.robot.subsystems.coralholder;
 import static frc.robot.subsystems.coralholder.CoralHolderConstants.*;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.breakbeam.*;
-import frc.robot.subsystems.coralholder.CoralHolderConstants.*;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensor;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
-
 import org.littletonrobotics.junction.Logger;
 
 public class CoralHolder extends SubsystemBase {

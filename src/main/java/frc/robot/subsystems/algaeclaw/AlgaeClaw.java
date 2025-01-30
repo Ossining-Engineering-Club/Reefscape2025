@@ -1,10 +1,8 @@
 package frc.robot.subsystems.algaeclaw;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.breakbeam.Breakbeam;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensor;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
-
 import org.littletonrobotics.junction.Logger;
 
 public class AlgaeClaw extends SubsystemBase {
@@ -15,7 +13,8 @@ public class AlgaeClaw extends SubsystemBase {
   /** Algae Claw construction */
   public AlgaeClaw(AlgaeClawIO io, PhotoelectricSensorIO photoelectricSensorIO) {
     this.io = io;
-    this.photoelectricSensor = new PhotoelectricSensor(photoelectricSensorIO, AlgaeClawConstants.algaeClawPEID);
+    this.photoelectricSensor =
+        new PhotoelectricSensor(photoelectricSensorIO, AlgaeClawConstants.algaeClawPEID);
   }
 
   @Override
