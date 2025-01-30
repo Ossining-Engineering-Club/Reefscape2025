@@ -24,19 +24,21 @@ public class CoralHolder extends SubsystemBase {
     io.updateInputs(inputs);
 
     Logger.processInputs("Coral Holder", inputs);
-
-    if (holderBeam.isTripped()) turnOff();
   }
 
-  public void turnOff() {
+  public void stop() {
     io.setVoltage(0);
   }
 
-  public void turnOn() {
-    io.setVoltage(12 * powerPercent);
+  public void forward() {
+    io.setVoltage(forwardVoltage);
   }
 
-  public boolean breakBeamCheck() {
+  public void reverse() {
+    io.setVoltage(reverseVoltage);
+  }
+
+  public boolean hasCoral() {
     return holderBeam.isTripped();
   }
 }
