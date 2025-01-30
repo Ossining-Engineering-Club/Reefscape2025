@@ -9,4 +9,5 @@ public class CoralHolderConstants {
 
   // Holder Break Beam
   public static final String coralholderbeamid = "Coral Holder BB";
+  public static final int coralHolderBBChannel = 0;
 }
