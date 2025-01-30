@@ -19,6 +19,6 @@ public class CoralHolderIOReal implements CoralHolderIO {
 
   @Override
   public void updateInputs(CoralHolderIOInputs inputs) {
-    inputs.appliedVolts = sparkMax.getBusVoltage();
+    inputs.appliedVolts = sparkMax.getAppliedOutput() * sparkMax.getBusVoltage();
   }
 }
