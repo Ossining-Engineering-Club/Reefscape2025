@@ -8,6 +8,6 @@ public class CoralHolderConstants {
   public static final double powerPercent = 0.10;
 
   // Holder Break Beam
-  public static final String coralholderbeamid = "Coral Holder BB";
+  public static final String coralHolderBBId = "Coral Holder";
   public static final int coralHolderBBChannel = 0;
 }

@@ -16,7 +16,7 @@ public class CoralHolder extends SubsystemBase {
 
   public CoralHolder(CoralHolderIO io, BreakbeamIO breakbeamio) {
     this.io = io;
-    holderBeam = new Breakbeam(breakbeamio, coralholderbeamid);
+    holderBeam = new Breakbeam(breakbeamio, coralHolderBBId);
   }
 
   @Override
