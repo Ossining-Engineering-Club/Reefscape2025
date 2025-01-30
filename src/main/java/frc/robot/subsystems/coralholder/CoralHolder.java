@@ -5,18 +5,19 @@ import static frc.robot.subsystems.coralholder.CoralHolderConstants.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.breakbeam.*;
 import frc.robot.subsystems.coralholder.CoralHolderConstants.*;
+import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensor;
+import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
+
 import org.littletonrobotics.junction.Logger;
 
 public class CoralHolder extends SubsystemBase {
   private final CoralHolderIO io;
-
-  private final Breakbeam holderBeam;
-
+  private final PhotoelectricSensor photoelectricSensor;
   private final CoralHolderIOInputsAutoLogged inputs = new CoralHolderIOInputsAutoLogged();
 
-  public CoralHolder(CoralHolderIO io, BreakbeamIO breakbeamio) {
+  public CoralHolder(CoralHolderIO io, PhotoelectricSensorIO photoelectricSensorIO) {
     this.io = io;
-    holderBeam = new Breakbeam(breakbeamio, coralHolderBBId);
+    photoelectricSensor = new PhotoelectricSensor(photoelectricSensorIO, coralHolderPEId);
   }
 
   @Override
@@ -39,6 +40,6 @@ public class CoralHolder extends SubsystemBase {
   }
 
   public boolean hasCoral() {
-    return holderBeam.isTripped();
+    return photoelectricSensor.isTripped();
   }
 }

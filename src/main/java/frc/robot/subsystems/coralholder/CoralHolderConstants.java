@@ -9,6 +9,6 @@ public class CoralHolderConstants {
   public static final double reverseVoltage = 4.0;
 
   // Holder Break Beam
-  public static final String coralHolderBBId = "Coral Holder";
+  public static final String coralHolderPEId = "Coral Holder";
   public static final int coralHolderBBChannel = 0;
 }

@@ -2,17 +2,20 @@ package frc.robot.subsystems.algaeclaw;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.breakbeam.Breakbeam;
+import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensor;
+import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
+
 import org.littletonrobotics.junction.Logger;
 
 public class AlgaeClaw extends SubsystemBase {
-  private final Breakbeam breakbeam;
+  private final PhotoelectricSensor photoelectricSensor;
   private final AlgaeClawIO io;
   private final AlgaeClawIOInputsAutoLogged inputs = new AlgaeClawIOInputsAutoLogged();
 
   /** Algae Claw construction */
-  public AlgaeClaw(AlgaeClawIO io, Breakbeam breakbeam) {
+  public AlgaeClaw(AlgaeClawIO io, PhotoelectricSensorIO photoelectricSensorIO) {
     this.io = io;
-    this.breakbeam = breakbeam;
+    this.photoelectricSensor = new PhotoelectricSensor(photoelectricSensorIO, AlgaeClawConstants.algaeClawPEID);
   }
 
   @Override
@@ -38,6 +41,6 @@ public class AlgaeClaw extends SubsystemBase {
 
   /** Gets state of AlgaeClaw breakbeam */
   public boolean hasAlgae() {
-    return breakbeam.isTripped();
+    return photoelectricSensor.isTripped();
   }
 }
