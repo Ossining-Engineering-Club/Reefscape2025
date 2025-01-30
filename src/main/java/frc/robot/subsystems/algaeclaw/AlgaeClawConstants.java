@@ -10,6 +10,6 @@ public class AlgaeClawConstants {
   public static double reverseVoltage = -4.0;
 
   // Breakbeam IDs
-  public static final String algaeClawBeamID = "Claw BB";
+  public static final String algaeClawBeamID = "Algae Claw";
   public static final int algaeClawBBChannel = 0;
 }
