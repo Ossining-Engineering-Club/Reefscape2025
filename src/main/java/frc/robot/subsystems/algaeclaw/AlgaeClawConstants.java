@@ -12,4 +12,7 @@ public class AlgaeClawConstants {
   // Breakbeam IDs
   public static final String algaeClawPEID = "Algae Claw";
   public static final int algaeClawBBChannel = 0;
+
+  public static final double intakeDelaySeconds = 0.5;
+  public static final double releaseDelaySeconds = 0.5;
 }

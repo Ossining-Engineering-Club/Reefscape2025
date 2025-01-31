@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoTeleopConstants;
 import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.commands.gamepiecemanipulation.IntakeCoral;
+import frc.robot.subsystems.coralholder.CoralHolder;
 import frc.robot.subsystems.coralpivot.CoralPivot;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
@@ -20,7 +21,8 @@ public class AutoGetCoral extends SequentialCommandGroup {
       AlignmentConfig config,
       CoralPivot coralPivot,
       GroundIntakePivot groundIntakePivot,
-      Elevator elevator)
+      Elevator elevator,
+      CoralHolder coralHolder)
       throws FileVersionException, IOException, ParseException {
     PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
     Command pathFindingCommand =
@@ -29,6 +31,7 @@ public class AutoGetCoral extends SequentialCommandGroup {
 
     addCommands(
         new ParallelCommandGroup(
-            pathFindingCommand, new IntakeCoral(coralPivot, groundIntakePivot, elevator)));
+            pathFindingCommand,
+            new IntakeCoral(coralPivot, groundIntakePivot, elevator, coralHolder)));
   }
 }

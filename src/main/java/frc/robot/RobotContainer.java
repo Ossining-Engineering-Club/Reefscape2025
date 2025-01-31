@@ -34,6 +34,16 @@ import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
+import frc.robot.subsystems.algaeclaw.AlgaeClaw;
+import frc.robot.subsystems.algaeclaw.AlgaeClawConstants;
+import frc.robot.subsystems.algaeclaw.AlgaeClawIO;
+import frc.robot.subsystems.algaeclaw.AlgaeClawIOReal;
+import frc.robot.subsystems.algaeclaw.AlgaeClawIOSim;
+import frc.robot.subsystems.coralholder.CoralHolder;
+import frc.robot.subsystems.coralholder.CoralHolderConstants;
+import frc.robot.subsystems.coralholder.CoralHolderIO;
+import frc.robot.subsystems.coralholder.CoralHolderIOReal;
+import frc.robot.subsystems.coralholder.CoralHolderIOSim;
 import frc.robot.subsystems.coralpivot.CoralPivot;
 import frc.robot.subsystems.coralpivot.CoralPivotIO;
 import frc.robot.subsystems.coralpivot.CoralPivotIOReal;
@@ -52,6 +62,9 @@ import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIO;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOReal;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOSim;
+import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
+import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOReal;
+import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import java.io.IOException;
@@ -72,6 +85,8 @@ public class RobotContainer {
   private final CoralPivot coralPivot;
   private final GroundIntakePivot groundIntakePivot;
   private final Elevator elevator;
+  private final CoralHolder coralHolder;
+  private final AlgaeClaw algaeClaw;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -102,6 +117,14 @@ public class RobotContainer {
         coralPivot = new CoralPivot(new CoralPivotIOReal());
         groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOReal());
         elevator = new Elevator(new ElevatorIOReal());
+        coralHolder =
+            new CoralHolder(
+                new CoralHolderIOReal(),
+                new PhotoelectricSensorIOReal(CoralHolderConstants.coralHolderBBChannel));
+        algaeClaw =
+            new AlgaeClaw(
+                new AlgaeClawIOReal(),
+                new PhotoelectricSensorIOReal(AlgaeClawConstants.algaeClawBBChannel));
         break;
 
       case SIM:
@@ -123,6 +146,8 @@ public class RobotContainer {
         coralPivot = new CoralPivot(new CoralPivotIOSim());
         groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOSim());
         elevator = new Elevator(new ElevatorIOSim());
+        coralHolder = new CoralHolder(new CoralHolderIOSim(), new PhotoelectricSensorIOSim());
+        algaeClaw = new AlgaeClaw(new AlgaeClawIOSim(), new PhotoelectricSensorIOSim());
         break;
 
       default:
@@ -144,6 +169,8 @@ public class RobotContainer {
         coralPivot = new CoralPivot(new CoralPivotIO() {});
         groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
         elevator = new Elevator(new ElevatorIO() {});
+        coralHolder = new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO() {});
+        algaeClaw = new AlgaeClaw(new AlgaeClawIO() {}, new PhotoelectricSensorIO() {});
         break;
     }
 
@@ -267,18 +294,19 @@ public class RobotContainer {
     for (ReefAlgaeAlignmentConfig config : reefAlgaeAlignmentConfigs) {
       NamedCommands.registerCommand(
           config.pathName() + "_Algae",
-          new AutoGetReefAlgae(config, coralPivot, groundIntakePivot, elevator));
+          new AutoGetReefAlgae(config, coralPivot, groundIntakePivot, elevator, algaeClaw));
       buttonBox
           .button(config.button1())
           .and(buttonBox.button(config.button2()))
-          .onTrue(new AutoGetReefAlgae(config, coralPivot, groundIntakePivot, elevator));
+          .onTrue(new AutoGetReefAlgae(config, coralPivot, groundIntakePivot, elevator, algaeClaw));
     }
     for (AlignmentConfig config : coralStationAlignmentConfigs) {
       NamedCommands.registerCommand(
-          config.pathName(), new AutoGetCoral(config, coralPivot, groundIntakePivot, elevator));
+          config.pathName(),
+          new AutoGetCoral(config, coralPivot, groundIntakePivot, elevator, coralHolder));
       buttonBox
           .button(config.button())
-          .onTrue(new AutoGetCoral(config, coralPivot, groundIntakePivot, elevator));
+          .onTrue(new AutoGetCoral(config, coralPivot, groundIntakePivot, elevator, coralHolder));
     }
     NamedCommands.registerCommand(
         "Process Algae",
