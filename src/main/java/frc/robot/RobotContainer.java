@@ -28,6 +28,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.AutoTeleopConstants.AlignmentConfig;
+import frc.robot.AutoTeleopConstants.Level;
+import frc.robot.AutoTeleopConstants.ReefAlgaeAlignmentConfig;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.autoteleop.AutoGetCoral;
@@ -51,6 +54,7 @@ import frc.robot.subsystems.coralpivot.CoralPivotIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeonIMU;
+import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
@@ -67,7 +71,12 @@ import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOReal;
+import frc.robot.subsystems.vision.VisionIOSim;
 import java.io.IOException;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -81,6 +90,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private SwerveDriveSimulation driveSimulation = null;
   private final Vision vision;
   private final CoralPivot coralPivot;
   private final GroundIntakePivot groundIntakePivot;
@@ -102,10 +112,10 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         vision =
             new Vision(
-                VisionConstants.FRONT_LEFT_CAMERA_CONFIG,
-                VisionConstants.FRONT_RIGHT_CAMERA_CONFIG,
-                VisionConstants.BACK_LEFT_CAMERA_CONFIG,
-                VisionConstants.BACK_RIGHT_CAMERA_CONFIG);
+                new VisionIOReal(VisionConstants.FRONT_LEFT_CAMERA_CONFIG),
+                new VisionIOReal(VisionConstants.FRONT_RIGHT_CAMERA_CONFIG),
+                new VisionIOReal(VisionConstants.BACK_LEFT_CAMERA_CONFIG),
+                new VisionIOReal(VisionConstants.BACK_RIGHT_CAMERA_CONFIG));
         drive =
             new Drive(
                 new GyroIOPigeonIMU(),
@@ -113,7 +123,8 @@ public class RobotContainer {
                 new ModuleIOReal(1),
                 new ModuleIOReal(2),
                 new ModuleIOReal(3),
-                vision);
+                vision,
+                (robotPose) -> {});
         coralPivot = new CoralPivot(new CoralPivotIOReal());
         groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOReal());
         elevator = new Elevator(new ElevatorIOReal());
@@ -129,20 +140,32 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
+        driveSimulation =
+            new SwerveDriveSimulation(Drive.mapleSimConfig, new Pose2d(0, 0, new Rotation2d()));
+        SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
         vision =
             new Vision(
-                VisionConstants.FRONT_LEFT_CAMERA_CONFIG,
-                VisionConstants.FRONT_RIGHT_CAMERA_CONFIG,
-                VisionConstants.BACK_LEFT_CAMERA_CONFIG,
-                VisionConstants.BACK_RIGHT_CAMERA_CONFIG);
+                new VisionIOSim(
+                    VisionConstants.FRONT_LEFT_CAMERA_CONFIG,
+                    driveSimulation::getSimulatedDriveTrainPose),
+                new VisionIOSim(
+                    VisionConstants.FRONT_RIGHT_CAMERA_CONFIG,
+                    driveSimulation::getSimulatedDriveTrainPose),
+                new VisionIOSim(
+                    VisionConstants.BACK_LEFT_CAMERA_CONFIG,
+                    driveSimulation::getSimulatedDriveTrainPose),
+                new VisionIOSim(
+                    VisionConstants.BACK_RIGHT_CAMERA_CONFIG,
+                    driveSimulation::getSimulatedDriveTrainPose));
         drive =
             new Drive(
-                new GyroIO() {},
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                vision);
+                new GyroIOSim(driveSimulation.getGyroSimulation()),
+                new ModuleIOSim(driveSimulation.getModules()[0]),
+                new ModuleIOSim(driveSimulation.getModules()[1]),
+                new ModuleIOSim(driveSimulation.getModules()[2]),
+                new ModuleIOSim(driveSimulation.getModules()[3]),
+                vision,
+                driveSimulation::setSimulationWorldPose);
         coralPivot = new CoralPivot(new CoralPivotIOSim());
         groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOSim());
         elevator = new Elevator(new ElevatorIOSim());
@@ -153,11 +176,7 @@ public class RobotContainer {
       default:
         // Replayed robot, disable IO implementations
         vision =
-            new Vision(
-                VisionConstants.FRONT_LEFT_CAMERA_CONFIG,
-                VisionConstants.FRONT_RIGHT_CAMERA_CONFIG,
-                VisionConstants.BACK_LEFT_CAMERA_CONFIG,
-                VisionConstants.BACK_RIGHT_CAMERA_CONFIG);
+            new Vision(new VisionIO() {}, new VisionIO() {}, new VisionIO() {}, new VisionIO() {});
         drive =
             new Drive(
                 new GyroIO() {},
@@ -165,7 +184,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                vision);
+                vision,
+                (robotPose) -> {});
         coralPivot = new CoralPivot(new CoralPivotIO() {});
         groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
         elevator = new Elevator(new ElevatorIO() {});
@@ -212,9 +232,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -0.5 * controller.getLeftY(),
-            () -> -0.5 * controller.getLeftX(),
-            () -> -0.5 * controller.getRightX()));
+            () -> -1 * controller.getLeftY(),
+            () -> -1 * controller.getLeftX(),
+            () -> -1 * controller.getRightX()));
 
     // Lock to 0° when A button is held
     // controller
@@ -361,5 +381,12 @@ public class RobotContainer {
                   -(groundIntakePivot.getAngle() - Math.PI / 2.0) + Units.degreesToRadians(-15),
                   0)),
         });
+    Logger.recordOutput(
+        "FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+    Logger.recordOutput(
+        "FieldSimulation/Coral", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
+    if (driveSimulation != null) {
+      Logger.recordOutput("SimTrueRobotPose", driveSimulation.getSimulatedDriveTrainPose());
+    }
   }
 }
