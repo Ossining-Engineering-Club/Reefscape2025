@@ -37,6 +37,8 @@ import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
+import frc.robot.commands.gamepiecemanipulation.GoToPlacingCoralPosition;
+import frc.robot.commands.gamepiecemanipulation.IntakeCoral;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.algaeclaw.AlgaeClawConstants;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIO;
@@ -59,9 +61,12 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer;
+import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer.CoralState;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIO;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOReal;
@@ -280,6 +285,13 @@ public class RobotContainer {
     //         new GroundIntakePivotGoToAngle(
     //             groundIntakePivot, GroundIntakePivotConstants.stowAngle));
 
+    controller.x().onTrue(new IntakeCoral(coralPivot, groundIntakePivot, elevator, coralHolder));
+    controller
+        .y()
+        .onTrue(
+            new GoToPlacingCoralPosition(
+                ElevatorConstants.l4Height, coralPivot, groundIntakePivot, elevator));
+
     // Pathfinding
     for (AlignmentConfig config : reefCoralAlignmentConfigs) {
       NamedCommands.registerCommand(
@@ -385,8 +397,23 @@ public class RobotContainer {
         "FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
     Logger.recordOutput(
         "FieldSimulation/Coral", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
-    if (driveSimulation != null) {
-      Logger.recordOutput("SimTrueRobotPose", driveSimulation.getSimulatedDriveTrainPose());
+    CoralVisualizer.setCoralState(CoralState.LOADED);
+    switch (Constants.currentMode) {
+      case REAL:
+        CoralVisualizer.update(drive.getPose(), elevator.getHeight(), coralPivot.getAngle());
+        break;
+      case SIM:
+        Logger.recordOutput("SimTrueRobotPose", driveSimulation.getSimulatedDriveTrainPose());
+        CoralVisualizer.update(
+            driveSimulation.getSimulatedDriveTrainPose(),
+            elevator.getHeight(),
+            coralPivot.getAngle());
+        break;
+      case REPLAY:
+        CoralVisualizer.update(drive.getPose(), elevator.getHeight(), coralPivot.getAngle());
+        break;
+      default:
+        break;
     }
   }
 }
