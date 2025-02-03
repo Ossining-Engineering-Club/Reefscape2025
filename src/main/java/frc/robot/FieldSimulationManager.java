@@ -1,13 +1,8 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.subsystems.coralholder.CoralHolder;
 import frc.robot.subsystems.coralholder.CoralHolder.CoralHolderState;
 import frc.robot.subsystems.coralpivot.CoralPivot;
@@ -16,8 +11,6 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer.CoralState;
-import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnFly;
 
 public class FieldSimulationManager {
   private static final Rotation2d coralStationLeftRotation = Rotation2d.fromDegrees(126);
@@ -51,16 +44,17 @@ public class FieldSimulationManager {
             5 * CoralPivotConstants.pidTolerance)
         && coralHolder.getState() == CoralHolderState.FORWARD
         && CoralVisualizer.coralState == CoralState.GONE) {
-      SimulatedArena.getInstance()
-          .addGamePieceProjectile(
-              new ReefscapeCoralOnFly(
-                  robotPose.getTranslation(),
-                  new Translation2d(0.5, 0),
-                  new ChassisSpeeds(0, 0, 0),
-                  coralStationLeftRotation,
-                  Meters.of(1.05),
-                  MetersPerSecond.of(-2),
-                  Degrees.of(35)));
+      // SimulatedArena.getInstance()
+      //     .addGamePieceProjectile(
+      //         new ReefscapeCoralOnFly(
+      //             robotPose.getTranslation(),
+      //             new Translation2d(0.5, 0),
+      //             new ChassisSpeeds(0, 0, 0),
+      //             coralStationLeftRotation,
+      //             Meters.of(1.05),
+      //             MetersPerSecond.of(-2),
+      //             Degrees.of(35)));
+      CoralVisualizer.coralState = CoralState.LOADED;
       secondsSinceLastCoralDrop = 0;
     } else {
       secondsSinceLastCoralDrop += 0.02;
