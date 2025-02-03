@@ -20,7 +20,7 @@ public class CoralPivotConstants {
   public static final double simP = 10.0;
   public static final double simD = 0.0;
   public static final double simS = 0.0;
-  public static final double simG = 0.256;
+  public static final double simG = 0.257;
   public static final double pidTolerance = Units.degreesToRadians(0.5);
 
   // angle setpoints

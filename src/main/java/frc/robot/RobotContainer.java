@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -66,7 +67,6 @@ import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer;
-import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer.CoralState;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIO;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOReal;
@@ -174,8 +174,14 @@ public class RobotContainer {
         coralPivot = new CoralPivot(new CoralPivotIOSim());
         groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOSim());
         elevator = new Elevator(new ElevatorIOSim());
-        coralHolder = new CoralHolder(new CoralHolderIOSim(), new PhotoelectricSensorIOSim());
-        algaeClaw = new AlgaeClaw(new AlgaeClawIOSim(), new PhotoelectricSensorIOSim());
+        coralHolder =
+            new CoralHolder(
+                new CoralHolderIOSim(),
+                new PhotoelectricSensorIOSim(CoralHolderConstants.coralHolderPEId));
+        algaeClaw =
+            new AlgaeClaw(
+                new AlgaeClawIOSim(),
+                new PhotoelectricSensorIOSim(AlgaeClawConstants.algaeClawPEID));
         break;
 
       default:
@@ -397,17 +403,20 @@ public class RobotContainer {
         "FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
     Logger.recordOutput(
         "FieldSimulation/Coral", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
-    CoralVisualizer.setCoralState(CoralState.LOADED);
     switch (Constants.currentMode) {
       case REAL:
         CoralVisualizer.update(drive.getPose(), elevator.getHeight(), coralPivot.getAngle());
         break;
       case SIM:
-        Logger.recordOutput("SimTrueRobotPose", driveSimulation.getSimulatedDriveTrainPose());
-        CoralVisualizer.update(
-            driveSimulation.getSimulatedDriveTrainPose(),
-            elevator.getHeight(),
-            coralPivot.getAngle());
+        if (DriverStation.isEnabled()) {
+          Logger.recordOutput("SimTrueRobotPose", driveSimulation.getSimulatedDriveTrainPose());
+          CoralVisualizer.update(
+              driveSimulation.getSimulatedDriveTrainPose(),
+              elevator.getHeight(),
+              coralPivot.getAngle());
+          FieldSimulationManager.periodic(
+              driveSimulation.getSimulatedDriveTrainPose(), elevator, coralPivot, coralHolder);
+        }
         break;
       case REPLAY:
         CoralVisualizer.update(drive.getPose(), elevator.getHeight(), coralPivot.getAngle());
