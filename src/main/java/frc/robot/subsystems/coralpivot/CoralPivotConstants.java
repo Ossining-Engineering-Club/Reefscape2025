@@ -30,6 +30,7 @@ public class CoralPivotConstants {
   public static final double stowAngle = Units.degreesToRadians(90);
   public static final double intakeAngle = Units.degreesToRadians(-55.0);
   public static final double placeAngle = Units.degreesToRadians(65.0 /*55.0*/);
+  public static final double placeAngleL4 = Units.degreesToRadians(10.0 /*55.0*/);
   public static final double reefAlgaeAngle = Units.degreesToRadians(-15.0);
 
   // sim settings

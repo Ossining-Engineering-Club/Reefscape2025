@@ -16,10 +16,10 @@ public class ElevatorConstants {
   public static final double kD = 0.0;
   public static final double kS = 0.1;
   public static final double kG = 0.1;
-  public static final double simP = 100.0;
+  public static final double simP = 200.0;
   public static final double simD = 0.0;
   public static final double simS = 0.0;
-  public static final double simG = 0.15;
+  public static final double simG = 0.15 / 2.0;
   public static final double pidTolerance = 0.002; // meters
 
   // angle setpoints
@@ -27,9 +27,9 @@ public class ElevatorConstants {
   public static final double maxHeight = 1.25;
   public static final double minHeight = 0.0;
   public static final double l1Height = 0.0;
-  public static final double l2Height = Units.inchesToMeters(0.255);
-  public static final double l3Height = Units.inchesToMeters(16.325);
-  public static final double l4Height = Units.inchesToMeters(45.735);
+  public static final double l2Height = Units.inchesToMeters(3.0);
+  public static final double l3Height = Units.inchesToMeters(17.325);
+  public static final double l4Height = Units.inchesToMeters(49);
   public static final double coralIntakeHeight = Units.inchesToMeters(17.744);
   public static final double groundAlgaeHeight = 0.0;
   public static final double lowerAlgaeHeight = Units.inchesToMeters(29.945);
@@ -38,6 +38,6 @@ public class ElevatorConstants {
 
   // sim settings
   public static final DCMotor gearbox = DCMotor.getKrakenX60(2);
-  public static final double massKg = 18.1437;
+  public static final double massKg = 18.1437 / 2.0;
   public static final double drumRadiusMeters = Units.inchesToMeters(1.0);
 }

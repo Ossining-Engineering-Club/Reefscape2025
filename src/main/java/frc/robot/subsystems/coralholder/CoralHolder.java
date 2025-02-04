@@ -3,6 +3,9 @@ package frc.robot.subsystems.coralholder;
 import static frc.robot.subsystems.coralholder.CoralHolderConstants.*;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.Mode;
+import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensor;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
 import org.littletonrobotics.junction.Logger;
@@ -40,6 +43,9 @@ public class CoralHolder extends SubsystemBase {
 
   public void forward() {
     state = CoralHolderState.FORWARD;
+    if (Constants.currentMode == Mode.SIM) {
+      CoralVisualizer.shootCoral();
+    }
     io.setVoltage(forwardVoltage);
   }
 

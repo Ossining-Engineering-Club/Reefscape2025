@@ -16,6 +16,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.Mode;
 import java.io.IOException;
 import java.text.ParseException;
 import org.ironmaple.simulation.SimulatedArena;
@@ -122,6 +123,9 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    if (Constants.currentMode == Mode.SIM) {
+      SimulatedArena.getInstance().resetFieldForAuto();
+    }
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
