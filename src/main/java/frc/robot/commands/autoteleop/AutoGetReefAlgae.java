@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoTeleopConstants;
 import frc.robot.AutoTeleopConstants.ReefAlgaeAlignmentConfig;
 import frc.robot.commands.gamepiecemanipulation.IntakeReefAlgae;
+import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.coralpivot.CoralPivot;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
@@ -21,7 +22,8 @@ public class AutoGetReefAlgae extends SequentialCommandGroup {
       ReefAlgaeAlignmentConfig config,
       CoralPivot coralPivot,
       GroundIntakePivot groundIntakePivot,
-      Elevator elevator)
+      Elevator elevator,
+      AlgaeClaw algaeClaw)
       throws FileVersionException, IOException, ParseException {
     PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
     Command pathFindingCommand =
@@ -37,6 +39,6 @@ public class AutoGetReefAlgae extends SequentialCommandGroup {
     addCommands(
         new ParallelCommandGroup(
             pathFindingCommand,
-            new IntakeReefAlgae(height, coralPivot, groundIntakePivot, elevator)));
+            new IntakeReefAlgae(height, coralPivot, groundIntakePivot, elevator, algaeClaw)));
   }
 }

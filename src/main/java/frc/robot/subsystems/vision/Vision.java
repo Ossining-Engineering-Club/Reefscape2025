@@ -8,7 +8,6 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.vision.VisionConstants.CameraConfig;
 import frc.robot.subsystems.vision.VisionConstants.PoseEstimate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,30 +18,11 @@ import org.littletonrobotics.junction.Logger;
 public class Vision extends SubsystemBase {
   private final VisionIO[] ios;
   private final VisionIOInputsAutoLogged[] inputs;
-  private final CameraConfig[] configs;
 
-  public Vision(CameraConfig... configs) {
-    ios = new VisionIO[configs.length];
-    inputs = new VisionIOInputsAutoLogged[configs.length];
-    this.configs = configs;
-
-    for (int i = 0; i < configs.length; i++) {
-      switch (Constants.currentMode) {
-        case REAL:
-          ios[i] = new VisionIOReal(configs[i]);
-          break;
-        case SIM:
-          // ios[i] = new VisionIOSim(configs[i]);
-          ios[i] = new VisionIO() {};
-          break;
-        case REPLAY:
-          ios[i] = new VisionIO() {};
-          break;
-        default:
-          ios[i] = new VisionIO() {};
-          break;
-      }
-
+  public Vision(VisionIO... ios) {
+    this.ios = ios;
+    inputs = new VisionIOInputsAutoLogged[ios.length];
+    for (int i = 0; i < inputs.length; i++) {
       inputs[i] = new VisionIOInputsAutoLogged();
     }
   }
@@ -52,13 +32,13 @@ public class Vision extends SubsystemBase {
     for (int i = 0; i < ios.length; i++) {}
   }
 
-  public PoseEstimate[] getEstimatedGlobalPoses(Pose2d robotPoseMeters) {
+  public PoseEstimate[] getEstimatedGlobalPoses() {
     List<PoseEstimate> estimates = new ArrayList<>();
     Set<Pose3d> detectedTagPoses = new HashSet<Pose3d>();
     for (int i = 0; i < ios.length; i++) {
       // updating vision io inputs
-      ios[i].updateInputs(inputs[i], robotPoseMeters);
-      Logger.processInputs("Vision/" + configs[i].name(), inputs[i]);
+      ios[i].updateInputs(inputs[i]);
+      Logger.processInputs("Vision/Camera" + i, inputs[i]);
 
       // adding detected tags to list to be logged
       for (int tagId : inputs[i].tagIds) {
@@ -87,12 +67,10 @@ public class Vision extends SubsystemBase {
             getEstimationStdDevs(inputs[i].estimatedPose.toPose2d(), inputs[i].tagIds);
 
         addedPose = true;
+        Logger.recordOutput("/Camera" + i + "/Raw Vision", inputs[i].estimatedPose.toPose2d());
+        Logger.recordOutput("/Camera" + i + "/Vision Timestamp", inputs[i].timestampSeconds);
         Logger.recordOutput(
-            "/" + configs[i].name() + "/Raw Vision", inputs[i].estimatedPose.toPose2d());
-        Logger.recordOutput(
-            "/" + configs[i].name() + "/Vision Timestamp", inputs[i].timestampSeconds);
-        Logger.recordOutput(
-            "/" + configs[i].name() + "/Vision Std Dev",
+            "/Camera" + i + "/Vision Std Dev",
             new double[] {stddevs.get(0, 0), stddevs.get(1, 0), stddevs.get(2, 0)});
 
         estimates.add(
@@ -100,7 +78,7 @@ public class Vision extends SubsystemBase {
                 inputs[i].estimatedPose.toPose2d(), inputs[i].timestampSeconds, stddevs));
       }
       if (!addedPose) {
-        Logger.recordOutput("/" + configs[i].name() + "/Raw Vision", new Pose2d[] {});
+        Logger.recordOutput("/" + i + "/Raw Vision", new Pose2d[] {});
       }
     }
     // logging detected tags

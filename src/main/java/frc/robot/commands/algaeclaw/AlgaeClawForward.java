@@ -24,7 +24,7 @@ public class AlgaeClawForward extends Command {
 
   @Override
   public boolean isFinished() {
-    if (algaeClaw.isBBTripped()) return true;
+    if (algaeClaw.hasAlgae()) return true;
     else return false;
   }
 }

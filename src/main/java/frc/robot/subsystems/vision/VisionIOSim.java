@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.vision.VisionConstants.CameraConfig;
 import java.util.List;
+import java.util.function.Supplier;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -20,8 +21,11 @@ public class VisionIOSim implements VisionIO {
   private final PhotonCamera camera;
   private final PhotonCameraSim cameraSim;
   private final PhotonPoseEstimator estimator;
+  private final Supplier<Pose2d> robotPoseSupplier;
 
-  public VisionIOSim(CameraConfig config) {
+  public VisionIOSim(CameraConfig config, Supplier<Pose2d> robotPoseSupplier) {
+    this.robotPoseSupplier = robotPoseSupplier;
+
     visionSim = new VisionSystemSim(config.name());
     visionSim.addAprilTags(TAG_LAYOUT);
 
@@ -46,8 +50,8 @@ public class VisionIOSim implements VisionIO {
   }
 
   @Override
-  public void updateInputs(VisionIOInputs inputs, Pose2d robotPoseMeters) {
-    visionSim.update(robotPoseMeters);
+  public void updateInputs(VisionIOInputs inputs) {
+    visionSim.update(robotPoseSupplier.get());
 
     PhotonPipelineResult result = camera.getLatestResult();
     var optionalEstimate = estimator.update(result);

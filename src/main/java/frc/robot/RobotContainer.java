@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,7 +35,19 @@ import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
-import frc.robot.commands.groundintakepivot.GroundIntakePivotGoToAngle;
+import frc.robot.commands.gamepiecemanipulation.GoToPlacingCoralPosition;
+import frc.robot.commands.gamepiecemanipulation.IntakeCoral;
+import frc.robot.commands.gamepiecemanipulation.ReleaseCoral;
+import frc.robot.subsystems.algaeclaw.AlgaeClaw;
+import frc.robot.subsystems.algaeclaw.AlgaeClawConstants;
+import frc.robot.subsystems.algaeclaw.AlgaeClawIO;
+import frc.robot.subsystems.algaeclaw.AlgaeClawIOReal;
+import frc.robot.subsystems.algaeclaw.AlgaeClawIOSim;
+import frc.robot.subsystems.coralholder.CoralHolder;
+import frc.robot.subsystems.coralholder.CoralHolderConstants;
+import frc.robot.subsystems.coralholder.CoralHolderIO;
+import frc.robot.subsystems.coralholder.CoralHolderIOReal;
+import frc.robot.subsystems.coralholder.CoralHolderIOSim;
 import frc.robot.subsystems.coralpivot.CoralPivot;
 import frc.robot.subsystems.coralpivot.CoralPivotIO;
 import frc.robot.subsystems.coralpivot.CoralPivotIOReal;
@@ -42,21 +55,32 @@ import frc.robot.subsystems.coralpivot.CoralPivotIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeonIMU;
+import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer;
+import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer.CoralState;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
-import frc.robot.subsystems.groundintakepivot.GroundIntakePivotConstants;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIO;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOReal;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivotIOSim;
+import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
+import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOReal;
+import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOReal;
+import frc.robot.subsystems.vision.VisionIOSim;
 import java.io.IOException;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -70,10 +94,13 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private SwerveDriveSimulation driveSimulation = null;
   private final Vision vision;
   private final CoralPivot coralPivot;
   private final GroundIntakePivot groundIntakePivot;
   private final Elevator elevator;
+  private final CoralHolder coralHolder;
+  private final AlgaeClaw algaeClaw;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -89,10 +116,10 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         vision =
             new Vision(
-                VisionConstants.FRONT_LEFT_CAMERA_CONFIG,
-                VisionConstants.FRONT_RIGHT_CAMERA_CONFIG,
-                VisionConstants.BACK_LEFT_CAMERA_CONFIG,
-                VisionConstants.BACK_RIGHT_CAMERA_CONFIG);
+                new VisionIOReal(VisionConstants.FRONT_LEFT_CAMERA_CONFIG),
+                new VisionIOReal(VisionConstants.FRONT_RIGHT_CAMERA_CONFIG),
+                new VisionIOReal(VisionConstants.BACK_LEFT_CAMERA_CONFIG),
+                new VisionIOReal(VisionConstants.BACK_RIGHT_CAMERA_CONFIG));
         drive =
             new Drive(
                 new GyroIOPigeonIMU(),
@@ -100,41 +127,66 @@ public class RobotContainer {
                 new ModuleIOReal(1),
                 new ModuleIOReal(2),
                 new ModuleIOReal(3),
-                vision);
+                vision,
+                (robotPose) -> {});
         coralPivot = new CoralPivot(new CoralPivotIOReal());
         groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOReal());
         elevator = new Elevator(new ElevatorIOReal());
+        coralHolder =
+            new CoralHolder(
+                new CoralHolderIOReal(),
+                new PhotoelectricSensorIOReal(CoralHolderConstants.coralHolderBBChannel));
+        algaeClaw =
+            new AlgaeClaw(
+                new AlgaeClawIOReal(),
+                new PhotoelectricSensorIOReal(AlgaeClawConstants.algaeClawBBChannel));
         break;
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
+        driveSimulation =
+            new SwerveDriveSimulation(Drive.mapleSimConfig, new Pose2d(0, 0, new Rotation2d()));
+        SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
         vision =
             new Vision(
-                VisionConstants.FRONT_LEFT_CAMERA_CONFIG,
-                VisionConstants.FRONT_RIGHT_CAMERA_CONFIG,
-                VisionConstants.BACK_LEFT_CAMERA_CONFIG,
-                VisionConstants.BACK_RIGHT_CAMERA_CONFIG);
+                new VisionIOSim(
+                    VisionConstants.FRONT_LEFT_CAMERA_CONFIG,
+                    driveSimulation::getSimulatedDriveTrainPose),
+                new VisionIOSim(
+                    VisionConstants.FRONT_RIGHT_CAMERA_CONFIG,
+                    driveSimulation::getSimulatedDriveTrainPose),
+                new VisionIOSim(
+                    VisionConstants.BACK_LEFT_CAMERA_CONFIG,
+                    driveSimulation::getSimulatedDriveTrainPose),
+                new VisionIOSim(
+                    VisionConstants.BACK_RIGHT_CAMERA_CONFIG,
+                    driveSimulation::getSimulatedDriveTrainPose));
         drive =
             new Drive(
-                new GyroIO() {},
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                vision);
+                new GyroIOSim(driveSimulation.getGyroSimulation()),
+                new ModuleIOSim(driveSimulation.getModules()[0]),
+                new ModuleIOSim(driveSimulation.getModules()[1]),
+                new ModuleIOSim(driveSimulation.getModules()[2]),
+                new ModuleIOSim(driveSimulation.getModules()[3]),
+                vision,
+                driveSimulation::setSimulationWorldPose);
         coralPivot = new CoralPivot(new CoralPivotIOSim());
         groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIOSim());
         elevator = new Elevator(new ElevatorIOSim());
+        coralHolder =
+            new CoralHolder(
+                new CoralHolderIOSim(),
+                new PhotoelectricSensorIOSim(CoralHolderConstants.coralHolderPEId));
+        algaeClaw =
+            new AlgaeClaw(
+                new AlgaeClawIOSim(),
+                new PhotoelectricSensorIOSim(AlgaeClawConstants.algaeClawPEID));
         break;
 
       default:
         // Replayed robot, disable IO implementations
         vision =
-            new Vision(
-                VisionConstants.FRONT_LEFT_CAMERA_CONFIG,
-                VisionConstants.FRONT_RIGHT_CAMERA_CONFIG,
-                VisionConstants.BACK_LEFT_CAMERA_CONFIG,
-                VisionConstants.BACK_RIGHT_CAMERA_CONFIG);
+            new Vision(new VisionIO() {}, new VisionIO() {}, new VisionIO() {}, new VisionIO() {});
         drive =
             new Drive(
                 new GyroIO() {},
@@ -142,10 +194,13 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                vision);
+                vision,
+                (robotPose) -> {});
         coralPivot = new CoralPivot(new CoralPivotIO() {});
         groundIntakePivot = new GroundIntakePivot(new GroundIntakePivotIO() {});
         elevator = new Elevator(new ElevatorIO() {});
+        coralHolder = new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO() {});
+        algaeClaw = new AlgaeClaw(new AlgaeClawIO() {}, new PhotoelectricSensorIO() {});
         break;
     }
 
@@ -187,22 +242,22 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -0.5 * controller.getLeftY(),
-            () -> -0.5 * controller.getLeftX(),
-            () -> -0.5 * controller.getRightX()));
+            () -> -0.7 * controller.getLeftY(),
+            () -> -0.7 * controller.getLeftX(),
+            () -> -0.7 * controller.getRightX()));
 
     // Lock to 0° when A button is held
-    // controller
-    //     .a()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -controller.getLeftY(),
-    //             () -> -controller.getLeftX(),
-    //             () -> new Rotation2d()));
+    controller
+        .a()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -controller.getLeftY(),
+                () -> -controller.getLeftX(),
+                () -> new Rotation2d()));
 
     // Switch to X pattern when X button is pressed
-    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when B button is pressed
     controller
@@ -235,52 +290,73 @@ public class RobotContainer {
     //         new GroundIntakePivotGoToAngle(
     //             groundIntakePivot, GroundIntakePivotConstants.stowAngle));
 
+    controller.x().onTrue(new IntakeCoral(coralPivot, groundIntakePivot, elevator, coralHolder));
+    controller
+        .y()
+        .onTrue(
+            new GoToPlacingCoralPosition(
+                ElevatorConstants.l4Height, Level.L4, coralPivot, groundIntakePivot, elevator));
+    controller.b().onTrue(new ReleaseCoral(coralHolder));
+
     // Pathfinding
     for (AlignmentConfig config : reefCoralAlignmentConfigs) {
       NamedCommands.registerCommand(
           config.pathName() + "_L1",
-          new AutoPlaceCoral(config, Level.L1, coralPivot, groundIntakePivot, elevator));
+          new AutoPlaceCoral(
+              config, Level.L1, coralPivot, groundIntakePivot, elevator, coralHolder));
       NamedCommands.registerCommand(
           config.pathName() + "_L2",
-          new AutoPlaceCoral(config, Level.L2, coralPivot, groundIntakePivot, elevator));
+          new AutoPlaceCoral(
+              config, Level.L2, coralPivot, groundIntakePivot, elevator, coralHolder));
       NamedCommands.registerCommand(
           config.pathName() + "_L3",
-          new AutoPlaceCoral(config, Level.L3, coralPivot, groundIntakePivot, elevator));
+          new AutoPlaceCoral(
+              config, Level.L3, coralPivot, groundIntakePivot, elevator, coralHolder));
       NamedCommands.registerCommand(
           config.pathName() + "_L4",
-          new AutoPlaceCoral(config, Level.L4, coralPivot, groundIntakePivot, elevator));
+          new AutoPlaceCoral(
+              config, Level.L4, coralPivot, groundIntakePivot, elevator, coralHolder));
       buttonBox
           .button(config.button())
           .and(buttonBox.button(l1Button))
-          .onTrue(new AutoPlaceCoral(config, Level.L1, coralPivot, groundIntakePivot, elevator));
+          .onTrue(
+              new AutoPlaceCoral(
+                  config, Level.L1, coralPivot, groundIntakePivot, elevator, coralHolder));
       buttonBox
           .button(config.button())
           .and(buttonBox.button(l2Button))
-          .onTrue(new AutoPlaceCoral(config, Level.L2, coralPivot, groundIntakePivot, elevator));
+          .onTrue(
+              new AutoPlaceCoral(
+                  config, Level.L2, coralPivot, groundIntakePivot, elevator, coralHolder));
       buttonBox
           .button(config.button())
           .and(buttonBox.button(l3Button))
-          .onTrue(new AutoPlaceCoral(config, Level.L3, coralPivot, groundIntakePivot, elevator));
+          .onTrue(
+              new AutoPlaceCoral(
+                  config, Level.L3, coralPivot, groundIntakePivot, elevator, coralHolder));
       buttonBox
           .button(config.button())
           .and(buttonBox.button(l4Button))
-          .onTrue(new AutoPlaceCoral(config, Level.L4, coralPivot, groundIntakePivot, elevator));
+          .onTrue(
+              new AutoPlaceCoral(
+                  config, Level.L4, coralPivot, groundIntakePivot, elevator, coralHolder));
     }
     for (ReefAlgaeAlignmentConfig config : reefAlgaeAlignmentConfigs) {
       NamedCommands.registerCommand(
           config.pathName() + "_Algae",
-          new AutoGetReefAlgae(config, coralPivot, groundIntakePivot, elevator));
+          new AutoGetReefAlgae(config, coralPivot, groundIntakePivot, elevator, algaeClaw));
       buttonBox
           .button(config.button1())
           .and(buttonBox.button(config.button2()))
-          .onTrue(new AutoGetReefAlgae(config, coralPivot, groundIntakePivot, elevator));
+          .onTrue(new AutoGetReefAlgae(config, coralPivot, groundIntakePivot, elevator, algaeClaw));
     }
     for (AlignmentConfig config : coralStationAlignmentConfigs) {
       NamedCommands.registerCommand(
-          config.pathName(), new AutoGetCoral(config, coralPivot, groundIntakePivot, elevator));
+          config.pathName(),
+          new AutoGetCoral(config, coralPivot, groundIntakePivot, elevator, coralHolder));
       buttonBox
           .button(config.button())
-          .onTrue(new AutoGetCoral(config, coralPivot, groundIntakePivot, elevator));
+          .onTrue(new AutoGetCoral(config, coralPivot, groundIntakePivot, elevator, coralHolder));
     }
     NamedCommands.registerCommand(
         "Process Algae",
@@ -308,6 +384,7 @@ public class RobotContainer {
     coralPivot.resetSimState();
     groundIntakePivot.resetSimState();
     elevator.resetSimState();
+    CoralVisualizer.setCoralState(CoralState.LOADED);
   }
 
   // defines the poses for each component of the robot model in Advantage Scope
@@ -335,5 +412,39 @@ public class RobotContainer {
                   -(groundIntakePivot.getAngle() - Math.PI / 2.0) + Units.degreesToRadians(-15),
                   0)),
         });
+    Logger.recordOutput(
+        "FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+    Logger.recordOutput(
+        "FieldSimulation/Coral", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
+    switch (Constants.currentMode) {
+      case REAL:
+        CoralVisualizer.update(
+            drive.getPose(),
+            elevator.getHeight(),
+            coralPivot.getAngle(),
+            driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative());
+        break;
+      case SIM:
+        if (DriverStation.isEnabled()) {
+          Logger.recordOutput("SimTrueRobotPose", driveSimulation.getSimulatedDriveTrainPose());
+          CoralVisualizer.update(
+              driveSimulation.getSimulatedDriveTrainPose(),
+              elevator.getHeight(),
+              coralPivot.getAngle(),
+              driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative());
+          FieldSimulationManager.periodic(
+              driveSimulation.getSimulatedDriveTrainPose(), elevator, coralPivot, coralHolder);
+        }
+        break;
+      case REPLAY:
+        CoralVisualizer.update(
+            drive.getPose(),
+            elevator.getHeight(),
+            coralPivot.getAngle(),
+            driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative());
+        break;
+      default:
+        break;
+    }
   }
 }
