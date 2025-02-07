@@ -5,8 +5,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.subsystems.coralholder.CoralHolder;
 import frc.robot.subsystems.coralholder.CoralHolder.CoralHolderState;
-import frc.robot.subsystems.coralpivot.CoralPivot;
-import frc.robot.subsystems.coralpivot.CoralPivotConstants;
+import frc.robot.subsystems.pivot.pivot;
+import frc.robot.subsystems.pivot.PivotConstants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer;
@@ -29,7 +29,7 @@ public class FieldSimulationManager {
   private static double secondsSinceLastCoralDrop = 10000;
 
   public static void periodic(
-      Pose2d robotPose, Elevator elevator, CoralPivot coralPivot, CoralHolder coralHolder) {
+      Pose2d robotPose, Elevator elevator, pivot pivot, CoralHolder coralHolder) {
     if (secondsSinceLastCoralDrop >= secondsPerCoralDrop
         && withinArea(robotPose.getTranslation(), coralStationLeftDropArea)
         && withinRotationTolerance(
@@ -39,9 +39,9 @@ public class FieldSimulationManager {
             ElevatorConstants.coralIntakeHeight,
             5 * ElevatorConstants.pidTolerance)
         && withinTolerance(
-            coralPivot.getAngle(),
-            CoralPivotConstants.intakeAngle,
-            5 * CoralPivotConstants.pidTolerance)
+            pivot.getAngle(),
+            PivotConstants.intakeAngle,
+            5 * PivotConstants.pidTolerance)
         && coralHolder.getState() == CoralHolderState.FORWARD
         && CoralVisualizer.coralState == CoralState.GONE) {
       // SimulatedArena.getInstance()

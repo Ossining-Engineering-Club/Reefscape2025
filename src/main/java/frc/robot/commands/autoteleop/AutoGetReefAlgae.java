@@ -10,7 +10,7 @@ import frc.robot.AutoTeleopConstants;
 import frc.robot.AutoTeleopConstants.ReefAlgaeAlignmentConfig;
 import frc.robot.commands.gamepiecemanipulation.IntakeReefAlgae;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
-import frc.robot.subsystems.coralpivot.CoralPivot;
+import frc.robot.subsystems.pivot.pivot;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
@@ -20,7 +20,7 @@ import org.json.simple.parser.ParseException;
 public class AutoGetReefAlgae extends SequentialCommandGroup {
   public AutoGetReefAlgae(
       ReefAlgaeAlignmentConfig config,
-      CoralPivot coralPivot,
+      pivot pivot,
       GroundIntakePivot groundIntakePivot,
       Elevator elevator,
       AlgaeClaw algaeClaw)
@@ -39,6 +39,6 @@ public class AutoGetReefAlgae extends SequentialCommandGroup {
     addCommands(
         new ParallelCommandGroup(
             pathFindingCommand,
-            new IntakeReefAlgae(height, coralPivot, groundIntakePivot, elevator, algaeClaw)));
+            new IntakeReefAlgae(height, pivot, groundIntakePivot, elevator, algaeClaw)));
   }
 }
