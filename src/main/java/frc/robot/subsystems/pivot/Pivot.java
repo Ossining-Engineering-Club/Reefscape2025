@@ -1,6 +1,6 @@
-package frc.robot.subsystems.coralpivot;
+package frc.robot.subsystems.pivot;
 
-import static frc.robot.subsystems.coralpivot.CoralPivotConstants.*;
+import static frc.robot.subsystems.pivot.PivotConstants.*;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -9,9 +9,9 @@ import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import org.littletonrobotics.junction.Logger;
 
-public class CoralPivot extends SubsystemBase {
-  private final CoralPivotIO io;
-  private final CoralPivotIOInputsAutoLogged inputs = new CoralPivotIOInputsAutoLogged();
+public class Pivot extends SubsystemBase {
+  private final PivotIO io;
+  private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
 
   private final PIDController pid;
   private final ArmFeedforward feedforward;
@@ -19,7 +19,7 @@ public class CoralPivot extends SubsystemBase {
   private boolean usingPID = false;
   private int ticksSinceLastPID = 1000000;
 
-  public CoralPivot(CoralPivotIO io) {
+  public (PivotIO io) {
     this.io = io;
 
     switch (Constants.currentMode) {

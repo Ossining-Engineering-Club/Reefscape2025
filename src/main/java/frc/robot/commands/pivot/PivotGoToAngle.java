@@ -1,31 +1,31 @@
-package frc.robot.commands.coralpivot;
+package frc.robot.commands.pivot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.coralpivot.CoralPivot;
+import frc.robot.subsystems.pivot.Pivot;
 
-public class CoralPivotGoToAngle extends Command {
-  private final CoralPivot coralPivot;
+public class PivotGoToAngle extends Command {
+  private final Pivot pivot;
   private final double angleSetpoint;
 
-  public CoralPivotGoToAngle(CoralPivot coralPivot, double angleSetpint) {
-    this.coralPivot = coralPivot;
+  public PivotGoToAngle(Pivot pivot, double angleSetpint) {
+    this.pivot = pivot;
     this.angleSetpoint = angleSetpint;
 
-    addRequirements(coralPivot);
+    addRequirements(pivot);
   }
 
   @Override
   public void execute() {
-    coralPivot.runSetpoint(angleSetpoint);
+    pivot.runSetpoint(angleSetpoint);
   }
 
   @Override
   public void end(boolean interrupted) {
-    coralPivot.stop();
+    pivot.stop();
   }
 
   @Override
   public boolean isFinished() {
-    return coralPivot.atSetpoint();
+    return pivot.atSetpoint();
   }
 }

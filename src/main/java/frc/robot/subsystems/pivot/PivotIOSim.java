@@ -1,16 +1,16 @@
-package frc.robot.subsystems.coralpivot;
+package frc.robot.subsystems.pivot;
 
-import static frc.robot.subsystems.coralpivot.CoralPivotConstants.*;
+import static frc.robot.subsystems.pivot.PivotConstants.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
-public class CoralPivotIOSim implements CoralPivotIO {
+public class PivotIOSim implements PivotIO {
   public final SingleJointedArmSim pivotSim;
   public double appliedVolts = 0.0;
 
-  public CoralPivotIOSim() {
+  public PivotIOSim() {
     pivotSim =
         new SingleJointedArmSim(
             LinearSystemId.createSingleJointedArmSystem(gearbox, pivotMOI, motorReduction),
@@ -26,7 +26,7 @@ public class CoralPivotIOSim implements CoralPivotIO {
   }
 
   @Override
-  public void updateInputs(CoralPivotIOInputs inputs) {
+  public void updateInputs(PivotIOInputs inputs) {
     pivotSim.update(0.02);
 
     inputs.appliedVolts = appliedVolts;

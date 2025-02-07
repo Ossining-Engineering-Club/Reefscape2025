@@ -10,17 +10,15 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AutoTeleopConstants;
 import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.commands.gamepiecemanipulation.GoToProcessingPosition;
-import frc.robot.subsystems.coralpivot.CoralPivot;
+import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 public class AutoProcessAlgae extends SequentialCommandGroup {
   public AutoProcessAlgae(
       AlignmentConfig config,
-      CoralPivot coralPivot,
-      GroundIntakePivot groundIntakePivot,
+      Pivot pivot,
       Elevator elevator)
       throws FileVersionException, IOException, ParseException {
 
@@ -38,7 +36,7 @@ public class AutoProcessAlgae extends SequentialCommandGroup {
             pathFindingCommand1,
             new SequentialCommandGroup(
                 new WaitCommand(1.0),
-                new GoToProcessingPosition(coralPivot, groundIntakePivot, elevator))),
+                new GoToProcessingPosition(pivot, elevator))),
         pathFindingCommand2);
   }
 }

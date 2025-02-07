@@ -1,16 +1,16 @@
-package frc.robot.subsystems.coralpivot;
+package frc.robot.subsystems.pivot;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface CoralPivotIO {
+public interface PivotIO {
   @AutoLog
-  public static class CoralPivotIOInputs {
+  public static class PivotIOInputs {
     public double appliedVolts = 0.0;
     public double angleRadians = 0.0;
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(CoralPivotIOInputs inputs) {}
+  public default void updateInputs(PivotIOInputs inputs) {}
 
   /** Sets voltage of motor */
   public default void setVoltage(double voltage) {}
