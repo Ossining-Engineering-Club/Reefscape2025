@@ -1,10 +1,10 @@
-package frc.robot.subsystems.coralpivot;
+package frc.robot.subsystems.pivot;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
-public class CoralPivotConstants {
+public class PivotConstants {
   // motor constants
   public static final int canId = 0;
   public static final double motorReduction = 50.0 / 1.0;

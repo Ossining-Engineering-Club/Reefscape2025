@@ -12,10 +12,9 @@ import frc.robot.AutoTeleopConstants.Level;
 import frc.robot.commands.gamepiecemanipulation.GoToPlacingCoralPosition;
 import frc.robot.commands.gamepiecemanipulation.ReleaseCoral;
 import frc.robot.subsystems.coralholder.CoralHolder;
-import frc.robot.subsystems.coralpivot.CoralPivot;
+import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
-import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -23,7 +22,7 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
   public AutoPlaceCoral(
       AlignmentConfig config,
       Level level,
-      CoralPivot coralPivot,
+      Pivot pivot,
       GroundIntakePivot groundIntakePivot,
       Elevator elevator,
       CoralHolder coralHolder)
@@ -44,7 +43,7 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
     addCommands(
         new ParallelCommandGroup(
             pathFindingCommand,
-            new GoToPlacingCoralPosition(height, level, coralPivot, groundIntakePivot, elevator)),
+            new GoToPlacingCoralPosition(height, level, pivot, groundIntakePivot, elevator)),
         new ReleaseCoral(coralHolder));
   }
 }

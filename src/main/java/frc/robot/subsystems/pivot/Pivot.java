@@ -19,7 +19,7 @@ public class Pivot extends SubsystemBase {
   private boolean usingPID = false;
   private int ticksSinceLastPID = 1000000;
 
-  public (PivotIO io) {
+  public Pivot(PivotIO io) {
     this.io = io;
 
     switch (Constants.currentMode) {
