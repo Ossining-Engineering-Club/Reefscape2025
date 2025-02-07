@@ -1,6 +1,6 @@
-package frc.robot.subsystems.coralpivot;
+package frc.robot.subsystems.pivot;
 
-import static frc.robot.subsystems.coralpivot.CoralPivotConstants.*;
+import static frc.robot.subsystems.pivot.PivotConstants.*;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -11,11 +11,11 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 
-public class CoralPivotIOReal implements CoralPivotIO {
+public class PivotIOReal implements PivotIO {
   private final SparkMax sparkMax;
   private final RelativeEncoder encoder;
 
-  public CoralPivotIOReal() {
+  public PivotIOReal() {
     sparkMax = new SparkMax(canId, MotorType.kBrushless);
     encoder = sparkMax.getEncoder();
 
@@ -31,7 +31,7 @@ public class CoralPivotIOReal implements CoralPivotIO {
   }
 
   @Override
-  public void updateInputs(CoralPivotIOInputs inputs) {
+  public void updateInputs(PivotIOInputs inputs) {
     inputs.appliedVolts = sparkMax.getAppliedOutput() * sparkMax.getBusVoltage();
     inputs.angleRadians = encoder.getPosition();
   }
