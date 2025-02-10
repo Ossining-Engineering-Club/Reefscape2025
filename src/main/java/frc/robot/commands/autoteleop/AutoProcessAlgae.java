@@ -6,7 +6,6 @@ import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AutoTeleopConstants;
 import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.commands.gamepiecemanipulation.GoToProcessingPosition;
@@ -18,16 +17,15 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 public class AutoProcessAlgae extends SequentialCommandGroup {
-  public AutoProcessAlgae(AlignmentConfig config, Pivot pivot, Elevator elevator, AlgaeClaw algaeClaw)
+  public AutoProcessAlgae(
+      AlignmentConfig config, Pivot pivot, Elevator elevator, AlgaeClaw algaeClaw)
       throws FileVersionException, IOException, ParseException {
     PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
     Command pathFindingCommand =
         AutoBuilder.pathfindThenFollowPath(path, AutoTeleopConstants.processorAlignmentConstraints);
 
     addCommands(
-        new ParallelCommandGroup(
-            new GoToProcessingPosition(pivot, elevator),
-            pathFindingCommand),
+        new ParallelCommandGroup(new GoToProcessingPosition(pivot, elevator), pathFindingCommand),
         new ReleaseAlgae(algaeClaw));
   }
 }

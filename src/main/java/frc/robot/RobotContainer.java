@@ -287,8 +287,7 @@ public class RobotContainer {
     controller.x().onTrue(new IntakeCoral(pivot, elevator, coralHolder));
     controller
         .y()
-        .onTrue(
-            new GoToPlacingCoralPosition(ElevatorConstants.l4Height, pivot, elevator));
+        .onTrue(new GoToPlacingCoralPosition(ElevatorConstants.l4Height, pivot, elevator));
     controller.b().onTrue(new ReleaseCoral(coralHolder));
 
     // Pathfinding
@@ -338,7 +337,8 @@ public class RobotContainer {
           .onTrue(new AutoGetCoral(config, pivot, elevator, coralHolder));
     }
     NamedCommands.registerCommand(
-        "Process Algae", new AutoProcessAlgae(processorAlignmentConfig, pivot, elevator, algaeClaw));
+        "Process Algae",
+        new AutoProcessAlgae(processorAlignmentConfig, pivot, elevator, algaeClaw));
     buttonBox
         .button(processorAlignmentConfig.button())
         .onTrue(new AutoProcessAlgae(processorAlignmentConfig, pivot, elevator, algaeClaw));
