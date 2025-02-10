@@ -12,20 +12,15 @@ import frc.robot.AutoTeleopConstants.Level;
 import frc.robot.commands.gamepiecemanipulation.GoToPlacingCoralPosition;
 import frc.robot.commands.gamepiecemanipulation.ReleaseCoral;
 import frc.robot.subsystems.coralholder.CoralHolder;
-import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
+import frc.robot.subsystems.pivot.Pivot;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 public class AutoPlaceCoral extends SequentialCommandGroup {
   public AutoPlaceCoral(
-      AlignmentConfig config,
-      Level level,
-      Pivot pivot,
-      GroundIntakePivot groundIntakePivot,
-      Elevator elevator,
-      CoralHolder coralHolder)
+      AlignmentConfig config, Level level, Pivot pivot, Elevator elevator, CoralHolder coralHolder)
       throws FileVersionException, IOException, ParseException {
     PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
     Command pathFindingCommand =
@@ -42,8 +37,7 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
 
     addCommands(
         new ParallelCommandGroup(
-            pathFindingCommand,
-            new GoToPlacingCoralPosition(height, level, pivot, groundIntakePivot, elevator)),
+            pathFindingCommand, new GoToPlacingCoralPosition(height, level, pivot, elevator)),
         new ReleaseCoral(coralHolder));
   }
 }

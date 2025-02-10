@@ -10,20 +10,15 @@ import frc.robot.AutoTeleopConstants;
 import frc.robot.AutoTeleopConstants.ReefAlgaeAlignmentConfig;
 import frc.robot.commands.gamepiecemanipulation.IntakeReefAlgae;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
-import frc.robot.subsystems.pivot.pivot;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
-import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
+import frc.robot.subsystems.pivot.Pivot;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 public class AutoGetReefAlgae extends SequentialCommandGroup {
   public AutoGetReefAlgae(
-      ReefAlgaeAlignmentConfig config,
-      pivot pivot,
-      GroundIntakePivot groundIntakePivot,
-      Elevator elevator,
-      AlgaeClaw algaeClaw)
+      ReefAlgaeAlignmentConfig config, Pivot pivot, Elevator elevator, AlgaeClaw algaeClaw)
       throws FileVersionException, IOException, ParseException {
     PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
     Command pathFindingCommand =
@@ -38,7 +33,6 @@ public class AutoGetReefAlgae extends SequentialCommandGroup {
 
     addCommands(
         new ParallelCommandGroup(
-            pathFindingCommand,
-            new IntakeReefAlgae(height, pivot, groundIntakePivot, elevator, algaeClaw)));
+            pathFindingCommand, new IntakeReefAlgae(height, pivot, elevator, algaeClaw)));
   }
 }
