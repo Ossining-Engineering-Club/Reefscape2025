@@ -22,6 +22,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -370,9 +371,14 @@ public class RobotContainer {
     Logger.recordOutput(
         "Final Component Poses",
         new Pose3d[] {
-          new Pose3d(-0.13335, 0, 0.1390922542, new Rotation3d(0, 0, 0)),
-          new Pose3d(-0.1317625, 0, 0.1835422542, new Rotation3d(0, 0, 0)),
-          new Pose3d(-0.093574997, 0, 0.7931422542, new Rotation3d(0, 0, 0)),
+          new Pose3d(
+              -0.13335, 0, 0.1390922542 + elevator.getHeight() / 2.0, new Rotation3d(0, 0, 0)),
+          new Pose3d(-0.1317625, 0, 0.1835422542 + elevator.getHeight(), new Rotation3d(0, 0, 0)),
+          new Pose3d(
+              -0.093574997,
+              0,
+              0.7931422542 + elevator.getHeight(),
+              new Rotation3d(Units.degreesToRadians(53.763) - pivot.getAngle(), 0, 0)),
         });
     Logger.recordOutput(
         "FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
@@ -387,8 +393,8 @@ public class RobotContainer {
             driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative());
         break;
       case SIM:
+        Logger.recordOutput("SimTrueRobotPose", driveSimulation.getSimulatedDriveTrainPose());
         if (DriverStation.isEnabled()) {
-          Logger.recordOutput("SimTrueRobotPose", driveSimulation.getSimulatedDriveTrainPose());
           CoralVisualizer.update(
               driveSimulation.getSimulatedDriveTrainPose(),
               elevator.getHeight(),

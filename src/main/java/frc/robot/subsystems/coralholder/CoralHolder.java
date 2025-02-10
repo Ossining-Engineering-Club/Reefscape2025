@@ -43,14 +43,14 @@ public class CoralHolder extends SubsystemBase {
 
   public void forward() {
     state = CoralHolderState.FORWARD;
-    if (Constants.currentMode == Mode.SIM) {
-      CoralVisualizer.shootCoral();
-    }
     io.setVoltage(forwardVoltage);
   }
 
   public void reverse() {
     state = CoralHolderState.REVERSE;
+    if (Constants.currentMode == Mode.SIM) {
+      CoralVisualizer.shootCoral();
+    }
     io.setVoltage(reverseVoltage);
   }
 

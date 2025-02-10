@@ -11,7 +11,8 @@ import frc.robot.subsystems.pivot.PivotConstants;
 public class GoToPlacingCoralPosition extends SequentialCommandGroup {
   public GoToPlacingCoralPosition(double height, Pivot pivot, Elevator elevator) {
     addCommands(
-        new ParallelCommandGroup(new PivotGoToAngle(pivot, PivotConstants.placeCoralAngle)),
-        new ElevatorGoToHeight(elevator, height));
+        new ParallelCommandGroup(
+            new PivotGoToAngle(pivot, PivotConstants.placeCoralAngle),
+            new ElevatorGoToHeight(elevator, height)));
   }
 }

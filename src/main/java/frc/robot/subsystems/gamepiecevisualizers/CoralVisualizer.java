@@ -42,15 +42,14 @@ public class CoralVisualizer {
       ChassisSpeeds chassisSpeeds) {
     CoralVisualizer.robotPose = robotPose;
     CoralVisualizer.chassisSpeeds = chassisSpeeds;
+    getLoadedCoralPoseFieldRelative(robotPose, elevatorHeight, pivotAngleRadians);
     switch (CoralVisualizer.coralState) {
       case GONE:
         Logger.recordOutput(
             "CoralInRobot", new Pose3d(new Translation3d(0, 0, -1), new Rotation3d()));
         break;
       case LOADED:
-        Logger.recordOutput(
-            "CoralInRobot",
-            getLoadedCoralPoseFieldRelative(robotPose, elevatorHeight, pivotAngleRadians));
+        Logger.recordOutput("CoralInRobot", loadedCoralPoseFieldRelative);
       default:
         break;
     }
@@ -67,10 +66,10 @@ public class CoralVisualizer {
                   new Translation2d(
                       loadedCoralPoseRobotRelative.getX(), loadedCoralPoseRobotRelative.getY()),
                   chassisSpeeds,
-                  robotPose.getRotation(),
+                  new Rotation2d(loadedCoralPoseFieldRelative.getRotation().getZ() + Math.PI),
                   Meters.of(loadedCoralPoseRobotRelative.getZ()),
                   MetersPerSecond.of(1.5),
-                  Radians.of(-loadedCoralPoseRobotRelative.getRotation().getY())));
+                  Radians.of(loadedCoralPoseRobotRelative.getRotation().getY())));
       CoralVisualizer.coralState = CoralState.GONE;
     }
   }
@@ -80,17 +79,15 @@ public class CoralVisualizer {
     loadedCoralPoseRobotRelative =
         new Pose3d(
             new Translation3d(
-                Units.inchesToMeters(11.471352)
-                    + Math.cos(pivotAngleRadians) * Units.inchesToMeters(9.030342),
-                0.0,
-                Units.inchesToMeters(24.826339)
+                Units.inchesToMeters(-2.0),
+                Math.cos(pivotAngleRadians) * Units.inchesToMeters(-13),
+                Units.inchesToMeters(31.2)
                     + elevatorHeight
-                    + Math.sin(pivotAngleRadians) * Units.inchesToMeters(9.030342)),
+                    + Math.sin(pivotAngleRadians) * Units.inchesToMeters(13)),
             new Rotation3d(
                 0.0,
-                ((-pivotAngleRadians + Units.degreesToRadians(90) + Math.PI / 2.0) % (Math.PI)
-                    - Math.PI / 2.0),
-                0.0));
+                ((pivotAngleRadians + Math.PI / 2.0) % (Math.PI) - Math.PI / 2.0),
+                Units.degreesToRadians(90)));
     return loadedCoralPoseRobotRelative;
   }
 
@@ -103,15 +100,20 @@ public class CoralVisualizer {
             new Translation3d(
                 robotPose.getX()
                     + Math.cos(robotPose.getRotation().getRadians())
-                        * loadedCoralPoseRobotRelative.getX(),
+                        * loadedCoralPoseRobotRelative.getX()
+                    + Math.sin(-robotPose.getRotation().getRadians())
+                        * loadedCoralPoseRobotRelative.getY(),
                 robotPose.getY()
                     + Math.sin(robotPose.getRotation().getRadians())
-                        * loadedCoralPoseRobotRelative.getX(),
+                        * loadedCoralPoseRobotRelative.getX()
+                    + Math.cos(-robotPose.getRotation().getRadians())
+                        * loadedCoralPoseRobotRelative.getY(),
                 loadedCoralPoseRobotRelative.getZ()),
             new Rotation3d(
                 0.0,
                 loadedCoralPoseRobotRelative.getRotation().getY(),
-                robotPose.getRotation().getRadians()));
+                robotPose.getRotation().getRadians()
+                    + loadedCoralPoseRobotRelative.getRotation().getZ()));
     return loadedCoralPoseFieldRelative;
   }
 }

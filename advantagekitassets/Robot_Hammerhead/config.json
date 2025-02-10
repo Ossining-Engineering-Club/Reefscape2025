@@ -1,8 +1,14 @@
 {
   "name": "Hammerhead",
   "rotations": [
-    {"axis": "z", "degrees": 270},
-    {"axis": "y", "degrees": 270}
+    {
+      "axis": "z",
+      "degrees": 270
+    },
+    {
+      "axis": "y",
+      "degrees": 270
+    }
   ],
   "position": [
     0,
@@ -13,8 +19,15 @@
     {
       "name": "Front Left",
       "fov": 70,
-      "resolution": [1280, 800],
-      "position": [0.3099519074, 0.2849959248, 0.1976281798],
+      "resolution": [
+        1280,
+        800
+      ],
+      "position": [
+        0.3099519074,
+        0.2849959248,
+        0.1976281798
+      ],
       "rotations": [
         {
           "axis": "z",
@@ -26,12 +39,18 @@
         }
       ]
     },
-
     {
       "name": "Front Right",
       "fov": 70,
-      "resolution": [1280, 800],
-      "position": [0.3099519074, -0.2849959248, 0.1976281798],
+      "resolution": [
+        1280,
+        800
+      ],
+      "position": [
+        0.3099519074,
+        -0.2849959248,
+        0.1976281798
+      ],
       "rotations": [
         {
           "axis": "z",
@@ -43,12 +62,18 @@
         }
       ]
     },
-
     {
       "name": "Back Left",
       "fov": 70,
-      "resolution": [1280, 800],
-      "position": [-0.3099519074, -0.2849959248, 0.1976281798],
+      "resolution": [
+        1280,
+        800
+      ],
+      "position": [
+        -0.3099519074,
+        -0.2849959248,
+        0.1976281798
+      ],
       "rotations": [
         {
           "axis": "z",
@@ -60,12 +85,18 @@
         }
       ]
     },
-
     {
       "name": "Back Right",
       "fov": 70,
-      "resolution": [1280, 800],
-      "position": [-0.3099519074, 0.2849959248, 0.1976281798],
+      "resolution": [
+        1280,
+        800
+      ],
+      "position": [
+        -0.3099519074,
+        0.2849959248,
+        0.1976281798
+      ],
       "rotations": [
         {
           "axis": "z",
@@ -81,38 +112,54 @@
   "components": [
     {
       "zeroedRotations": [
-        {"axis": "z", "degrees": 90},
-        {"axis": "y", "degrees": 90}
+        {
+          "axis": "z",
+          "degrees": 90
+        },
+        {
+          "axis": "y",
+          "degrees": 90
+        }
       ],
       "zeroedPosition": [
-          -0.13335,
-          0,
-          0.1390922542
+        0,
+        0,
+        0
       ]
     },
-
     {
       "zeroedRotations": [
-        {"axis": "z", "degrees": 90},
-        {"axis": "y", "degrees": 90}
+        {
+          "axis": "z",
+          "degrees": 90
+        },
+        {
+          "axis": "y",
+          "degrees": 90
+        }
       ],
       "zeroedPosition": [
-          -0.1317625,
-          0,
-          0.1835422542
+        0,
+        0,
+        0
       ]
     },
-
     {
       "zeroedRotations": [
-        {"axis": "z", "degrees": 36.23691},
-        {"axis": "y", "degrees": 90}
+        {
+          "axis": "z",
+          "degrees": 36.23691
+        },
+        {
+          "axis": "y",
+          "degrees": 90
+        }
       ],
       "zeroedPosition": [
-          -0.093574997,
-          0,
-          0.7931422542
+        0,
+        0,
+        0
       ]
     }
-  ] 
+  ]
 }
