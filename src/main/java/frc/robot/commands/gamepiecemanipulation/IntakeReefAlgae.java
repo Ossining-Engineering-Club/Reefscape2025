@@ -18,9 +18,9 @@ public class IntakeReefAlgae extends SequentialCommandGroup {
         Commands.runOnce(() -> algaeClaw.startMotor(), algaeClaw),
         new ParallelDeadlineGroup(
             Commands.waitUntil(() -> algaeClaw.hasAlgae()),
-            new ElevatorGoToHeight(elevator, height)),
+            new ElevatorGoToHeight(elevator, height),
+            new PivotGoToAngle(pivot, PivotConstants.intakeReefAlgaeAngle)),
         new WaitCommand(AlgaeClawConstants.intakeDelaySeconds),
-        Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw),
-        new PivotGoToAngle(pivot, PivotConstants.reefAlgaeAngle));
+        Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw));
   }
 }

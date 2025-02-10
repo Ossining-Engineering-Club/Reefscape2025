@@ -37,7 +37,7 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
 
     addCommands(
         new ParallelCommandGroup(
-            pathFindingCommand, new GoToPlacingCoralPosition(height, level, pivot, elevator)),
+            pathFindingCommand, new GoToPlacingCoralPosition(height, pivot, elevator)),
         new ReleaseCoral(coralHolder));
   }
 }

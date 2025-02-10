@@ -14,6 +14,6 @@ public class GoToProcessingPosition extends SequentialCommandGroup {
     addCommands(
         new ParallelCommandGroup(
             new ElevatorGoToHeight(elevator, ElevatorConstants.processorHeight),
-            new PivotGoToAngle(pivot, PivotConstants.stowAngle)));
+            new PivotGoToAngle(pivot, PivotConstants.processorAngle)));
   }
 }

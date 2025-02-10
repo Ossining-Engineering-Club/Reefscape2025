@@ -9,9 +9,8 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.pivot.Pivot;
 
 public class ReleaseAlgae extends SequentialCommandGroup {
-  public ReleaseAlgae(Pivot pivot, Elevator elevator, AlgaeClaw algaeClaw) {
+  public ReleaseAlgae(AlgaeClaw algaeClaw) {
     addCommands(
-        new GoToProcessingPosition(pivot, elevator),
         Commands.runOnce(() -> algaeClaw.reverseMotor()),
         Commands.waitUntil(() -> !algaeClaw.hasAlgae()),
         new WaitCommand(AlgaeClawConstants.releaseDelaySeconds),

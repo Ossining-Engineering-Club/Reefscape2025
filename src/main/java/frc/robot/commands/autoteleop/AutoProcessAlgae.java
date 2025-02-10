@@ -10,29 +10,24 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AutoTeleopConstants;
 import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.commands.gamepiecemanipulation.GoToProcessingPosition;
+import frc.robot.commands.gamepiecemanipulation.ReleaseAlgae;
+import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.pivot.Pivot;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 public class AutoProcessAlgae extends SequentialCommandGroup {
-  public AutoProcessAlgae(AlignmentConfig config, Pivot pivot, Elevator elevator)
+  public AutoProcessAlgae(AlignmentConfig config, Pivot pivot, Elevator elevator, AlgaeClaw algaeClaw)
       throws FileVersionException, IOException, ParseException {
-
-    Command pathFindingCommand1 =
-        AutoBuilder.pathfindToPose(
-            AutoTeleopConstants.clearProcessorPose,
-            AutoTeleopConstants.processorAlignmentConstraints,
-            0.0);
     PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
-    Command pathFindingCommand2 =
+    Command pathFindingCommand =
         AutoBuilder.pathfindThenFollowPath(path, AutoTeleopConstants.processorAlignmentConstraints);
 
     addCommands(
         new ParallelCommandGroup(
-            pathFindingCommand1,
-            new SequentialCommandGroup(
-                new WaitCommand(1.0), new GoToProcessingPosition(pivot, elevator))),
-        pathFindingCommand2);
+            new GoToProcessingPosition(pivot, elevator),
+            pathFindingCommand),
+        new ReleaseAlgae(algaeClaw));
   }
 }

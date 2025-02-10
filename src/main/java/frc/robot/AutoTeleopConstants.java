@@ -64,9 +64,6 @@ public final class AutoTeleopConstants {
   public static final AlignmentConfig processorAlignmentConfig =
       new AlignmentConfig("Processor", 0);
 
-  public static final Pose2d clearProcessorPose =
-      new Pose2d(5.99, 0.51 + 0.536575, Rotation2d.fromDegrees(-90.0));
-
   public static final PathConstraints reefCoralAlignmentConstraints =
       new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
 

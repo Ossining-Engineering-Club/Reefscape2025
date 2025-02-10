@@ -1,6 +1,7 @@
 package frc.robot.commands.gamepiecemanipulation;
 
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -19,9 +20,9 @@ public class IntakeCoral extends SequentialCommandGroup {
         Commands.runOnce(() -> coralHolder.forward(), coralHolder),
         new ParallelDeadlineGroup(
             Commands.waitUntil(() -> coralHolder.hasCoral()),
-            new SequentialCommandGroup(
-                new ElevatorGoToHeight(elevator, ElevatorConstants.coralIntakeHeight),
-                new PivotGoToAngle(pivot, PivotConstants.intakeAngle))),
+            new ParallelCommandGroup(
+                new ElevatorGoToHeight(elevator, ElevatorConstants.intakeCoralHeight),
+                new PivotGoToAngle(pivot, PivotConstants.intakeCoralAngle))),
         new WaitCommand(CoralHolderConstants.intakeDelaySeconds),
         Commands.runOnce(() -> coralHolder.stop(), coralHolder));
   }

@@ -36,10 +36,10 @@ public class FieldSimulationManager {
             robotPose.getRotation(), coralStationLeftRotation, coralStationRotationTolerance)
         && withinTolerance(
             elevator.getHeight(),
-            ElevatorConstants.coralIntakeHeight,
+            ElevatorConstants.intakeCoralHeight,
             5 * ElevatorConstants.pidTolerance)
         && withinTolerance(
-            pivot.getAngle(), PivotConstants.intakeAngle, 5 * PivotConstants.pidTolerance)
+            pivot.getAngle(), PivotConstants.intakeCoralAngle, 5 * PivotConstants.pidTolerance)
         && coralHolder.getState() == CoralHolderState.FORWARD
         && CoralVisualizer.coralState == CoralState.GONE) {
       // SimulatedArena.getInstance()
