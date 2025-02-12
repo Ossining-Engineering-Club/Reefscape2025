@@ -26,6 +26,14 @@ public class FieldSimulationManager {
         new Translation2d(1.55, 7.515)
       };
 
+  private static final Translation2d[] coralStationRightDropArea =
+      new Translation2d[] {
+        new Translation2d(0.702, 1.412),
+        new Translation2d(0.546, 1.198),
+        new Translation2d(1.492, 0.534),
+        new Translation2d(1.736, 0.700)
+      };
+
   private static double secondsPerCoralDrop = 2.0;
   private static double secondsSinceLastCoralDrop = 10000;
 
@@ -50,9 +58,16 @@ public class FieldSimulationManager {
     Logger.recordOutput("within holder state", coralHolder.getState() == CoralHolderState.FORWARD);
     Logger.recordOutput("within coral state", CoralVisualizer.coralState == CoralState.GONE);
     if (secondsSinceLastCoralDrop >= secondsPerCoralDrop
-        && withinArea(robotPose.getTranslation(), coralStationLeftDropArea)
-        && withinRotationTolerance(
-            robotPose.getRotation(), coralStationLeftRotation, coralStationRotationTolerance)
+        && ((withinArea(robotPose.getTranslation(), coralStationLeftDropArea)
+                && withinRotationTolerance(
+                    robotPose.getRotation(),
+                    coralStationLeftRotation,
+                    coralStationRotationTolerance))
+            || (withinArea(robotPose.getTranslation(), coralStationRightDropArea)
+                && withinRotationTolerance(
+                    robotPose.getRotation(),
+                    coralStationRightRotation,
+                    coralStationRotationTolerance)))
         && withinTolerance(
             elevator.getHeight(),
             ElevatorConstants.intakeCoralHeight,
