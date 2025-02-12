@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.82,
-        "y": 2.88
+        "x": 3.83,
+        "y": 2.91
       },
       "prevControl": {
-        "x": 3.695,
-        "y": 2.66349364905389
+        "x": 3.705,
+        "y": 2.6934936490538903
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 59.99999999999999
+    "rotation": -29.999999999999996
   },
   "reversed": false,
   "folder": "TeleOp Alignments",
   "idealStartingState": {
     "velocity": 0.5,
-    "rotation": 59.99999999999999
+    "rotation": -29.999999999999996
   },
   "useDefaultConstraints": false
 }

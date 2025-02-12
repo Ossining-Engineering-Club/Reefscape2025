@@ -12,6 +12,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants;
+import frc.robot.Constants.Mode;
+import frc.robot.subsystems.elevator.ElevatorConstants;
+import frc.robot.subsystems.pivot.PivotConstants;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnFly;
 import org.littletonrobotics.junction.Logger;
@@ -30,6 +34,8 @@ public class CoralVisualizer {
       new Pose3d(new Translation3d(0, 0, -1), new Rotation3d());
   private static Pose2d robotPose = new Pose2d(0, 0, new Rotation2d(0));
   private static ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
+  private static double elevatorHeight = 0.0;
+  private static double pivotAngleRadians = 0.0;
 
   public static void setCoralState(CoralState coralState) {
     CoralVisualizer.coralState = coralState;
@@ -42,14 +48,17 @@ public class CoralVisualizer {
       ChassisSpeeds chassisSpeeds) {
     CoralVisualizer.robotPose = robotPose;
     CoralVisualizer.chassisSpeeds = chassisSpeeds;
-    getLoadedCoralPoseFieldRelative(robotPose, elevatorHeight, pivotAngleRadians);
+    CoralVisualizer.elevatorHeight = elevatorHeight;
+    CoralVisualizer.pivotAngleRadians = pivotAngleRadians;
     switch (CoralVisualizer.coralState) {
       case GONE:
         Logger.recordOutput(
             "CoralInRobot", new Pose3d(new Translation3d(0, 0, -1), new Rotation3d()));
         break;
       case LOADED:
-        Logger.recordOutput("CoralInRobot", loadedCoralPoseFieldRelative);
+        Logger.recordOutput(
+            "CoralInRobot",
+            getLoadedCoralPoseFieldRelative(robotPose, elevatorHeight, pivotAngleRadians));
       default:
         break;
     }
@@ -58,18 +67,38 @@ public class CoralVisualizer {
   }
 
   public static void shootCoral() {
-    if (CoralVisualizer.coralState == CoralState.LOADED) {
-      SimulatedArena.getInstance()
-          .addGamePieceProjectile(
-              new ReefscapeCoralOnFly(
-                  robotPose.getTranslation(),
-                  new Translation2d(
-                      loadedCoralPoseRobotRelative.getX(), loadedCoralPoseRobotRelative.getY()),
-                  chassisSpeeds,
-                  new Rotation2d(loadedCoralPoseFieldRelative.getRotation().getZ() + Math.PI),
-                  Meters.of(loadedCoralPoseRobotRelative.getZ()),
-                  MetersPerSecond.of(1.5),
-                  Radians.of(loadedCoralPoseRobotRelative.getRotation().getY())));
+    if (CoralVisualizer.coralState == CoralState.LOADED && Constants.currentMode == Mode.SIM) {
+      if (withinTolerance(
+              elevatorHeight, ElevatorConstants.l4Height, 5.0 * ElevatorConstants.pidTolerance)
+          && withinTolerance(
+              pivotAngleRadians,
+              PivotConstants.placeCoralAngle,
+              5.0 * PivotConstants.pidTolerance)) {
+        SimulatedArena.getInstance()
+            .addGamePieceProjectile(
+                new ReefscapeCoralOnFly(
+                    robotPose.getTranslation(),
+                    new Translation2d(
+                        -loadedCoralPoseRobotRelative.getY() + 0.2,
+                        loadedCoralPoseRobotRelative.getX()),
+                    chassisSpeeds,
+                    new Rotation2d(loadedCoralPoseFieldRelative.getRotation().getZ() + Math.PI),
+                    Meters.of(loadedCoralPoseRobotRelative.getZ()),
+                    MetersPerSecond.of(2),
+                    Radians.of(-Math.PI / 2.0)));
+      } else {
+        SimulatedArena.getInstance()
+            .addGamePieceProjectile(
+                new ReefscapeCoralOnFly(
+                    robotPose.getTranslation(),
+                    new Translation2d(
+                        -loadedCoralPoseRobotRelative.getY(), loadedCoralPoseRobotRelative.getX()),
+                    chassisSpeeds,
+                    new Rotation2d(loadedCoralPoseFieldRelative.getRotation().getZ() + Math.PI),
+                    Meters.of(loadedCoralPoseRobotRelative.getZ()),
+                    MetersPerSecond.of(2),
+                    Radians.of(loadedCoralPoseRobotRelative.getRotation().getY())));
+      }
       CoralVisualizer.coralState = CoralState.GONE;
     }
   }
@@ -79,7 +108,7 @@ public class CoralVisualizer {
     loadedCoralPoseRobotRelative =
         new Pose3d(
             new Translation3d(
-                Units.inchesToMeters(-2.0),
+                Units.inchesToMeters(-2.027555),
                 Math.cos(pivotAngleRadians) * Units.inchesToMeters(-13),
                 Units.inchesToMeters(31.2)
                     + elevatorHeight
@@ -94,7 +123,6 @@ public class CoralVisualizer {
   public static Pose3d getLoadedCoralPoseFieldRelative(
       Pose2d robotPose, double elevatorHeight, double pivotAngleRadians) {
     getLoadedCoralPoseRobotRelative(robotPose, elevatorHeight, pivotAngleRadians);
-    Logger.recordOutput("angle", loadedCoralPoseRobotRelative.getRotation().getY());
     loadedCoralPoseFieldRelative =
         new Pose3d(
             new Translation3d(
@@ -115,5 +143,9 @@ public class CoralVisualizer {
                 robotPose.getRotation().getRadians()
                     + loadedCoralPoseRobotRelative.getRotation().getZ()));
     return loadedCoralPoseFieldRelative;
+  }
+
+  public static boolean withinTolerance(double x, double target, double tolerance) {
+    return Math.abs(x - target) <= tolerance;
   }
 }

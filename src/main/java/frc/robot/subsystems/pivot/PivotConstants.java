@@ -15,11 +15,11 @@ public class PivotConstants {
   public static final double kP = 1.0;
   public static final double kD = 0.0;
   public static final double simP = 10.0;
-  public static final double simD = 0.75;
+  public static final double simD = 1.25;
   public static final double pidTolerance = Units.degreesToRadians(0.5);
 
   // angle setpoints
-  public static final double startAngle = Units.degreesToRadians(0.0 /*53.763*/);
+  public static final double startAngle = Units.degreesToRadians(53.763);
   public static final double maxAngle = Units.degreesToRadians(90);
   public static final double minAngle = Units.degreesToRadians(-90);
   public static final double stowAngle = Units.degreesToRadians(0);

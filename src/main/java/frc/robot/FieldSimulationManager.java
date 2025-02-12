@@ -11,10 +11,11 @@ import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer.CoralState;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class FieldSimulationManager {
-  private static final Rotation2d coralStationLeftRotation = Rotation2d.fromDegrees(126);
-  private static final Rotation2d coralStationRightRotation = Rotation2d.fromDegrees(-126);
+  private static final Rotation2d coralStationLeftRotation = Rotation2d.fromDegrees(-144);
+  private static final Rotation2d coralStationRightRotation = Rotation2d.fromDegrees(-36);
   private static final Rotation2d coralStationRotationTolerance = Rotation2d.fromDegrees(5);
 
   private static final Translation2d[] coralStationLeftDropArea =
@@ -30,6 +31,24 @@ public class FieldSimulationManager {
 
   public static void periodic(
       Pose2d robotPose, Elevator elevator, Pivot pivot, CoralHolder coralHolder) {
+    Logger.recordOutput(
+        "within area", withinArea(robotPose.getTranslation(), coralStationLeftDropArea));
+    Logger.recordOutput(
+        "within rotation",
+        withinRotationTolerance(
+            robotPose.getRotation(), coralStationLeftRotation, coralStationRotationTolerance));
+    Logger.recordOutput(
+        "within elevator",
+        withinTolerance(
+            elevator.getHeight(),
+            ElevatorConstants.intakeCoralHeight,
+            5 * ElevatorConstants.pidTolerance));
+    Logger.recordOutput(
+        "within pivot",
+        withinTolerance(
+            pivot.getAngle(), PivotConstants.intakeCoralAngle, 5 * PivotConstants.pidTolerance));
+    Logger.recordOutput("within holder state", coralHolder.getState() == CoralHolderState.FORWARD);
+    Logger.recordOutput("within coral state", CoralVisualizer.coralState == CoralState.GONE);
     if (secondsSinceLastCoralDrop >= secondsPerCoralDrop
         && withinArea(robotPose.getTranslation(), coralStationLeftDropArea)
         && withinRotationTolerance(

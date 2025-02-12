@@ -45,7 +45,9 @@ public class Pivot extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Coral Pivot", inputs);
+    Logger.processInputs("Pivot", inputs);
+
+    Logger.recordOutput("pivot angle", getAngle());
 
     // if (ticksSinceLastPID >= 2) usingPID = false;
     // ticksSinceLastPID++;
@@ -65,6 +67,8 @@ public class Pivot extends SubsystemBase {
 
     io.setVoltage(
         pid.calculate(getAngle(), angleSetpoint) /* + feedforward.calculate(angleSetpoint, 0)*/);
+
+    Logger.recordOutput("pivot setpoint", angleSetpoint);
 
     // ticksSinceLastPID = 0;
   }

@@ -26,22 +26,22 @@ public class VisionConstants {
           "OV9782_FL",
           new Transform3d(
               new Translation3d(0.241, 0.235, 0.195),
-              new Rotation3d(0, Units.degreesToRadians(-21.875), Units.degreesToRadians(-35.0))));
+              new Rotation3d(0, Units.degreesToRadians(-21.875), Units.degreesToRadians(90 + 35))));
 
   public static final CameraConfig FRONT_RIGHT_CAMERA_CONFIG =
       new CameraConfig(
           "OV9281_FR",
           new Transform3d(
               new Translation3d(0.241, -0.235, 0.195),
-              new Rotation3d(0, Units.degreesToRadians(-21.875), Units.degreesToRadians(35.0))));
+              new Rotation3d(
+                  0, Units.degreesToRadians(-21.875), Units.degreesToRadians(-90 - 35))));
 
   public static final CameraConfig BACK_LEFT_CAMERA_CONFIG =
       new CameraConfig(
           "OV9782_BL",
           new Transform3d(
               new Translation3d(-0.241, 0.235, 0.195),
-              new Rotation3d(
-                  0, Units.degreesToRadians(-21.875), Units.degreesToRadians(180.0 + 35.0))));
+              new Rotation3d(0, Units.degreesToRadians(-21.875), Units.degreesToRadians(90 - 35))));
 
   public static final CameraConfig BACK_RIGHT_CAMERA_CONFIG =
       new CameraConfig(
@@ -49,7 +49,7 @@ public class VisionConstants {
           new Transform3d(
               new Translation3d(-0.241, -0.235, 0.195),
               new Rotation3d(
-                  0, Units.degreesToRadians(-21.875), Units.degreesToRadians(180.0 - 35.0))));
+                  0, Units.degreesToRadians(-21.875), Units.degreesToRadians(-90 + 35))));
 
   public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(1.5, 1.5, 7);
   public static final Matrix<N3, N1> MULTIPLE_TAG_STD_DEVS = VecBuilder.fill(0.3, 0.3, 4);

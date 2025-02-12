@@ -6,6 +6,7 @@ import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AutoTeleopConstants;
 import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.AutoTeleopConstants.Level;
@@ -37,7 +38,9 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
 
     addCommands(
         new ParallelCommandGroup(
-            pathFindingCommand, new GoToPlacingCoralPosition(height, pivot, elevator)),
+            pathFindingCommand,
+            new SequentialCommandGroup(
+                new WaitCommand(0.5), new GoToPlacingCoralPosition(height, pivot, elevator))),
         new ReleaseCoral(coralHolder));
   }
 }

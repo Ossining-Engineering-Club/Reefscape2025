@@ -24,13 +24,13 @@ public class ElevatorConstants {
 
   // angle setpoints
   public static final double startHeight = 0.0;
-  public static final double maxHeight = 1.25;
+  public static final double maxHeight = 1.4;
   public static final double minHeight = 0.0;
-  public static final double l1Height = 0.0;
-  public static final double l2Height = Units.inchesToMeters(3.0);
-  public static final double l3Height = Units.inchesToMeters(17.325);
-  public static final double l4Height = Units.inchesToMeters(49);
-  public static final double intakeCoralHeight = Units.inchesToMeters(17.744);
+  public static final double l1Height = Units.inchesToMeters(3.0);
+  public static final double l2Height = Units.inchesToMeters(14.0);
+  public static final double l3Height = Units.inchesToMeters(30.0);
+  public static final double l4Height = Units.inchesToMeters(55);
+  public static final double intakeCoralHeight = Units.inchesToMeters(0);
   public static final double lowerAlgaeHeight = Units.inchesToMeters(29.945);
   public static final double upperAlgaeHeight = Units.inchesToMeters(41.602);
   public static final double processorHeight = 0.0;
