@@ -66,14 +66,16 @@ public class DriveConstants {
   public static final int backRightAbsCanId = 10;
 
   // Drive motor configuration
+  public static final boolean driveInverted = false;
   public static final int driveMotorCurrentLimit = 50;
   public static final double wheelRadiusMeters = 0.0967 / 2.0;
   public static final double driveMotorReduction = (6.75 / 1.0);
   public static final DCMotor driveGearbox = DCMotor.getKrakenX60(1);
 
   // Drive encoder configuration
-  public static final double driveSensorMechanismRatio =
-      1 / (2 * Math.PI / driveMotorReduction); // Rotor Rotations -> Wheel Radians
+  // public static final boolean driveEncoderInverted = false;
+  public static final double driveEncoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
+  public static final double driveEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
 
   // Drive PID configuration
   public static final double driveKp = 0.0;
@@ -92,7 +94,7 @@ public class DriveConstants {
   public static final DCMotor turnGearbox = DCMotor.getNEO(1);
 
   // Turn encoder configuration
-  public static final boolean turnEncoderInverted = true;
+  // public static final boolean turnEncoderInverted = true;
   public static final double turnEncoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
   public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
 

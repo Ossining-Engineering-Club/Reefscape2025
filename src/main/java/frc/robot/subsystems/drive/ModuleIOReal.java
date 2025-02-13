@@ -15,10 +15,7 @@ package frc.robot.subsystems.drive;
 
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -40,8 +37,9 @@ public class ModuleIOReal implements ModuleIO {
   private final Rotation2d zeroRotation;
 
   // Hardware objects
-  private final TalonFX driveTalon;
+  private final SparkMax driveSparkMax;
   private final SparkMax turnSparkMax;
+  private final RelativeEncoder driveEncoder;
   private final RelativeEncoder turnEncoder;
   private final CANcoder absEncoder;
 
@@ -57,15 +55,16 @@ public class ModuleIOReal implements ModuleIO {
           case 3 -> backRightZeroRotation;
           default -> new Rotation2d();
         };
-    driveTalon =
-        new TalonFX(
+    driveSparkMax =
+        new SparkMax(
             switch (module) {
               case 0 -> frontLeftDriveCanId;
               case 1 -> frontRightDriveCanId;
               case 2 -> backLeftDriveCanId;
               case 3 -> backRightDriveCanId;
               default -> 0;
-            });
+            },
+            MotorType.kBrushless);
     turnSparkMax =
         new SparkMax(
             switch (module) {
@@ -76,6 +75,7 @@ public class ModuleIOReal implements ModuleIO {
               default -> 0;
             },
             MotorType.kBrushless);
+    driveEncoder = driveSparkMax.getEncoder();
     turnEncoder = turnSparkMax.getEncoder();
     absEncoder =
         new CANcoder(
@@ -89,11 +89,26 @@ public class ModuleIOReal implements ModuleIO {
     turnController = turnSparkMax.getClosedLoopController();
 
     // Configure drive motor
-    var driveConfig = new TalonFXConfiguration();
-    driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    driveConfig.Feedback.SensorToMechanismRatio = DriveConstants.driveSensorMechanismRatio;
-    driveTalon.getConfigurator().apply(driveConfig, 0.25);
-    driveTalon.setPosition(0.0, 0.25);
+    var driveConfig = new SparkMaxConfig();
+    driveConfig
+        .inverted(driveInverted)
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(driveMotorCurrentLimit)
+        .voltageCompensation(12.0);
+    driveConfig
+        .encoder
+        .positionConversionFactor(1.0 / driveMotorReduction * driveEncoderPositionFactor)
+        .velocityConversionFactor(1.0 / driveMotorReduction * driveEncoderPositionFactor);
+    driveConfig
+        .closedLoop
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        .positionWrappingEnabled(true)
+        .pidf(driveKp, 0.0, driveKd, 0.0);
+    driveConfig.signals.appliedOutputPeriodMs(20).busVoltagePeriodMs(20).outputCurrentPeriodMs(20);
+    driveSparkMax.configure(
+        driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    driveEncoder.setPosition(0);
 
     // Configure turn motor
     var turnConfig = new SparkMaxConfig();
@@ -122,10 +137,10 @@ public class ModuleIOReal implements ModuleIO {
   @Override
   public void updateInputs(ModuleIOInputs inputs) {
     // Update drive inputs
-    inputs.drivePositionRad = driveTalon.getPosition().getValueAsDouble();
-    inputs.driveVelocityRadPerSec = driveTalon.getVelocity().getValueAsDouble();
-    inputs.driveAppliedVolts = driveTalon.getMotorVoltage().getValueAsDouble();
-    inputs.driveCurrentAmps = driveTalon.getSupplyCurrent().getValueAsDouble();
+    inputs.drivePositionRad = driveEncoder.getPosition();
+    inputs.driveVelocityRadPerSec = driveEncoder.getVelocity();
+    inputs.driveAppliedVolts = driveSparkMax.getAppliedOutput() * driveSparkMax.getBusVoltage();
+    inputs.driveCurrentAmps = driveSparkMax.getOutputCurrent();
 
     // Update turn inputs
     inputs.turnPosition = new Rotation2d(turnEncoder.getPosition()).minus(zeroRotation);
@@ -136,7 +151,7 @@ public class ModuleIOReal implements ModuleIO {
 
   @Override
   public void setDriveVoltage(double voltage) {
-    driveTalon.setVoltage(voltage);
+    driveSparkMax.setVoltage(voltage);
   }
 
   @Override

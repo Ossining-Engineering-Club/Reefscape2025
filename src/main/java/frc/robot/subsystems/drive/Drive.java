@@ -44,8 +44,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionConstants.PoseEstimate;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -94,7 +92,6 @@ public class Drive extends SubsystemBase {
       };
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
-  private final Vision vision;
 
   private final Consumer<Pose2d> resetSimulationPoseCallBack;
 
@@ -104,10 +101,8 @@ public class Drive extends SubsystemBase {
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
       ModuleIO brModuleIO,
-      Vision vision,
       Consumer<Pose2d> resetSimulationPoseCallBack) {
     this.gyroIO = gyroIO;
-    this.vision = vision;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
@@ -204,9 +199,6 @@ public class Drive extends SubsystemBase {
           modules[2].getPosition(),
           modules[3].getPosition()
         });
-
-    // correct odometry with vision
-    updateEstimates(vision.getEstimatedGlobalPoses());
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
@@ -331,14 +323,6 @@ public class Drive extends SubsystemBase {
   public void setPose(Pose2d pose) {
     resetSimulationPoseCallBack.accept(pose);
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
-  }
-
-  /** Updates pose estimator with vision measurements. */
-  public void updateEstimates(PoseEstimate... poses) {
-    for (int i = 0; i < poses.length; i++) {
-      poseEstimator.addVisionMeasurement(
-          poses[i].estimatedPose(), poses[i].timestampSeconds(), poses[i].standardDev());
-    }
   }
 
   /** Returns the maximum linear speed in meters per sec. */
