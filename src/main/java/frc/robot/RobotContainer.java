@@ -183,15 +183,17 @@ public class RobotContainer {
           new Pose3d(
               -0.093574997, 0, 0.7931422542, new Rotation3d(Units.degreesToRadians(53.763), 0, 0)),
         });
-    Logger.recordOutput(
-        "FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
-    Logger.recordOutput(
-        "FieldSimulation/Coral", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
     switch (Constants.currentMode) {
       case REAL:
         break;
       case SIM:
         Logger.recordOutput("SimTrueRobotPose", driveSimulation.getSimulatedDriveTrainPose());
+        Logger.recordOutput(
+            "FieldSimulation/Algae",
+            SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+        Logger.recordOutput(
+            "FieldSimulation/Coral",
+            SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
         break;
       case REPLAY:
         break;
