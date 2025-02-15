@@ -42,11 +42,6 @@ public class DriveConstants {
   public static final Rotation2d backRightZeroRotation =
       new Rotation2d(-.9955535133 + Math.PI / 2.0);
 
-  // FL -> BL
-  // FR -> FL
-  // BL -> BR
-  // BR -> FR
-
   // Device CAN IDs
   public static final int pigeonCanId = 60;
 
@@ -89,20 +84,19 @@ public class DriveConstants {
   public static final boolean turnInverted = true;
   public static final int turnMotorCurrentLimit = 20;
   public static final double turnMotorReduction = 150.0 / 7.0;
-  public static final DCMotor turnGearbox = DCMotor.getNEO(1);
+  public static final DCMotor turnGearbox = DCMotor.getKrakenX60(1);
 
   // Turn encoder configuration
-  public static final boolean turnEncoderInverted = true;
-  public static final double turnEncoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
-  public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
+  public static final double turnSensorMechanismRatio =
+      1 / (2 * Math.PI / turnMotorReduction); // Rotor Rotations -> Radians
 
   // Turn PID configuration
   public static final double turnKp = 0.45;
   public static final double turnKd = 0.00025;
   public static final double turnSimP = 8.0;
   public static final double turnSimD = 0.0;
-  public static final double turnPIDMinInput = 0; // Radians
-  public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
+  public static final double turnPIDMinInput = -Math.PI; // Radians
+  public static final double turnPIDMaxInput = Math.PI; // Radians
 
   // PathPlanner configuration
   public static final double robotMassKg = 52.806;

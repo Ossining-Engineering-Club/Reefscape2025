@@ -15,21 +15,13 @@ package frc.robot.subsystems.drive;
 
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 /**
@@ -41,12 +33,11 @@ public class ModuleIOReal implements ModuleIO {
 
   // Hardware objects
   private final TalonFX driveTalon;
-  private final SparkMax turnSparkMax;
-  private final RelativeEncoder turnEncoder;
+  private final TalonFX turnTalon;
   private final CANcoder absEncoder;
 
-  // Closed loop controllers
-  private final SparkClosedLoopController turnController;
+  // Voltage control requests
+  private final PositionVoltage positionVoltageRequest = new PositionVoltage(0.0);
 
   public ModuleIOReal(int module) {
     zeroRotation =
@@ -66,17 +57,15 @@ public class ModuleIOReal implements ModuleIO {
               case 3 -> backRightDriveCanId;
               default -> 0;
             });
-    turnSparkMax =
-        new SparkMax(
+    turnTalon =
+        new TalonFX(
             switch (module) {
               case 0 -> frontLeftTurnCanId;
               case 1 -> frontRightTurnCanId;
               case 2 -> backLeftTurnCanId;
               case 3 -> backRightTurnCanId;
               default -> 0;
-            },
-            MotorType.kBrushless);
-    turnEncoder = turnSparkMax.getEncoder();
+            });
     absEncoder =
         new CANcoder(
             switch (module) {
@@ -86,37 +75,27 @@ public class ModuleIOReal implements ModuleIO {
               case 3 -> backRightAbsCanId;
               default -> 0;
             });
-    turnController = turnSparkMax.getClosedLoopController();
 
     // Configure drive motor
     var driveConfig = new TalonFXConfiguration();
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    driveConfig.Feedback.SensorToMechanismRatio = DriveConstants.driveSensorMechanismRatio;
+    driveConfig.Feedback.SensorToMechanismRatio = driveSensorMechanismRatio;
+    driveConfig.CurrentLimits.StatorCurrentLimit = driveMotorCurrentLimit;
+    driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     driveTalon.getConfigurator().apply(driveConfig, 0.25);
     driveTalon.setPosition(0.0, 0.25);
 
-    // Configure turn motor
-    var turnConfig = new SparkMaxConfig();
-    turnConfig
-        .inverted(turnInverted)
-        .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(turnMotorCurrentLimit)
-        .voltageCompensation(12.0);
-    turnConfig
-        .encoder
-        .positionConversionFactor(1.0 / turnMotorReduction * turnEncoderPositionFactor)
-        .velocityConversionFactor(1.0 / turnMotorReduction * turnEncoderVelocityFactor);
-    turnConfig
-        .closedLoop
-        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .positionWrappingEnabled(true)
-        .positionWrappingInputRange(turnPIDMinInput, turnPIDMaxInput)
-        .pidf(turnKp, 0.0, turnKd, 0.0);
-    turnConfig.signals.appliedOutputPeriodMs(20).busVoltagePeriodMs(20).outputCurrentPeriodMs(20);
-    turnSparkMax.configure(
-        turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    turnEncoder.setPosition(absEncoder.getPosition().getValueAsDouble() * 2 * Math.PI);
+    var turnConfig = new TalonFXConfiguration();
+    turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    turnConfig.Slot0 = new Slot0Configs().withKP(turnKp).withKD(turnKd);
+    turnConfig.Feedback.SensorToMechanismRatio = turnSensorMechanismRatio;
+    turnConfig.CurrentLimits.StatorCurrentLimit = turnMotorCurrentLimit;
+    turnConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
+    turnConfig.MotorOutput.Inverted =
+        turnInverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+    turnTalon.getConfigurator().apply(turnConfig, 0.25);
+    turnTalon.setPosition(absEncoder.getPosition().getValueAsDouble() * 2 * Math.PI, 0.25);
   }
 
   @Override
@@ -128,10 +107,11 @@ public class ModuleIOReal implements ModuleIO {
     inputs.driveCurrentAmps = driveTalon.getSupplyCurrent().getValueAsDouble();
 
     // Update turn inputs
-    inputs.turnPosition = new Rotation2d(turnEncoder.getPosition()).minus(zeroRotation);
-    inputs.turnVelocityRadPerSec = turnEncoder.getVelocity();
-    inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
-    inputs.turnCurrentAmps = turnSparkMax.getOutputCurrent();
+    inputs.turnPosition =
+        new Rotation2d(turnTalon.getPosition().getValueAsDouble()).minus(zeroRotation);
+    inputs.turnVelocityRadPerSec = turnTalon.getVelocity().getValueAsDouble();
+    inputs.turnAppliedVolts = turnTalon.getMotorVoltage().getValueAsDouble();
+    inputs.turnCurrentAmps = turnTalon.getStatorCurrent().getValueAsDouble();
   }
 
   @Override
@@ -141,14 +121,11 @@ public class ModuleIOReal implements ModuleIO {
 
   @Override
   public void setTurnVoltage(double voltage) {
-    turnSparkMax.setVoltage(voltage);
+    turnTalon.setVoltage(voltage);
   }
 
   @Override
   public void setTurnPosition(Rotation2d rotation) {
-    double setpoint =
-        MathUtil.inputModulus(
-            rotation.plus(zeroRotation).getRadians(), turnPIDMinInput, turnPIDMaxInput);
-    turnController.setReference(setpoint, ControlType.kPosition);
+    turnTalon.setControl(positionVoltageRequest.withPosition(rotation.getRotations()));
   }
 }
