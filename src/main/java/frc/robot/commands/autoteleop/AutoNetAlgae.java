@@ -9,7 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoTeleopConstants;
-import frc.robot.commands.gamepiecemanipulation.PlaceCoralInNet;
+import frc.robot.commands.gamepiecemanipulation.GoToNetAlgaePosition;
+import frc.robot.commands.gamepiecemanipulation.ReleaseAlgae;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.pivot.Pivot;
@@ -29,6 +30,7 @@ public class AutoNetAlgae extends SequentialCommandGroup {
 
     addCommands(
         new ParallelCommandGroup(
-            pathFindingCommand, new PlaceCoralInNet(pivot, elevator, algaeClaw)));
+            pathFindingCommand, new GoToNetAlgaePosition(pivot, elevator, algaeClaw)),
+        new ReleaseAlgae(algaeClaw));
   }
 }

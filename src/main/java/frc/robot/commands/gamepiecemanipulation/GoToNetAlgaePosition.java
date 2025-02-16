@@ -11,13 +11,12 @@ import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotConstants;
 
-public class PlaceCoralInNet extends SequentialCommandGroup {
-  public PlaceCoralInNet(Pivot pivot, Elevator elevator, AlgaeClaw algaeClaw) {
+public class GoToNetAlgaePosition extends SequentialCommandGroup {
+  public GoToNetAlgaePosition(Pivot pivot, Elevator elevator, AlgaeClaw algaeClaw) {
     addCommands(
         new ParallelCommandGroup(
             new ElevatorGoToHeight(elevator, ElevatorConstants.netHeight),
             new PivotGoToAngle(pivot, Units.degreesToRadians(-90))),
-        new PivotGoToAngle(pivot, PivotConstants.netAngle),
-        new ReleaseAlgae(algaeClaw));
+        new PivotGoToAngle(pivot, PivotConstants.netAngle));
   }
 }
