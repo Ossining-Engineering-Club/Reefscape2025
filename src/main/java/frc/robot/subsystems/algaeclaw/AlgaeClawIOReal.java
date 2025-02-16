@@ -1,18 +1,17 @@
 package frc.robot.subsystems.algaeclaw;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 public class AlgaeClawIOReal implements AlgaeClawIO {
-  private final SparkMax clawMotor;
+  private final TalonFX clawMotor;
 
   public AlgaeClawIOReal() {
-    clawMotor = new SparkMax(AlgaeClawConstants.clawCANID, MotorType.kBrushless);
+    clawMotor = new TalonFX(AlgaeClawConstants.clawCANID);
   }
 
   @Override
   public void updateInputs(AlgaeClawIOInputs inputs) {
-    inputs.appliedVolts = clawMotor.getAppliedOutput() * clawMotor.getBusVoltage();
+    inputs.appliedVolts = clawMotor.getMotorVoltage().getValueAsDouble();
   }
 
   @Override
