@@ -9,7 +9,7 @@ import frc.robot.subsystems.coralholder.CoralHolderConstants;
 public class ReleaseCoral extends SequentialCommandGroup {
   public ReleaseCoral(CoralHolder coralHolder) {
     addCommands(
-        Commands.runOnce(() -> coralHolder.forward(), coralHolder),
+        Commands.runOnce(() -> coralHolder.reverse(), coralHolder),
         Commands.waitUntil(() -> !coralHolder.hasCoral()),
         new WaitCommand(CoralHolderConstants.releaseDelaySeconds),
         Commands.runOnce(() -> coralHolder.stop(), coralHolder));

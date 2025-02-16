@@ -63,7 +63,7 @@ public class ModuleIOSim implements ModuleIO {
     //         turnGearbox);
 
     // Enable wrapping for turn PID
-    turnController.enableContinuousInput(-Math.PI, Math.PI);
+    turnController.enableContinuousInput(turnPIDMinInput, turnPIDMaxInput);
   }
 
   @Override

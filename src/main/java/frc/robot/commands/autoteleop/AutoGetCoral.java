@@ -10,19 +10,14 @@ import frc.robot.AutoTeleopConstants;
 import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.commands.gamepiecemanipulation.IntakeCoral;
 import frc.robot.subsystems.coralholder.CoralHolder;
-import frc.robot.subsystems.pivot.pivot;
 import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.groundintakepivot.GroundIntakePivot;
+import frc.robot.subsystems.pivot.Pivot;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 public class AutoGetCoral extends SequentialCommandGroup {
   public AutoGetCoral(
-      AlignmentConfig config,
-      pivot pivot,
-      GroundIntakePivot groundIntakePivot,
-      Elevator elevator,
-      CoralHolder coralHolder)
+      AlignmentConfig config, Pivot pivot, Elevator elevator, CoralHolder coralHolder)
       throws FileVersionException, IOException, ParseException {
     PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
     Command pathFindingCommand =
@@ -31,7 +26,6 @@ public class AutoGetCoral extends SequentialCommandGroup {
 
     addCommands(
         new ParallelCommandGroup(
-            pathFindingCommand,
-            new IntakeCoral(pivot, groundIntakePivot, elevator, coralHolder)));
+            pathFindingCommand, new IntakeCoral(pivot, elevator, coralHolder)));
   }
 }

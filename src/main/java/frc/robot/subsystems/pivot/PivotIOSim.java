@@ -4,23 +4,26 @@ import static frc.robot.subsystems.pivot.PivotConstants.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class PivotIOSim implements PivotIO {
-  public final SingleJointedArmSim pivotSim;
+  public final DCMotorSim pivotSim;
   public double appliedVolts = 0.0;
 
   public PivotIOSim() {
     pivotSim =
-        new SingleJointedArmSim(
-            LinearSystemId.createSingleJointedArmSystem(gearbox, pivotMOI, motorReduction),
-            gearbox,
-            motorReduction,
-            lengthMeters,
-            minAngle,
-            maxAngle,
-            true,
-            startAngle);
+        new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(gearbox, pivotMOI, motorReduction), gearbox);
+    // pivotSim =
+    //     new SingleJointedArmSim(
+    //         LinearSystemId.createSingleJointedArmSystem(gearbox, pivotMOI, motorReduction),
+    //         gearbox,
+    //         motorReduction,
+    //         lengthMeters,
+    //         minAngle,
+    //         maxAngle,
+    //         true,
+    //         startAngle);
 
     pivotSim.setState(startAngle, 0.0);
   }
@@ -30,7 +33,7 @@ public class PivotIOSim implements PivotIO {
     pivotSim.update(0.02);
 
     inputs.appliedVolts = appliedVolts;
-    inputs.angleRadians = pivotSim.getAngleRads();
+    inputs.angleRadians = pivotSim.getAngularPositionRad();
   }
 
   @Override

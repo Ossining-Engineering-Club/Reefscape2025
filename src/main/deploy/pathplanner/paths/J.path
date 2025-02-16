@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.1,
-        "y": 5.42
+        "x": 5.1446,
+        "y": 5.3943
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.975,
-        "y": 5.203493649053891
+        "x": 5.0196,
+        "y": 5.177793649053891
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.01,
-        "y": 5.26
+        "x": 5.0346,
+        "y": 5.204300000000001
       },
       "prevControl": {
-        "x": 5.135,
-        "y": 5.476506350946109
+        "x": 5.1596,
+        "y": 5.42080635094611
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -119.99999999999999
+    "rotation": -29.999999999999996
   },
   "reversed": false,
   "folder": "TeleOp Alignments",
   "idealStartingState": {
     "velocity": 0.5,
-    "rotation": -119.99999999999999
+    "rotation": -29.999999999999996
   },
   "useDefaultConstraints": false
 }
