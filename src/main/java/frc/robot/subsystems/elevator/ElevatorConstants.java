@@ -22,17 +22,18 @@ public class ElevatorConstants {
   public static final double simG = 0.15 / 2.0;
   public static final double pidTolerance = 0.002; // meters
 
-  // angle setpoints
+  // height setpoints
   public static final double startHeight = 0.0;
-  public static final double maxHeight = 1.4;
+  public static final double maxHeight = Units.inchesToMeters(53);
   public static final double minHeight = 0.0;
   public static final double l1Height = Units.inchesToMeters(3.0);
   public static final double l2Height = Units.inchesToMeters(14.0);
   public static final double l3Height = Units.inchesToMeters(30.0);
-  public static final double l4Height = Units.inchesToMeters(55);
+  public static final double l4Height = Units.inchesToMeters(53);
   public static final double intakeCoralHeight = Units.inchesToMeters(0);
-  public static final double lowerAlgaeHeight = Units.inchesToMeters(29.945);
-  public static final double upperAlgaeHeight = Units.inchesToMeters(41.602);
+  public static final double lowerAlgaeHeight = Units.inchesToMeters(16);
+  public static final double upperAlgaeHeight = Units.inchesToMeters(32);
+  public static final double netHeight = Units.inchesToMeters(53);
   public static final double processorHeight = 0.0;
 
   // sim settings

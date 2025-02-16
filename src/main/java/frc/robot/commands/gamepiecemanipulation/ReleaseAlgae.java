@@ -9,9 +9,9 @@ import frc.robot.subsystems.algaeclaw.AlgaeClawConstants;
 public class ReleaseAlgae extends SequentialCommandGroup {
   public ReleaseAlgae(AlgaeClaw algaeClaw) {
     addCommands(
-        Commands.runOnce(() -> algaeClaw.reverseMotor()),
+        Commands.runOnce(() -> algaeClaw.reverseMotor(), algaeClaw),
         Commands.waitUntil(() -> !algaeClaw.hasAlgae()),
         new WaitCommand(AlgaeClawConstants.releaseDelaySeconds),
-        Commands.runOnce(() -> algaeClaw.stopMotor()));
+        Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw));
   }
 }

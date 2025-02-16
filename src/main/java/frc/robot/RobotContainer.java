@@ -36,11 +36,9 @@ import frc.robot.Constants.Mode;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
+import frc.robot.commands.autoteleop.AutoNetAlgae;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
-import frc.robot.commands.gamepiecemanipulation.GoToPlacingCoralPosition;
-import frc.robot.commands.gamepiecemanipulation.IntakeCoral;
-import frc.robot.commands.gamepiecemanipulation.ReleaseCoral;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.algaeclaw.AlgaeClawConstants;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIO;
@@ -59,7 +57,6 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
@@ -242,17 +239,17 @@ public class RobotContainer {
             () -> -0.7 * controller.getRightX()));
 
     // Lock to 0° when A button is held
-    controller
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
-                () -> new Rotation2d()));
+    // controller
+    //     .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -controller.getLeftY(),
+    //             () -> -controller.getLeftX(),
+    //             () -> new Rotation2d()));
 
     // Switch to X pattern when X button is pressed
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when B button is pressed
     controller
@@ -265,31 +262,25 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    controller.b().onTrue(Commands.runOnce(() -> {}, drive));
+    controller
+        .b()
+        .onTrue(Commands.runOnce(() -> {}, drive, pivot, elevator, coralHolder, algaeClaw));
 
-    // controller.x().onTrue(new GoToProcessingPosition(pivot, groundIntakePivot, elevator));
-    // controller.y().onTrue(new IntakeGroundAlgae(groundIntakePivot, pivot, elevator));
-    // controller
-    //     .b()
-    //     .onTrue(
-    //         new IntakeReefAlgae(
-    //             ElevatorConstants.upperAlgaeHeight, pivot, groundIntakePivot, elevator));
-    // controller
-    //     .x()
-    //     .onTrue(
-    //         new GroundIntakePivotGoToAngle(
-    //             groundIntakePivot, GroundIntakePivotConstants.extendAngle));
+    // controller.x().onTrue(new IntakeCoral(pivot, elevator, coralHolder));
     // controller
     //     .y()
-    //     .onTrue(
-    //         new GroundIntakePivotGoToAngle(
-    //             groundIntakePivot, GroundIntakePivotConstants.stowAngle));
+    //     .onTrue(new GoToPlacingCoralPosition(ElevatorConstants.l4Height, pivot, elevator));
+    // controller.b().onTrue(new ReleaseCoral(coralHolder));
 
-    controller.x().onTrue(new IntakeCoral(pivot, elevator, coralHolder));
+    controller
+        .x()
+        .onTrue(
+            Commands.runOnce(
+                () -> (new AutoNetAlgae(pivot, elevator, algaeClaw, drive.getPose())).schedule()));
+
     controller
         .y()
-        .onTrue(new GoToPlacingCoralPosition(ElevatorConstants.l4Height, pivot, elevator));
-    controller.b().onTrue(new ReleaseCoral(coralHolder));
+        .onTrue(new AutoGetCoral(coralStationAlignmentConfigs[0], pivot, elevator, coralHolder));
 
     // Pathfinding
     for (AlignmentConfig config : reefCoralAlignmentConfigs) {
@@ -343,6 +334,15 @@ public class RobotContainer {
     buttonBox
         .button(processorAlignmentConfig.button())
         .onTrue(new AutoProcessAlgae(processorAlignmentConfig, pivot, elevator, algaeClaw));
+    NamedCommands.registerCommand(
+        "Net Algae",
+        Commands.runOnce(
+            () -> (new AutoNetAlgae(pivot, elevator, algaeClaw, drive.getPose())).schedule()));
+    buttonBox
+        .button(netButton)
+        .onTrue(
+            Commands.runOnce(
+                () -> (new AutoNetAlgae(pivot, elevator, algaeClaw, drive.getPose())).schedule()));
   }
 
   /**
@@ -360,7 +360,7 @@ public class RobotContainer {
   public void resetSimState() {
     pivot.resetSimState();
     elevator.resetSimState();
-    CoralVisualizer.setCoralState(CoralState.LOADED);
+    CoralVisualizer.setCoralState(CoralState.GONE);
   }
 
   // defines the poses for each component of the robot model in Advantage Scope
@@ -380,10 +380,6 @@ public class RobotContainer {
               0.7931422542 + elevator.getHeight(),
               new Rotation3d(Units.degreesToRadians(53.763) - pivot.getAngle(), 0, 0)),
         });
-    Logger.recordOutput(
-        "FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
-    Logger.recordOutput(
-        "FieldSimulation/Coral", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
     switch (Constants.currentMode) {
       case REAL:
         CoralVisualizer.update(
@@ -394,6 +390,12 @@ public class RobotContainer {
         break;
       case SIM:
         Logger.recordOutput("SimTrueRobotPose", driveSimulation.getSimulatedDriveTrainPose());
+        Logger.recordOutput(
+            "FieldSimulation/Algae",
+            SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+        Logger.recordOutput(
+            "FieldSimulation/Coral",
+            SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
         if (DriverStation.isEnabled()) {
           CoralVisualizer.update(
               driveSimulation.getSimulatedDriveTrainPose(),

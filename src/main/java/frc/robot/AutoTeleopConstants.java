@@ -11,7 +11,7 @@ public final class AutoTeleopConstants {
   ;
 
   public static final int aButton = 11;
-  public static final int bButton = 8;
+  public static final int bButton = 0; // 8;
   public static final int cButton = 0;
   public static final int dButton = 0;
   public static final int eButton = 0;
@@ -27,6 +27,9 @@ public final class AutoTeleopConstants {
   public static final int l2Button = 1;
   public static final int l3Button = 3;
   public static final int l4Button = 4;
+
+  public static final int processorButton = 0;
+  public static final int netButton = 8;
 
   public static final AlignmentConfig[] reefCoralAlignmentConfigs =
       new AlignmentConfig[] {
@@ -60,7 +63,7 @@ public final class AutoTeleopConstants {
       };
 
   public static final AlignmentConfig processorAlignmentConfig =
-      new AlignmentConfig("Processor", 0);
+      new AlignmentConfig("Processor", processorButton);
 
   public static final PathConstraints reefCoralAlignmentConstraints =
       new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
@@ -73,6 +76,9 @@ public final class AutoTeleopConstants {
 
   public static final PathConstraints processorAlignmentConstraints =
       new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+
+  public static final PathConstraints netAlignmentConstraints =
+      new PathConstraints(1.0, 1.0, Units.degreesToRadians(360), Units.degreesToRadians(360));
 
   public static enum Level {
     L1,
