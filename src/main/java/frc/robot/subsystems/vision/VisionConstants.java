@@ -19,7 +19,7 @@ public class VisionConstants {
       Pose2d estimatedPose, double timestampSeconds, Matrix<N3, N1> standardDev) {}
 
   public static final AprilTagFieldLayout TAG_LAYOUT =
-      AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+      AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
   public static final CameraConfig FRONT_LEFT_CAMERA_CONFIG =
       new CameraConfig(
