@@ -28,9 +28,19 @@ public class AutoNetAlgae extends SequentialCommandGroup {
     Command pathFindingCommand =
         AutoBuilder.pathfindToPose(targetPose, AutoTeleopConstants.netAlignmentConstraints, 0.0);
 
-    addCommands(
-        new ParallelCommandGroup(
-            pathFindingCommand, new GoToNetAlgaePosition(pivot, elevator, algaeClaw)),
-        new ReleaseAlgae(algaeClaw));
+    if ((DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
+            && robotPose.getX() > 7.82)
+        || (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+            && robotPose.getX() < 9.73)) {
+      addCommands(
+          pathFindingCommand,
+          new GoToNetAlgaePosition(pivot, elevator, algaeClaw),
+          new ReleaseAlgae(algaeClaw));
+    } else {
+      addCommands(
+          new ParallelCommandGroup(
+              pathFindingCommand, new GoToNetAlgaePosition(pivot, elevator, algaeClaw)),
+          new ReleaseAlgae(algaeClaw));
+    }
   }
 }

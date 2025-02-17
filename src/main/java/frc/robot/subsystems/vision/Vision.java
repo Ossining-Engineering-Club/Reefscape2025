@@ -7,7 +7,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.FieldConstants;
 import frc.robot.subsystems.vision.VisionConstants.PoseEstimate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -53,9 +53,9 @@ public class Vision extends SubsystemBase {
       if (inputs[i].estimateIsPresent) {
         // don't use if estimate is outside the field
         if (!(inputs[i].estimatedPose.getX() > 0.0
-            && inputs[i].estimatedPose.getX() <= Constants.kFieldLengthMeters
+            && inputs[i].estimatedPose.getX() <= FieldConstants.fieldLengthMeters
             && inputs[i].estimatedPose.getY() > 0.0
-            && inputs[i].estimatedPose.getY() <= Constants.kFieldWidthMeters)) continue;
+            && inputs[i].estimatedPose.getY() <= FieldConstants.fieldWidthMeters)) continue;
         // don't use if estimate is too high, or too tilted
         if (Math.abs(inputs[i].estimatedPose.getZ()) > VisionConstants.MAX_HEIGHT) continue;
         if (Math.abs(inputs[i].estimatedPose.getRotation().getX()) > VisionConstants.MAX_ANGLE)

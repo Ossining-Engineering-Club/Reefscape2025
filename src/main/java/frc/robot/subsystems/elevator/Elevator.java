@@ -68,7 +68,12 @@ public class Elevator extends SubsystemBase {
     Logger.recordOutput("elevator setpoint", pid.getSetpoint().position);
 
     if (ticksSinceLastPID >= 2) usingPID = false;
+    else usingPID = true;
     ticksSinceLastPID++;
+
+    if (!usingPID) {
+      pid.reset(getHeight());
+    }
 
     if (Constants.currentMode == Mode.SIM && !usingPID) {
       io.setVoltage(feedforward.calculate(getHeight(), 0));

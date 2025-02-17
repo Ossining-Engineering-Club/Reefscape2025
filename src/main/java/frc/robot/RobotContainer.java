@@ -39,8 +39,6 @@ import frc.robot.commands.autoteleop.AutoGetReefAlgae;
 import frc.robot.commands.autoteleop.AutoNetAlgae;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
-import frc.robot.commands.gamepiecemanipulation.GoToPlacingCoralPosition;
-import frc.robot.commands.gamepiecemanipulation.IntakeCoral;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.algaeclaw.AlgaeClawConstants;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIO;
@@ -59,7 +57,6 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
@@ -269,22 +266,21 @@ public class RobotContainer {
         .b()
         .onTrue(Commands.runOnce(() -> {}, drive, pivot, elevator, coralHolder, algaeClaw));
 
-    controller.x().onTrue(new IntakeCoral(pivot, elevator, coralHolder));
-    controller
-        .y()
-        .onTrue(new GoToPlacingCoralPosition(ElevatorConstants.l4Height, pivot, elevator));
-    // controller.b().onTrue(new ReleaseCoral(coralHolder));
-
-    // controller
-    //     .x()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () -> (new AutoNetAlgae(pivot, elevator, algaeClaw,
-    // drive.getPose())).schedule()));
-
+    // controller.x().onTrue(new IntakeCoral(pivot, elevator, coralHolder));
     // controller
     //     .y()
-    //     .onTrue(new AutoGetCoral(coralStationAlignmentConfigs[0], pivot, elevator, coralHolder));
+    //     .onTrue(new GoToPlacingCoralPosition(ElevatorConstants.l4Height, pivot, elevator));
+    // controller.b().onTrue(new ReleaseCoral(coralHolder));
+
+    controller
+        .x()
+        .onTrue(
+            Commands.runOnce(
+                () -> (new AutoNetAlgae(pivot, elevator, algaeClaw, drive.getPose())).schedule()));
+
+    controller
+        .y()
+        .onTrue(new AutoGetCoral(coralStationAlignmentConfigs[0], pivot, elevator, coralHolder));
 
     // Pathfinding
     for (AlignmentConfig config : reefCoralAlignmentConfigs) {
@@ -364,7 +360,7 @@ public class RobotContainer {
   public void resetSimState() {
     pivot.resetSimState();
     elevator.resetSimState();
-    CoralVisualizer.setCoralState(CoralState.LOADED);
+    CoralVisualizer.setCoralState(CoralState.GONE);
   }
 
   // defines the poses for each component of the robot model in Advantage Scope

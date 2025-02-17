@@ -15,8 +15,8 @@ public class Pivot extends SubsystemBase {
   private final ProfiledPIDController pid;
   // private final ArmFeedforward feedforward;
 
-  // private boolean usingPID = false;
-  // private int ticksSinceLastPID = 1000000;
+  private boolean usingPID = false;
+  private int ticksSinceLastPID = 1000000;
 
   public Pivot(PivotIO io) {
     this.io = io;
@@ -65,8 +65,13 @@ public class Pivot extends SubsystemBase {
     Logger.recordOutput("pivot angle", getAngle());
     Logger.recordOutput("pivot setpoint", pid.getSetpoint().position);
 
-    // if (ticksSinceLastPID >= 2) usingPID = false;
-    // ticksSinceLastPID++;
+    if (ticksSinceLastPID >= 2) usingPID = false;
+    else usingPID = true;
+    ticksSinceLastPID++;
+
+    if (!usingPID) {
+      pid.reset(getAngle());
+    }
 
     // if (Constants.currentMode == Mode.SIM && !usingPID) {
     //   io.setVoltage(feedforward.calculate(getAngle(), 0));
@@ -84,7 +89,7 @@ public class Pivot extends SubsystemBase {
     io.setVoltage(
         pid.calculate(getAngle(), angleGoal) /* + feedforward.calculate(angleSetpoint, 0)*/);
 
-    // ticksSinceLastPID = 0;
+    ticksSinceLastPID = 0;
   }
 
   public boolean atGoal() {

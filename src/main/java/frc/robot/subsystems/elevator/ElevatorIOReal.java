@@ -22,8 +22,10 @@ public class ElevatorIOReal implements ElevatorIO {
     config.inverted(isInverted).idleMode(IdleMode.kBrake);
     config
         .encoder
-        .positionConversionFactor(1.0 / motorReduction * 2 * Math.PI * drumRadiusMeters * encoderPositionFactor)
-        .velocityConversionFactor(1.0 / motorReduction * 2 * Math.PI * drumRadiusMeters * encoderVelocityFactor);
+        .positionConversionFactor(
+            1.0 / motorReduction * 2 * Math.PI * drumRadiusMeters * encoderPositionFactor)
+        .velocityConversionFactor(
+            1.0 / motorReduction * 2 * Math.PI * drumRadiusMeters * encoderVelocityFactor);
     sparkMax.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     encoder.setPosition(startHeight);
