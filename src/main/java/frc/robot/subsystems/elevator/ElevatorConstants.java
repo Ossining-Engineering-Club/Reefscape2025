@@ -16,10 +16,14 @@ public class ElevatorConstants {
   public static final double kD = 0.0;
   public static final double kS = 0.1;
   public static final double kG = 0.1;
+  public static final double maxVelocity = 0.75; // m/s
+  public static final double maxAcceleration = 1.5; // m/s^2
   public static final double simP = 200.0;
   public static final double simD = 0.0;
   public static final double simS = 0.0;
   public static final double simG = 0.15 / 2.0;
+  public static final double simMaxVelocity = 0.75; // m/s
+  public static final double simMaxAcceleration = 1.5; // m/s^2
   public static final double pidTolerance = 0.002; // meters
 
   // height setpoints

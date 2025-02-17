@@ -5,18 +5,18 @@ import frc.robot.subsystems.pivot.Pivot;
 
 public class PivotGoToAngle extends Command {
   private final Pivot pivot;
-  private final double angleSetpoint;
+  private final double angleGoal;
 
-  public PivotGoToAngle(Pivot pivot, double angleSetpint) {
+  public PivotGoToAngle(Pivot pivot, double angleGoal) {
     this.pivot = pivot;
-    this.angleSetpoint = angleSetpint;
+    this.angleGoal = angleGoal;
 
     addRequirements(pivot);
   }
 
   @Override
   public void execute() {
-    pivot.runSetpoint(angleSetpoint);
+    pivot.runGoal(angleGoal);
   }
 
   @Override
@@ -26,6 +26,6 @@ public class PivotGoToAngle extends Command {
 
   @Override
   public boolean isFinished() {
-    return pivot.atSetpoint();
+    return pivot.atGoal();
   }
 }

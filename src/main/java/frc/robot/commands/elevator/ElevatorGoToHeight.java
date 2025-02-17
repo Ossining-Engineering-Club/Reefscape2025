@@ -5,18 +5,18 @@ import frc.robot.subsystems.elevator.Elevator;
 
 public class ElevatorGoToHeight extends Command {
   private final Elevator elevator;
-  private final double heightSetpoint;
+  private final double heightGoal;
 
-  public ElevatorGoToHeight(Elevator elevator, double heightSetpoint) {
+  public ElevatorGoToHeight(Elevator elevator, double heightGoal) {
     this.elevator = elevator;
-    this.heightSetpoint = heightSetpoint;
+    this.heightGoal = heightGoal;
 
     addRequirements(elevator);
   }
 
   @Override
   public void execute() {
-    elevator.runSetpoint(heightSetpoint);
+    elevator.runGoal(heightGoal);
   }
 
   @Override
@@ -26,6 +26,6 @@ public class ElevatorGoToHeight extends Command {
 
   @Override
   public boolean isFinished() {
-    return elevator.atSetpoint();
+    return elevator.atGoal();
   }
 }

@@ -3,7 +3,8 @@ package frc.robot.subsystems.elevator;
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
@@ -13,7 +14,7 @@ public class Elevator extends SubsystemBase {
   private final ElevatorIO io;
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
-  private final PIDController pid;
+  private final ProfiledPIDController pid;
   private final ElevatorFeedforward feedforward;
 
   private boolean usingPID = false;
@@ -24,22 +25,36 @@ public class Elevator extends SubsystemBase {
 
     switch (Constants.currentMode) {
       case REAL:
-        pid = new PIDController(kP, 0, kD);
+        pid =
+            new ProfiledPIDController(
+                kP, 0, kD, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
         feedforward = new ElevatorFeedforward(kS, kG, 0);
         break;
       case SIM:
-        pid = new PIDController(simP, 0, simD);
+        pid =
+            new ProfiledPIDController(
+                simP,
+                0,
+                simD,
+                new TrapezoidProfile.Constraints(simMaxVelocity, simMaxAcceleration));
         feedforward = new ElevatorFeedforward(simS, simG, 0);
         break;
       case REPLAY:
-        pid = new PIDController(kP, 0, kD);
+        pid =
+            new ProfiledPIDController(
+                kP, 0, kD, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
         feedforward = new ElevatorFeedforward(kS, kG, 0);
         break;
       default:
-        pid = new PIDController(kP, 0, kD);
+        pid =
+            new ProfiledPIDController(
+                kP, 0, kD, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
         feedforward = new ElevatorFeedforward(kS, kG, 0);
         break;
     }
+
+    io.updateInputs(inputs);
+    pid.reset(inputs.heightMeters);
 
     pid.setTolerance(pidTolerance);
   }
@@ -48,6 +63,9 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Elevator", inputs);
+
+    Logger.recordOutput("elevator height", getHeight());
+    Logger.recordOutput("elevator setpoint", pid.getSetpoint().position);
 
     if (ticksSinceLastPID >= 2) usingPID = false;
     ticksSinceLastPID++;
@@ -61,18 +79,17 @@ public class Elevator extends SubsystemBase {
     return inputs.heightMeters;
   }
 
-  public void runSetpoint(double heightSetpoint) {
-    if (heightSetpoint > maxHeight) heightSetpoint = maxHeight;
-    if (heightSetpoint < minHeight) heightSetpoint = minHeight;
+  public void runGoal(double heightGoal) {
+    if (heightGoal > maxHeight) heightGoal = maxHeight;
+    if (heightGoal < minHeight) heightGoal = minHeight;
 
-    io.setVoltage(
-        pid.calculate(getHeight(), heightSetpoint) + feedforward.calculate(heightSetpoint));
+    io.setVoltage(pid.calculate(getHeight(), heightGoal) + feedforward.calculate(heightGoal));
 
     ticksSinceLastPID = 0;
   }
 
-  public boolean atSetpoint() {
-    return pid.atSetpoint();
+  public boolean atGoal() {
+    return pid.atGoal();
   }
 
   public void stop() {
