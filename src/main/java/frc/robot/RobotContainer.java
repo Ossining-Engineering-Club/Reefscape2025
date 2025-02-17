@@ -280,7 +280,7 @@ public class RobotContainer {
 
     controller
         .y()
-        .onTrue(new AutoGetCoral(coralStationAlignmentConfigs[0], pivot, elevator, coralHolder));
+        .onTrue(new AutoGetCoral(coralStationAlignmentConfigs[1], pivot, elevator, coralHolder));
 
     // Pathfinding
     for (AlignmentConfig config : reefCoralAlignmentConfigs) {
