@@ -6,7 +6,7 @@ public class AlgaeClawConstants {
   public static int clawCANID = 1;
 
   // Constant Voltages
-  public static double clawVoltage = 6.0;
+  public static double clawVoltage = 4.0;
   public static double reverseVoltage = -4.0;
 
   // Breakbeam IDs
