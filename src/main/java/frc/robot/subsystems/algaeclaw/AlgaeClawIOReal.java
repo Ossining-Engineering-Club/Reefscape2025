@@ -4,6 +4,7 @@ import static frc.robot.subsystems.algaeclaw.AlgaeClawConstants.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class AlgaeClawIOReal implements AlgaeClawIO {
   private final TalonFX clawMotor;
@@ -12,6 +13,7 @@ public class AlgaeClawIOReal implements AlgaeClawIO {
     clawMotor = new TalonFX(AlgaeClawConstants.clawCANID);
 
     var config = new TalonFXConfiguration();
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.CurrentLimits.StatorCurrentLimit = currentLimit;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
     clawMotor.getConfigurator().apply(config, 0.25);
