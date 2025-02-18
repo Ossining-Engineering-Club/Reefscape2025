@@ -44,6 +44,9 @@ import frc.robot.subsystems.algaeclaw.AlgaeClawConstants;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIO;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIOReal;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIOSim;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOReal;
 import frc.robot.subsystems.coralholder.CoralHolder;
 import frc.robot.subsystems.coralholder.CoralHolderConstants;
 import frc.robot.subsystems.coralholder.CoralHolderIO;
@@ -96,6 +99,7 @@ public class RobotContainer {
   private final Elevator elevator;
   private final CoralHolder coralHolder;
   private final AlgaeClaw algaeClaw;
+  private final Climber climber;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -134,6 +138,7 @@ public class RobotContainer {
             new AlgaeClaw(
                 new AlgaeClawIOReal(),
                 new PhotoelectricSensorIOReal(AlgaeClawConstants.algaeClawBBChannel));
+        climber = new Climber(new ClimberIOReal());
         break;
 
       case SIM:
@@ -174,6 +179,7 @@ public class RobotContainer {
             new AlgaeClaw(
                 new AlgaeClawIOSim(),
                 new PhotoelectricSensorIOSim(AlgaeClawConstants.algaeClawPEID));
+        climber = new Climber(new ClimberIO() {});
         break;
 
       default:
@@ -193,6 +199,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         coralHolder = new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO() {});
         algaeClaw = new AlgaeClaw(new AlgaeClawIO() {}, new PhotoelectricSensorIO() {});
+        climber = new Climber(new ClimberIO() {});
         break;
     }
 
