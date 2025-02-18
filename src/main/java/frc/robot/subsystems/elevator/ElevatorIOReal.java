@@ -26,6 +26,7 @@ public class ElevatorIOReal implements ElevatorIO {
             1.0 / motorReduction * 2 * Math.PI * drumRadiusMeters * encoderPositionFactor)
         .velocityConversionFactor(
             1.0 / motorReduction * 2 * Math.PI * drumRadiusMeters * encoderVelocityFactor);
+    config.smartCurrentLimit(currentLimit);
     sparkMax.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     encoder.setPosition(startHeight);

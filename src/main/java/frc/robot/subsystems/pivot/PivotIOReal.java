@@ -25,6 +25,7 @@ public class PivotIOReal implements PivotIO {
         .encoder
         .positionConversionFactor(1.0 / motorReduction * encoderPositionFactor)
         .velocityConversionFactor(1.0 / motorReduction * encoderVelocityFactor);
+    config.smartCurrentLimit(currentLimit);
     sparkMax.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     encoder.setPosition(startAngle);

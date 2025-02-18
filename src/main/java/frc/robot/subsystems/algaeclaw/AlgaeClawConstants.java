@@ -15,4 +15,7 @@ public class AlgaeClawConstants {
 
   public static final double intakeDelaySeconds = 0.5;
   public static final double releaseDelaySeconds = 0.5;
+
+  // Motor constants
+  public static final double currentLimit = 30;
 }
