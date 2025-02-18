@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import java.io.IOException;
 
 public class VisionConstants {
   public static record CameraConfig(String name, Transform3d robotToCam) {}
@@ -18,8 +19,17 @@ public class VisionConstants {
   public static record PoseEstimate(
       Pose2d estimatedPose, double timestampSeconds, Matrix<N3, N1> standardDev) {}
 
-  public static final AprilTagFieldLayout TAG_LAYOUT =
+  public static final AprilTagFieldLayout TAG_LAYOUT = // getTagLayout();
       AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+
+  private static AprilTagFieldLayout getTagLayout() {
+    try {
+      return new AprilTagFieldLayout("C:\\Users\\eric\\Downloads\\field_calibration.json");
+    } catch (IOException e) {
+      e.printStackTrace();
+      return AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+    }
+  }
 
   public static final CameraConfig FRONT_LEFT_CAMERA_CONFIG =
       new CameraConfig(
