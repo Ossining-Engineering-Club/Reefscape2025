@@ -6,7 +6,7 @@ public class CoralHolderConstants {
   public static final int canid = 0;
   // Motor Power Level
   public static final double forwardVoltage = 4.0;
-  public static final double reverseVoltage = 4.0;
+  public static final double reverseVoltage = -4.0;
 
   // Holder Break Beam
   public static final String coralHolderPEId = "Coral Holder";
