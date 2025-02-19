@@ -18,6 +18,7 @@ import static frc.robot.AutoTeleopConstants.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.FileVersionException;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -103,7 +104,8 @@ public class RobotContainer {
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
-  private final CommandXboxController buttonBox = new CommandXboxController(1);
+  private final CommandXboxController mechanismController = new CommandXboxController(1);
+  private final CommandXboxController buttonBox = new CommandXboxController(2);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -283,11 +285,57 @@ public class RobotContainer {
     //     .x()
     //     .onTrue(
     //         Commands.runOnce(
-    //             () -> (new AutoNetAlgae(pivot, elevator, algaeClaw, drive.getPose())).schedule()));
+    //             () -> (new AutoNetAlgae(pivot, elevator, algaeClaw,
+    // drive.getPose())).schedule()));
 
     // controller
     //     .y()
     //     .onTrue(new AutoGetCoral(coralStationAlignmentConfigs[1], pivot, elevator, coralHolder));
+
+    // manual mechanism control
+    mechanismController
+        .leftBumper()
+        .onTrue(Commands.runOnce(() -> coralHolder.forward(), coralHolder));
+    mechanismController
+        .leftBumper()
+        .onFalse(Commands.runOnce(() -> coralHolder.stop(), coralHolder));
+    mechanismController
+        .rightBumper()
+        .onTrue(Commands.runOnce(() -> coralHolder.reverse(), coralHolder));
+    mechanismController
+        .rightBumper()
+        .onFalse(Commands.runOnce(() -> coralHolder.stop(), coralHolder));
+
+    mechanismController
+        .leftTrigger(0.9)
+        .onTrue(Commands.runOnce(() -> algaeClaw.startMotor(), algaeClaw));
+    mechanismController
+        .leftTrigger(0.9)
+        .onFalse(Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw));
+    mechanismController
+        .rightTrigger(0.9)
+        .onTrue(Commands.runOnce(() -> algaeClaw.reverseMotor(), algaeClaw));
+    mechanismController
+        .rightTrigger(0.9)
+        .onFalse(Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw));
+
+    elevator.setDefaultCommand(
+        Commands.runOnce(
+            () ->
+                elevator.setVoltage(
+                    0.5 * 12.0 * MathUtil.applyDeadband(-mechanismController.getRightY(), 0.2)),
+            elevator));
+
+    pivot.setDefaultCommand(
+        Commands.runOnce(
+            () ->
+                pivot.setVoltage(
+                    0.5 * 12.0 * MathUtil.applyDeadband(-mechanismController.getLeftY(), 0.2)),
+            pivot));
+
+    mechanismController.povCenter().onTrue(Commands.runOnce(() -> climber.stop(), climber));
+    mechanismController.povUp().onTrue(Commands.runOnce(() -> climber.reverse(), climber));
+    mechanismController.povDown().onTrue(Commands.runOnce(() -> climber.forward(), climber));
 
     // Pathfinding
     for (AlignmentConfig config : reefCoralAlignmentConfigs) {
