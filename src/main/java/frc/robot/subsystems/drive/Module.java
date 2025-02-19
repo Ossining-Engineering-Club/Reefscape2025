@@ -15,6 +15,7 @@ package frc.robot.subsystems.drive;
 
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -25,9 +26,13 @@ public class Module {
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
   private final int index;
 
+  private final PIDController pid = new PIDController(turnKp, 0, turnKd);
+
   public Module(ModuleIO io, int index) {
     this.io = io;
     this.index = index;
+
+    pid.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   public void periodic() {
@@ -43,7 +48,8 @@ public class Module {
 
     // Apply setpoints
     io.setDriveVoltage(state.speedMetersPerSecond / DriveConstants.maxSpeedMetersPerSec * 12.0);
-    io.setTurnPosition(state.angle);
+    // io.setTurnPosition(state.angle);
+    io.setTurnVoltage(pid.calculate(inputs.turnPosition.getRadians(), state.angle.getRadians()));
   }
 
   /** Runs the module with the specified output while controlling to zero degrees. */

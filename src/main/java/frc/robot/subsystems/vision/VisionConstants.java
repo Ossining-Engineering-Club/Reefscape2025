@@ -35,14 +35,14 @@ public class VisionConstants {
       new CameraConfig(
           "OV9782_FL",
           new Transform3d(
-              new Translation3d(0.241, 0.235, 0.195),
+              new Translation3d(Units.inchesToMeters(13.72048), Units.inchesToMeters(10.202495), Units.inchesToMeters(7.780637)),
               new Rotation3d(0, Units.degreesToRadians(-21.875), Units.degreesToRadians(90 + 35))));
 
   public static final CameraConfig FRONT_RIGHT_CAMERA_CONFIG =
       new CameraConfig(
-          "OV9281_FR",
+          "OV9782_FR",
           new Transform3d(
-              new Translation3d(0.241, -0.235, 0.195),
+              new Translation3d(Units.inchesToMeters(13.72048), Units.inchesToMeters(-10.202495), Units.inchesToMeters(7.780637)),
               new Rotation3d(
                   0, Units.degreesToRadians(-21.875), Units.degreesToRadians(-90 - 35))));
 
@@ -50,14 +50,14 @@ public class VisionConstants {
       new CameraConfig(
           "OV9782_BL",
           new Transform3d(
-              new Translation3d(-0.241, 0.235, 0.195),
+              new Translation3d(Units.inchesToMeters(-13.72048), Units.inchesToMeters(10.202495), Units.inchesToMeters(7.780637)),
               new Rotation3d(0, Units.degreesToRadians(-21.875), Units.degreesToRadians(90 - 35))));
 
   public static final CameraConfig BACK_RIGHT_CAMERA_CONFIG =
       new CameraConfig(
-          "OV9782_BR",
+          "OV9281_BR",
           new Transform3d(
-              new Translation3d(-0.241, -0.235, 0.195),
+              new Translation3d(Units.inchesToMeters(-13.72048), Units.inchesToMeters(-10.202495), Units.inchesToMeters(7.780637)),
               new Rotation3d(
                   0, Units.degreesToRadians(-21.875), Units.degreesToRadians(-90 + 35))));
 

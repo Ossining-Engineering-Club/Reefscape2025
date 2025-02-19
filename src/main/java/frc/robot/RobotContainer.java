@@ -43,15 +43,12 @@ import frc.robot.commands.autoteleop.AutoProcessAlgae;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.algaeclaw.AlgaeClawConstants;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIO;
-import frc.robot.subsystems.algaeclaw.AlgaeClawIOReal;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIOSim;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIO;
-import frc.robot.subsystems.climber.ClimberIOReal;
 import frc.robot.subsystems.coralholder.CoralHolder;
 import frc.robot.subsystems.coralholder.CoralHolderConstants;
 import frc.robot.subsystems.coralholder.CoralHolderIO;
-import frc.robot.subsystems.coralholder.CoralHolderIOReal;
 import frc.robot.subsystems.coralholder.CoralHolderIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -62,16 +59,13 @@ import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
-import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer.CoralState;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
-import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOSim;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIO;
-import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -130,17 +124,22 @@ public class RobotContainer {
                 new ModuleIOReal(3),
                 vision,
                 (robotPose) -> {});
-        pivot = new Pivot(new PivotIOReal());
-        elevator = new Elevator(new ElevatorIOReal());
-        coralHolder =
-            new CoralHolder(
-                new CoralHolderIOReal(),
-                new PhotoelectricSensorIOReal(CoralHolderConstants.coralHolderBBChannel));
-        algaeClaw =
-            new AlgaeClaw(
-                new AlgaeClawIOReal(),
-                new PhotoelectricSensorIOReal(AlgaeClawConstants.algaeClawBBChannel));
-        climber = new Climber(new ClimberIOReal());
+        // pivot = new Pivot(new PivotIOReal());
+        // elevator = new Elevator(new ElevatorIOReal());
+        // coralHolder =
+        //     new CoralHolder(
+        //         new CoralHolderIOReal(),
+        //         new PhotoelectricSensorIOReal(CoralHolderConstants.coralHolderBBChannel));
+        // algaeClaw =
+        //     new AlgaeClaw(
+        //         new AlgaeClawIOReal(),
+        //         new PhotoelectricSensorIOReal(AlgaeClawConstants.algaeClawBBChannel));
+        // climber = new Climber(new ClimberIOReal());
+        pivot = new Pivot(new PivotIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
+        coralHolder = new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO() {});
+        algaeClaw = new AlgaeClaw(new AlgaeClawIO() {}, new PhotoelectricSensorIO() {});
+        climber = new Climber(new ClimberIO() {});
         break;
 
       case SIM:
@@ -437,11 +436,11 @@ public class RobotContainer {
         });
     switch (Constants.currentMode) {
       case REAL:
-        CoralVisualizer.update(
-            drive.getPose(),
-            elevator.getHeight(),
-            pivot.getAngle(),
-            driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative());
+        // CoralVisualizer.update(
+        //     drive.getPose(),
+        //     elevator.getHeight(),
+        //     pivot.getAngle(),
+        //     driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative());
         break;
       case SIM:
         Logger.recordOutput("SimTrueRobotPose", driveSimulation.getSimulatedDriveTrainPose());

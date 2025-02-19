@@ -34,31 +34,28 @@ public class DriveConstants {
       };
 
   // Zeroed rotation values for each module, see setup instructions
-  public static final Rotation2d frontLeftZeroRotation =
-      new Rotation2d(-1.31157364 + Math.PI / 2.0);
-  public static final Rotation2d frontRightZeroRotation =
-      new Rotation2d(.7209709703 + Math.PI / 2.0);
-  public static final Rotation2d backLeftZeroRotation = new Rotation2d(1.44807786 + Math.PI / 2.0);
-  public static final Rotation2d backRightZeroRotation =
-      new Rotation2d(-.9955535133 + Math.PI / 2.0);
+  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(-2.415);
+  public static final Rotation2d frontRightZeroRotation = new Rotation2d(-2.896 + Math.PI);
+  public static final Rotation2d backLeftZeroRotation = new Rotation2d(-2.950);
+  public static final Rotation2d backRightZeroRotation = new Rotation2d(-0.510 + Math.PI);
 
   // Device CAN IDs
-  public static final int pigeonCanId = 60;
+  public static final int pigeonCanId = 13;
 
-  public static final int frontLeftDriveCanId = 6;
-  public static final int frontRightDriveCanId = 2;
-  public static final int backLeftDriveCanId = 8;
+  public static final int frontLeftDriveCanId = 2;
+  public static final int frontRightDriveCanId = 3;
+  public static final int backLeftDriveCanId = 1;
   public static final int backRightDriveCanId = 4;
 
-  public static final int frontLeftTurnCanId = 5;
-  public static final int frontRightTurnCanId = 1;
-  public static final int backLeftTurnCanId = 7;
-  public static final int backRightTurnCanId = 3;
+  public static final int frontLeftTurnCanId = 6;
+  public static final int frontRightTurnCanId = 7;
+  public static final int backLeftTurnCanId = 5;
+  public static final int backRightTurnCanId = 8;
 
-  public static final int frontLeftAbsCanId = 11;
-  public static final int frontRightAbsCanId = 9;
-  public static final int backLeftAbsCanId = 12;
-  public static final int backRightAbsCanId = 10;
+  public static final int frontLeftAbsCanId = 10;
+  public static final int frontRightAbsCanId = 11;
+  public static final int backLeftAbsCanId = 9;
+  public static final int backRightAbsCanId = 12;
 
   // Drive motor configuration
   public static final int driveMotorCurrentLimit = 50;
@@ -74,7 +71,7 @@ public class DriveConstants {
   public static final double driveKp = 0.0;
   public static final double driveKd = 0.0;
   public static final double driveKs = 0.0;
-  public static final double driveKv = 0.1;
+  public static final double driveKv = 0.0;
   public static final double driveSimP = 0.05;
   public static final double driveSimD = 0.0;
   public static final double driveSimKs = 0.0;
@@ -91,8 +88,8 @@ public class DriveConstants {
       1 / (2 * Math.PI / turnMotorReduction); // Rotor Rotations -> Radians
 
   // Turn PID configuration
-  public static final double turnKp = 0.45;
-  public static final double turnKd = 0.00025;
+  public static final double turnKp = 4.0; // 8.0; // 0.45;
+  public static final double turnKd = 0.003; // 0.0; // 0.00025;
   public static final double turnSimP = 8.0;
   public static final double turnSimD = 0.0;
   public static final double turnPIDMinInput = -Math.PI; // Radians
