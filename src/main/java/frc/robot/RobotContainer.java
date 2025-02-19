@@ -279,15 +279,15 @@ public class RobotContainer {
     //     .onTrue(new GoToPlacingCoralPosition(ElevatorConstants.l4Height, pivot, elevator));
     // controller.b().onTrue(new ReleaseCoral(coralHolder));
 
-    controller
-        .x()
-        .onTrue(
-            Commands.runOnce(
-                () -> (new AutoNetAlgae(pivot, elevator, algaeClaw, drive.getPose())).schedule()));
+    // controller
+    //     .x()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () -> (new AutoNetAlgae(pivot, elevator, algaeClaw, drive.getPose())).schedule()));
 
-    controller
-        .y()
-        .onTrue(new AutoGetCoral(coralStationAlignmentConfigs[1], pivot, elevator, coralHolder));
+    // controller
+    //     .y()
+    //     .onTrue(new AutoGetCoral(coralStationAlignmentConfigs[1], pivot, elevator, coralHolder));
 
     // Pathfinding
     for (AlignmentConfig config : reefCoralAlignmentConfigs) {
