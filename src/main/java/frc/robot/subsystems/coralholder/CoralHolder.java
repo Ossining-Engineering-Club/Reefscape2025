@@ -32,8 +32,9 @@ public class CoralHolder extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-
     Logger.processInputs("Coral Holder", inputs);
+
+    Logger.recordOutput("has coral", hasCoral());
   }
 
   public void stop() {

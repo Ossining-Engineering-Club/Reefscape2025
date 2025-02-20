@@ -21,6 +21,8 @@ public class AlgaeClaw extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Algae Claw", inputs);
+
+    Logger.recordOutput("has algae", hasAlgae());
   }
 
   /** Sets motor voltage to predefined voltage */
