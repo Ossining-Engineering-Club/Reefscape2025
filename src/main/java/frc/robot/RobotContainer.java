@@ -46,9 +46,11 @@ import frc.robot.subsystems.algaeclaw.AlgaeClawIO;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIOSim;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOReal;
 import frc.robot.subsystems.coralholder.CoralHolder;
 import frc.robot.subsystems.coralholder.CoralHolderConstants;
 import frc.robot.subsystems.coralholder.CoralHolderIO;
+import frc.robot.subsystems.coralholder.CoralHolderIOReal;
 import frc.robot.subsystems.coralholder.CoralHolderIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -59,13 +61,16 @@ import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer.CoralState;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
+import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOSim;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIO;
+import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -124,22 +129,22 @@ public class RobotContainer {
                 new ModuleIOReal(3),
                 vision,
                 (robotPose) -> {});
-        // pivot = new Pivot(new PivotIOReal());
-        // elevator = new Elevator(new ElevatorIOReal());
-        // coralHolder =
-        //     new CoralHolder(
-        //         new CoralHolderIOReal(),
-        //         new PhotoelectricSensorIOReal(CoralHolderConstants.coralHolderBBChannel));
+        pivot = new Pivot(new PivotIOReal());
+        elevator = new Elevator(new ElevatorIOReal());
+        coralHolder =
+            new CoralHolder(
+                new CoralHolderIOReal(),
+                new PhotoelectricSensorIOReal(CoralHolderConstants.coralHolderBBChannel));
         // algaeClaw =
         //     new AlgaeClaw(
         //         new AlgaeClawIOReal(),
         //         new PhotoelectricSensorIOReal(AlgaeClawConstants.algaeClawBBChannel));
-        // climber = new Climber(new ClimberIOReal());
-        pivot = new Pivot(new PivotIO() {});
-        elevator = new Elevator(new ElevatorIO() {});
-        coralHolder = new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO() {});
+        climber = new Climber(new ClimberIOReal());
+        // pivot = new Pivot(new PivotIO() {});
+        // elevator = new Elevator(new ElevatorIO() {});
+        // coralHolder = new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO() {});
         algaeClaw = new AlgaeClaw(new AlgaeClawIO() {}, new PhotoelectricSensorIO() {});
-        climber = new Climber(new ClimberIO() {});
+        // climber = new Climber(new ClimberIO() {});
         break;
 
       case SIM:
@@ -294,7 +299,8 @@ public class RobotContainer {
     // manual mechanism control
     mechanismController
         .leftBumper()
-        .onTrue(Commands.runOnce(() -> coralHolder.forward(), coralHolder)
+        .onTrue(
+            Commands.runOnce(() -> coralHolder.forward(), coralHolder)
                 .andThen(Commands.waitUntil(() -> coralHolder.hasCoral()))
                 .andThen(Commands.runOnce(() -> coralHolder.stop(), coralHolder)));
     mechanismController
@@ -307,31 +313,31 @@ public class RobotContainer {
         .rightBumper()
         .onFalse(Commands.runOnce(() -> coralHolder.stop(), coralHolder));
 
-    mechanismController
-        .leftTrigger(0.9)
-        .onTrue(Commands.runOnce(() -> algaeClaw.startMotor(), algaeClaw));
-    mechanismController
-        .leftTrigger(0.9)
-        .onFalse(Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw));
-    mechanismController
-        .rightTrigger(0.9)
-        .onTrue(Commands.runOnce(() -> algaeClaw.reverseMotor(), algaeClaw));
-    mechanismController
-        .rightTrigger(0.9)
-        .onFalse(Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw));
+    // mechanismController
+    //     .leftTrigger(0.9)
+    //     .onTrue(Commands.runOnce(() -> algaeClaw.startMotor(), algaeClaw));
+    // mechanismController
+    //     .leftTrigger(0.9)
+    //     .onFalse(Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw));
+    // mechanismController
+    //     .rightTrigger(0.9)
+    //     .onTrue(Commands.runOnce(() -> algaeClaw.reverseMotor(), algaeClaw));
+    // mechanismController
+    //     .rightTrigger(0.9)
+    //     .onFalse(Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw));
 
     elevator.setDefaultCommand(
         Commands.runOnce(
             () ->
                 elevator.setVoltage(
-                    0.5 * 12.0 * MathUtil.applyDeadband(-mechanismController.getRightY(), 0.2)),
+                    0.2 * 12.0 * MathUtil.applyDeadband(-mechanismController.getRightY(), 0.2)),
             elevator));
 
     pivot.setDefaultCommand(
         Commands.runOnce(
             () ->
                 pivot.setVoltage(
-                    0.5 * 12.0 * MathUtil.applyDeadband(-mechanismController.getLeftY(), 0.2)),
+                    0.2 * 12.0 * MathUtil.applyDeadband(-mechanismController.getLeftY(), 0.2)),
             pivot));
 
     mechanismController.povCenter().onTrue(Commands.runOnce(() -> climber.stop(), climber));

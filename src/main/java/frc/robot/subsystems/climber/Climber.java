@@ -22,17 +22,17 @@ public class Climber extends SubsystemBase {
   }
 
   public void forward() {
-    if (inputs.angleRadians < maxAngle) {
-      io.setChainMotorVoltage(chainMotorForwardVoltage);
-      io.setRopeMotorVoltage(ropeMotorForwardVoltage);
-    } else stop();
+    // if (inputs.angleRadians < maxAngle) {
+    // io.setChainMotorVoltage(chainMotorForwardVoltage);
+    io.setRopeMotorVoltage(ropeMotorForwardVoltage);
+    // } else stop();
   }
 
   public void reverse() {
-    if (inputs.angleRadians > minAngle) {
-      io.setChainMotorVoltage(chainMotorReverseVoltage);
-      io.setRopeMotorVoltage(chainMotorReverseVoltage);
-    } else stop();
+    // if (inputs.angleRadians > minAngle) {
+    // io.setChainMotorVoltage(chainMotorReverseVoltage);
+    io.setRopeMotorVoltage(ropeMotorReverseVoltage);
+    // } else stop();
   }
 
   public void stop() {
