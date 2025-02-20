@@ -294,7 +294,9 @@ public class RobotContainer {
     // manual mechanism control
     mechanismController
         .leftBumper()
-        .onTrue(Commands.runOnce(() -> coralHolder.forward(), coralHolder));
+        .onTrue(Commands.runOnce(() -> coralHolder.forward(), coralHolder)
+                .andThen(Commands.waitUntil(() -> coralHolder.hasCoral()))
+                .andThen(Commands.runOnce(() -> coralHolder.stop(), coralHolder)));
     mechanismController
         .leftBumper()
         .onFalse(Commands.runOnce(() -> coralHolder.stop(), coralHolder));

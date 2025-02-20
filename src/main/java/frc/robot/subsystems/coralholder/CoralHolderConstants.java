@@ -12,7 +12,7 @@ public class CoralHolderConstants {
   public static final String coralHolderPEId = "Coral Holder";
   public static final int coralHolderBBChannel = 0;
 
-  public static final double intakeDelaySeconds = 0.5;
+  public static final double intakeDelaySeconds = 0.0;
   public static final double releaseDelaySeconds = 0.5;
 
   // motor constants
