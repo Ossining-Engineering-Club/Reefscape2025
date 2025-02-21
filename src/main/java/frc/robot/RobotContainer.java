@@ -422,7 +422,7 @@ public class RobotContainer {
   public void resetSimState() {
     pivot.resetSimState();
     elevator.resetSimState();
-    CoralVisualizer.setCoralState(CoralState.GONE);
+    CoralVisualizer.setCoralState(CoralState.LOADED);
   }
 
   // defines the poses for each component of the robot model in Advantage Scope
@@ -437,7 +437,7 @@ public class RobotContainer {
               -0.13335, 0, 0.1390922542 + elevator.getHeight() / 2.0, new Rotation3d(0, 0, 0)),
           new Pose3d(-0.1317625, 0, 0.1835422542 + elevator.getHeight(), new Rotation3d(0, 0, 0)),
           new Pose3d(
-              -0.093574997,
+              -0.093574997 + 0.041099997 - 0.0127,
               0,
               0.7931422542 + elevator.getHeight(),
               new Rotation3d(Units.degreesToRadians(53.763) - pivot.getAngle(), 0, 0)),

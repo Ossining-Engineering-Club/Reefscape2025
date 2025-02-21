@@ -108,7 +108,7 @@ public class CoralVisualizer {
     loadedCoralPoseRobotRelative =
         new Pose3d(
             new Translation3d(
-                Units.inchesToMeters(-2.027555),
+                -0.023,
                 Math.cos(pivotAngleRadians) * Units.inchesToMeters(-13),
                 Units.inchesToMeters(31.2)
                     + elevatorHeight

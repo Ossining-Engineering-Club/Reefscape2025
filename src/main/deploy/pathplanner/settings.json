@@ -33,5 +33,8 @@
   "brModuleY": -0.2275,
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
-  "robotFeatures": []
+  "robotFeatures": [
+    "{\"name\":\"Coral Intake\",\"type\":\"circle\",\"data\":{\"center\":{\"x\":-0.023,\"y\":-0.42},\"radius\":0.04,\"strokeWidth\":0.02,\"filled\":false}}",
+    "{\"name\":\"Algae Intake\",\"type\":\"circle\",\"data\":{\"center\":{\"x\":0.084865721,\"y\":0.42},\"radius\":0.04,\"strokeWidth\":0.02,\"filled\":false}}"
+  ]
 }
