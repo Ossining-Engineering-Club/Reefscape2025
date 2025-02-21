@@ -134,11 +134,11 @@ public class RobotContainer {
         coralHolder =
             new CoralHolder(
                 new CoralHolderIOReal(),
-                new PhotoelectricSensorIOReal(CoralHolderConstants.coralHolderBBChannel));
+                new PhotoelectricSensorIOReal(CoralHolderConstants.coralHolderPEChannel));
         // algaeClaw =
         //     new AlgaeClaw(
         //         new AlgaeClawIOReal(),
-        //         new PhotoelectricSensorIOReal(AlgaeClawConstants.algaeClawBBChannel));
+        //         new PhotoelectricSensorIOReal(AlgaeClawConstants.algaeClawPEChannel));
         climber = new Climber(new ClimberIOReal());
         // pivot = new Pivot(new PivotIO() {});
         // elevator = new Elevator(new ElevatorIO() {});
