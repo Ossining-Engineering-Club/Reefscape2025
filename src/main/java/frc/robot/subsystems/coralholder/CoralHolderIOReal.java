@@ -1,6 +1,7 @@
 package frc.robot.subsystems.coralholder;
 
 import static frc.robot.subsystems.coralholder.CoralHolderConstants.*;
+import static frc.robot.util.SparkUtil.tryUntilOk;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -18,7 +19,12 @@ public class CoralHolderIOReal implements CoralHolderIO {
     var config = new SparkMaxConfig();
     config.idleMode(IdleMode.kBrake);
     config.smartCurrentLimit(currentLimit);
-    sparkMax.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    tryUntilOk(
+        sparkMax,
+        5,
+        () ->
+            sparkMax.configure(
+                config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
   }
 
   @Override

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.pivot;
 
 import static frc.robot.subsystems.pivot.PivotConstants.*;
+import static frc.robot.util.SparkUtil.tryUntilOk;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -26,7 +27,12 @@ public class PivotIOReal implements PivotIO {
         .positionConversionFactor(1.0 / motorReduction * encoderPositionFactor)
         .velocityConversionFactor(1.0 / motorReduction * encoderVelocityFactor);
     config.smartCurrentLimit(currentLimit);
-    sparkMax.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    tryUntilOk(
+        sparkMax,
+        5,
+        () ->
+            sparkMax.configure(
+                config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     encoder.setPosition(startAngle);
   }

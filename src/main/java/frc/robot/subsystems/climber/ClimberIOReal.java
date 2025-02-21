@@ -1,6 +1,7 @@
 package frc.robot.subsystems.climber;
 
 import static frc.robot.subsystems.climber.ClimberConstants.*;
+import static frc.robot.util.SparkUtil.tryUntilOk;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -27,16 +28,24 @@ public class ClimberIOReal implements ClimberIO {
         .positionConversionFactor(1.0 / chainMotorReduction * encoderPositionFactor)
         .velocityConversionFactor(1.0 / chainMotorReduction * encoderVelocityFactor);
     chainMotorConfig.smartCurrentLimit(chainMotorCurrentLimit);
-    chainMotor.configure(
-        chainMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    tryUntilOk(
+        chainMotor,
+        5,
+        () ->
+            chainMotor.configure(
+                chainMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     encoder.setPosition(startAngle);
 
     var ropeMotorConfig = new SparkMaxConfig();
     ropeMotorConfig.idleMode(IdleMode.kBrake);
     ropeMotorConfig.smartCurrentLimit(ropeMotorCurrentLimit);
-    ropeMotor.configure(
-        ropeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    tryUntilOk(
+        ropeMotor,
+        5,
+        () ->
+            ropeMotor.configure(
+                ropeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
   }
 
   @Override

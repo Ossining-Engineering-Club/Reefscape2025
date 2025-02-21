@@ -14,6 +14,7 @@
 package frc.robot.subsystems.drive;
 
 import static frc.robot.subsystems.drive.DriveConstants.*;
+import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -82,8 +83,8 @@ public class ModuleIOReal implements ModuleIO {
     driveConfig.Feedback.SensorToMechanismRatio = driveSensorMechanismRatio;
     driveConfig.CurrentLimits.StatorCurrentLimit = driveMotorCurrentLimit;
     driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    driveTalon.getConfigurator().apply(driveConfig, 0.25);
-    driveTalon.setPosition(0.0, 0.25);
+    tryUntilOk(5, () -> driveTalon.getConfigurator().apply(driveConfig, 0.25));
+    tryUntilOk(5, () -> driveTalon.setPosition(0.0, 0.25));
 
     var turnConfig = new TalonFXConfiguration();
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -94,8 +95,11 @@ public class ModuleIOReal implements ModuleIO {
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
     turnConfig.MotorOutput.Inverted =
         turnInverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
-    turnTalon.getConfigurator().apply(turnConfig, 0.25);
-    turnTalon.setPosition(absEncoder.getPosition().getValueAsDouble() * 2 * Math.PI, 0.25);
+    tryUntilOk(5, () -> turnTalon.getConfigurator().apply(turnConfig, 0.25));
+    tryUntilOk(
+        5,
+        () ->
+            turnTalon.setPosition(absEncoder.getPosition().getValueAsDouble() * 2 * Math.PI, 0.25));
   }
 
   @Override

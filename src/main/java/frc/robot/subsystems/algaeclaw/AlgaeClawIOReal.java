@@ -1,6 +1,7 @@
 package frc.robot.subsystems.algaeclaw;
 
 import static frc.robot.subsystems.algaeclaw.AlgaeClawConstants.*;
+import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -16,7 +17,7 @@ public class AlgaeClawIOReal implements AlgaeClawIO {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.CurrentLimits.StatorCurrentLimit = currentLimit;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
-    clawMotor.getConfigurator().apply(config, 0.25);
+    tryUntilOk(5, () -> clawMotor.getConfigurator().apply(config, 0.25));
   }
 
   @Override
