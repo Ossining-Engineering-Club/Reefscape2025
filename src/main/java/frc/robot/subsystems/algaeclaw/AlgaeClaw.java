@@ -1,11 +1,10 @@
 package frc.robot.subsystems.algaeclaw;
 
+import static frc.robot.subsystems.algaeclaw.AlgaeClawConstants.holdingVoltage;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensor;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
-
-import static frc.robot.subsystems.algaeclaw.AlgaeClawConstants.holdingVoltage;
-
 import org.littletonrobotics.junction.Logger;
 
 public class AlgaeClaw extends SubsystemBase {

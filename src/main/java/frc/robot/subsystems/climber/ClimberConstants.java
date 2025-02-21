@@ -6,7 +6,7 @@ public class ClimberConstants {
   public static final int chainMotorCanId = 14;
   public static final int ropeMotorCanId = 15;
 
-  public static final double startAngle = Units.degreesToRadians(180.0);
+  public static final double startAngle = Units.degreesToRadians(0.0);
   public static final boolean isInverted = false;
 
   public static final double chainMotorReduction = 50.0 / 1.0;
@@ -26,6 +26,6 @@ public class ClimberConstants {
   public static final double minAngle = Units.degreesToRadians(0.0);
   public static final double maxAngle = Units.degreesToRadians(180.0);
 
-  public static final double retractAngle = Units.degreesToRadians(180.0);
-  public static final double extendAngle = Units.degreesToRadians(0.0);
+  public static final double retractAngle = Units.degreesToRadians(0.0);
+  public static final double extendAngle = Units.degreesToRadians(180.0);
 }

@@ -23,15 +23,15 @@ public class Climber extends SubsystemBase {
 
   public void forward() {
     // if (inputs.angleRadians < maxAngle) {
-    // io.setChainMotorVoltage(chainMotorForwardVoltage);
-    io.setRopeMotorVoltage(ropeMotorForwardVoltage);
+    io.setChainMotorVoltage(chainMotorForwardVoltage);
+    // io.setRopeMotorVoltage(ropeMotorForwardVoltage);
     // } else stop();
   }
 
   public void reverse() {
     // if (inputs.angleRadians > minAngle) {
-    // io.setChainMotorVoltage(chainMotorReverseVoltage);
-    io.setRopeMotorVoltage(ropeMotorReverseVoltage);
+    io.setChainMotorVoltage(chainMotorReverseVoltage);
+    // io.setRopeMotorVoltage(ropeMotorReverseVoltage);
     // } else stop();
   }
 
@@ -45,14 +45,14 @@ public class Climber extends SubsystemBase {
   }
 
   public Command extend() {
-    return Commands.runOnce(() -> reverse())
-        .andThen(Commands.waitUntil(() -> getAngle() <= extendAngle))
+    return Commands.runOnce(() -> forward())
+        .andThen(Commands.waitUntil(() -> getAngle() >= extendAngle))
         .andThen(Commands.runOnce(() -> stop()));
   }
 
   public Command retract() {
-    return Commands.runOnce(() -> forward())
-        .andThen(Commands.waitUntil(() -> getAngle() >= retractAngle))
+    return Commands.runOnce(() -> reverse())
+        .andThen(Commands.waitUntil(() -> getAngle() <= retractAngle))
         .andThen(Commands.runOnce(() -> stop()));
   }
 }

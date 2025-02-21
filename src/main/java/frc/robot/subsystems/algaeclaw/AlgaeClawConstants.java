@@ -3,7 +3,7 @@ package frc.robot.subsystems.algaeclaw;
 public class AlgaeClawConstants {
 
   // CAN ID
-  public static int clawCANID = 1;
+  public static int clawCANID = 18;
 
   // Constant Voltages
   public static double clawVoltage = 4.0;
@@ -14,7 +14,7 @@ public class AlgaeClawConstants {
   public static final String algaeClawPEID = "Algae Claw";
   public static final int algaeClawPEChannel = 1;
 
-  public static final double intakeDelaySeconds = 0.5;
+  public static final double intakeDelaySeconds = 0.25;
   public static final double releaseDelaySeconds = 0.5;
 
   // Motor constants

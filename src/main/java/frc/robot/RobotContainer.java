@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.AutoTeleopConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -43,6 +44,7 @@ import frc.robot.commands.autoteleop.AutoProcessAlgae;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.algaeclaw.AlgaeClawConstants;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIO;
+import frc.robot.subsystems.algaeclaw.AlgaeClawIOReal;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIOSim;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIO;
@@ -135,15 +137,15 @@ public class RobotContainer {
             new CoralHolder(
                 new CoralHolderIOReal(),
                 new PhotoelectricSensorIOReal(CoralHolderConstants.coralHolderPEChannel));
-        // algaeClaw =
-        //     new AlgaeClaw(
-        //         new AlgaeClawIOReal(),
-        //         new PhotoelectricSensorIOReal(AlgaeClawConstants.algaeClawPEChannel));
+        algaeClaw =
+            new AlgaeClaw(
+                new AlgaeClawIOReal(),
+                new PhotoelectricSensorIOReal(AlgaeClawConstants.algaeClawPEChannel));
         climber = new Climber(new ClimberIOReal());
         // pivot = new Pivot(new PivotIO() {});
         // elevator = new Elevator(new ElevatorIO() {});
         // coralHolder = new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO() {});
-        algaeClaw = new AlgaeClaw(new AlgaeClawIO() {}, new PhotoelectricSensorIO() {});
+        // algaeClaw = new AlgaeClaw(new AlgaeClawIO() {}, new PhotoelectricSensorIO() {});
         // climber = new Climber(new ClimberIO() {});
         break;
 
@@ -313,18 +315,22 @@ public class RobotContainer {
         .rightBumper()
         .onFalse(Commands.runOnce(() -> coralHolder.stop(), coralHolder));
 
-    // mechanismController
-    //     .leftTrigger(0.9)
-    //     .onTrue(Commands.runOnce(() -> algaeClaw.startMotor(), algaeClaw));
-    // mechanismController
-    //     .leftTrigger(0.9)
-    //     .onFalse(Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw));
-    // mechanismController
-    //     .rightTrigger(0.9)
-    //     .onTrue(Commands.runOnce(() -> algaeClaw.reverseMotor(), algaeClaw));
-    // mechanismController
-    //     .rightTrigger(0.9)
-    //     .onFalse(Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw));
+    mechanismController
+        .leftTrigger(0.9)
+        .onTrue(
+            Commands.runOnce(() -> algaeClaw.startMotor(), algaeClaw)
+                .andThen(Commands.waitUntil(() -> algaeClaw.hasAlgae()))
+                .andThen(Commands.waitTime(Seconds.of(AlgaeClawConstants.intakeDelaySeconds)))
+                .andThen(Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw)));
+    mechanismController
+        .leftTrigger(0.9)
+        .onFalse(Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw));
+    mechanismController
+        .rightTrigger(0.9)
+        .onTrue(Commands.runOnce(() -> algaeClaw.reverseMotor(), algaeClaw));
+    mechanismController
+        .rightTrigger(0.9)
+        .onFalse(Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw));
 
     elevator.setDefaultCommand(
         Commands.runOnce(
