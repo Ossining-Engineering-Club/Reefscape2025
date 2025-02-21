@@ -8,6 +8,7 @@ public class AlgaeClawConstants {
   // Constant Voltages
   public static double clawVoltage = 4.0;
   public static double reverseVoltage = -4.0;
+  public static double holdingVoltage = 0.36;
 
   // Breakbeam IDs
   public static final String algaeClawPEID = "Algae Claw";
