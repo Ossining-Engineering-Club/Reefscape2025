@@ -53,6 +53,8 @@ public class ClimberIOReal implements ClimberIO {
     inputs.chainMotorAppliedVolts = chainMotor.getAppliedOutput() * chainMotor.getBusVoltage();
     inputs.ropeMotorAppliedVolts = ropeMotor.getAppliedOutput() * ropeMotor.getBusVoltage();
     inputs.angleRadians = encoder.getPosition();
+    inputs.chainMotorStatorCurrent = chainMotor.getOutputCurrent();
+    inputs.ropeMotorStatorCurrent = ropeMotor.getOutputCurrent();
   }
 
   @Override

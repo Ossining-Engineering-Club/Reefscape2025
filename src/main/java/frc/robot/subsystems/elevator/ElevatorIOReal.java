@@ -42,6 +42,7 @@ public class ElevatorIOReal implements ElevatorIO {
   public void updateInputs(ElevatorIOInputs inputs) {
     inputs.appliedVolts = sparkMax.getAppliedOutput() * sparkMax.getBusVoltage();
     inputs.heightMeters = encoder.getPosition();
+    inputs.statorCurrent = sparkMax.getOutputCurrent();
   }
 
   @Override

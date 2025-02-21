@@ -108,14 +108,16 @@ public class ModuleIOReal implements ModuleIO {
     inputs.drivePositionRad = driveTalon.getPosition().getValueAsDouble();
     inputs.driveVelocityRadPerSec = driveTalon.getVelocity().getValueAsDouble();
     inputs.driveAppliedVolts = driveTalon.getMotorVoltage().getValueAsDouble();
-    inputs.driveCurrentAmps = driveTalon.getSupplyCurrent().getValueAsDouble();
+    inputs.driveStatorCurrent = driveTalon.getStatorCurrent().getValueAsDouble();
+    inputs.driveSupplyCurrent = driveTalon.getSupplyCurrent().getValueAsDouble();
 
     // Update turn inputs
     inputs.turnPosition =
         new Rotation2d(turnTalon.getPosition().getValueAsDouble()).minus(zeroRotation);
     inputs.turnVelocityRadPerSec = turnTalon.getVelocity().getValueAsDouble();
     inputs.turnAppliedVolts = turnTalon.getMotorVoltage().getValueAsDouble();
-    inputs.turnCurrentAmps = turnTalon.getStatorCurrent().getValueAsDouble();
+    inputs.turnStatorCurrent = turnTalon.getStatorCurrent().getValueAsDouble();
+    inputs.turnSupplyCurrent = turnTalon.getSupplyCurrent().getValueAsDouble();
   }
 
   @Override

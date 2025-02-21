@@ -10,6 +10,8 @@ public interface ClimberIO {
     public double chainMotorAppliedVolts = 0;
     public double ropeMotorAppliedVolts = 0;
     public double angleRadians = startAngle;
+    public double chainMotorStatorCurrent = 0.0;
+    public double ropeMotorStatorCurrent = 0.0;
   }
 
   /** Updates the set of loggable inputs. */

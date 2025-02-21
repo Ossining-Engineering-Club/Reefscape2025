@@ -94,14 +94,16 @@ public class ModuleIOSim implements ModuleIO {
     inputs.drivePositionRad = moduleSimulation.getDriveWheelFinalPosition().in(Radians);
     inputs.driveVelocityRadPerSec = moduleSimulation.getDriveWheelFinalSpeed().in(RadiansPerSecond);
     inputs.driveAppliedVolts = driveAppliedVolts;
-    inputs.driveCurrentAmps = Math.abs(moduleSimulation.getDriveMotorStatorCurrent().in(Amps));
+    inputs.driveStatorCurrent = Math.abs(moduleSimulation.getDriveMotorStatorCurrent().in(Amps));
+    inputs.driveSupplyCurrent = Math.abs(moduleSimulation.getDriveMotorSupplyCurrent().in(Amps));
 
     // Update turn inputs
     inputs.turnPosition = moduleSimulation.getSteerAbsoluteFacing();
     inputs.turnVelocityRadPerSec =
         moduleSimulation.getSteerAbsoluteEncoderSpeed().in(RadiansPerSecond);
     inputs.turnAppliedVolts = turnAppliedVolts;
-    inputs.turnCurrentAmps = Math.abs(moduleSimulation.getSteerMotorStatorCurrent().in(Amps));
+    inputs.turnStatorCurrent = Math.abs(moduleSimulation.getSteerMotorStatorCurrent().in(Amps));
+    inputs.turnSupplyCurrent = Math.abs(moduleSimulation.getSteerMotorSupplyCurrent().in(Amps));
   }
 
   @Override

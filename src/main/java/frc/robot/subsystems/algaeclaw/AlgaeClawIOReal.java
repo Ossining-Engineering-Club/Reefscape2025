@@ -23,6 +23,8 @@ public class AlgaeClawIOReal implements AlgaeClawIO {
   @Override
   public void updateInputs(AlgaeClawIOInputs inputs) {
     inputs.appliedVolts = clawMotor.getMotorVoltage().getValueAsDouble();
+    inputs.statorCurrent = clawMotor.getStatorCurrent().getValueAsDouble();
+    inputs.supplyCurrent = clawMotor.getSupplyCurrent().getValueAsDouble();
   }
 
   @Override

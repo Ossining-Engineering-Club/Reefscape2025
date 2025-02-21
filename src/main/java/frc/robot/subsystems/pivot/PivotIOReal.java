@@ -41,6 +41,7 @@ public class PivotIOReal implements PivotIO {
   public void updateInputs(PivotIOInputs inputs) {
     inputs.appliedVolts = sparkMax.getAppliedOutput() * sparkMax.getBusVoltage();
     inputs.angleRadians = encoder.getPosition();
+    inputs.statorCurrent = sparkMax.getOutputCurrent();
   }
 
   @Override

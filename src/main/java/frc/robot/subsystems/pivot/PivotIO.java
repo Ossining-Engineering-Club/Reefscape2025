@@ -7,6 +7,7 @@ public interface PivotIO {
   public static class PivotIOInputs {
     public double appliedVolts = 0.0;
     public double angleRadians = 0.0;
+    public double statorCurrent = 0.0;
   }
 
   /** Updates the set of loggable inputs. */
