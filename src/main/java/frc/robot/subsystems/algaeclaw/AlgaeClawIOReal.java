@@ -25,6 +25,7 @@ public class AlgaeClawIOReal implements AlgaeClawIO {
     inputs.appliedVolts = clawMotor.getMotorVoltage().getValueAsDouble();
     inputs.statorCurrent = clawMotor.getStatorCurrent().getValueAsDouble();
     inputs.supplyCurrent = clawMotor.getSupplyCurrent().getValueAsDouble();
+    inputs.temperatureCelsius = clawMotor.getDeviceTemp().getValueAsDouble();
   }
 
   @Override

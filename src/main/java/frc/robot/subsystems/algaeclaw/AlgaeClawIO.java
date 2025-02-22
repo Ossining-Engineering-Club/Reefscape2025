@@ -8,6 +8,7 @@ public interface AlgaeClawIO {
     public double appliedVolts = 0.0;
     public double statorCurrent = 0.0;
     public double supplyCurrent = 0.0;
+    public double temperatureCelsius = 0.0;
   }
 
   /** Updates the set of loggable inputs. */
