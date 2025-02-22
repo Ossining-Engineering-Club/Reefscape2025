@@ -2,7 +2,7 @@ package frc.robot.commands.autoteleop;
 
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.LockOntoAlgae;
+import frc.robot.commands.drive.LockOntoAlgae;
 import frc.robot.commands.gamepiecemanipulation.GoToGroundAlgaePosition;
 import frc.robot.commands.gamepiecemanipulation.IntakeGroundAlgae;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
