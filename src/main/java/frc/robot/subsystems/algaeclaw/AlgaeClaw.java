@@ -1,7 +1,10 @@
 package frc.robot.subsystems.algaeclaw;
 
+import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.subsystems.algaeclaw.AlgaeClawConstants.holdingVoltage;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensor;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
@@ -60,5 +63,12 @@ public class AlgaeClaw extends SubsystemBase {
   /** Gets state of AlgaeClaw breakbeam */
   public boolean hasAlgae() {
     return photoelectricSensor.isTripped();
+  }
+
+  public Command intake() {
+    return Commands.runOnce(() -> this.startMotor(), this)
+            .andThen(Commands.waitUntil(() -> this.hasAlgae()))
+            .andThen(Commands.waitTime(Seconds.of(AlgaeClawConstants.intakeDelaySeconds)))
+            .andThen(Commands.runOnce(() -> this.stopMotor(), this));
   }
 }
