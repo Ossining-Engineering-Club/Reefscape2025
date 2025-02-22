@@ -40,6 +40,7 @@ public class ElevatorConstants {
   public static final double upperAlgaeHeight = Units.inchesToMeters(32);
   public static final double netHeight = Units.inchesToMeters(53);
   public static final double processorHeight = 0.0;
+  public static final double groundAlgaeHeight = 0.0;
 
   // sim settings
   public static final DCMotor gearbox = DCMotor.getKrakenX60(2);

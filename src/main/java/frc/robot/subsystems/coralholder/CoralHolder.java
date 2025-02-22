@@ -67,10 +67,13 @@ public class CoralHolder extends SubsystemBase {
   }
 
   public Command intake() {
-    return Commands.runOnce(() -> this.forward(), this)
-            .andThen(Commands.waitUntil(() -> this.hasCoral()))
-            .andThen(Commands.waitTime(Seconds.of(CoralHolderConstants.intakeDelaySeconds)))
-            .andThen(Commands.runOnce(() -> this.stop(), this));
+    return Commands.either(
+              Commands.runOnce(() -> this.forward(), this)
+                .andThen(Commands.waitUntil(() -> this.hasCoral()))
+                .andThen(Commands.waitTime(Seconds.of(CoralHolderConstants.intakeDelaySeconds)))
+                .andThen(Commands.runOnce(() -> this.stop(), this)),
+              Commands.runOnce(() -> {}),
+              () -> !hasCoral());
   }
 
   public Command release() {

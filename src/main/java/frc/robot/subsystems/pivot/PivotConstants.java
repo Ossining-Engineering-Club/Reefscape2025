@@ -33,6 +33,7 @@ public class PivotConstants {
   public static final double intakeReefAlgaeAngle = Units.degreesToRadians(30.0);
   public static final double processorAngle = Units.degreesToRadians(35.0);
   public static final double netAngle = Units.degreesToRadians(-135.0);
+  public static final double groundAlgaeAngle = Units.degreesToRadians(-225.0);
 
   // sim settings
   public static final DCMotor gearbox = DCMotor.getFalcon500(1);
