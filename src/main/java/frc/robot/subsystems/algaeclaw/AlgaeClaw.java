@@ -53,7 +53,7 @@ public class AlgaeClaw extends SubsystemBase {
     io.setVoltage(AlgaeClawConstants.reverseVoltage);
   }
 
-  /** Sets motor voltage to zero */
+  /** Stops motor or runs holding voltage */
   public void stopMotor() {
     state = AlgaeClawState.STOPPED;
     if (hasAlgae()) io.setVoltage(holdingVoltage);

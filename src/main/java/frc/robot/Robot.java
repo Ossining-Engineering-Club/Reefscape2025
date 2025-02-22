@@ -114,7 +114,9 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    robotContainer.stopEverything();
+  }
 
   /** This function is called periodically when disabled. */
   @Override
@@ -126,6 +128,7 @@ public class Robot extends LoggedRobot {
     if (Constants.currentMode == Mode.SIM) {
       SimulatedArena.getInstance().resetFieldForAuto();
     }
+    robotContainer.stopEverything();
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -148,6 +151,7 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+    robotContainer.stopEverything();
   }
 
   /** This function is called periodically during operator control. */

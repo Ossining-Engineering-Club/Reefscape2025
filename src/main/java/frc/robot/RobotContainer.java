@@ -279,7 +279,7 @@ public class RobotContainer {
 
     controller
         .b()
-        .onTrue(Commands.runOnce(() -> {}, drive, pivot, elevator, coralHolder, algaeClaw));
+        .onTrue(Commands.runOnce(() -> stopEverything(), drive, pivot, elevator, coralHolder, algaeClaw));
 
     // controller.x().onTrue(new IntakeCoral(pivot, elevator, coralHolder));
     // controller
@@ -429,6 +429,16 @@ public class RobotContainer {
     pivot.resetSimState();
     elevator.resetSimState();
     CoralVisualizer.setCoralState(CoralState.LOADED);
+  }
+
+  // stops everything except keeps algae claw holding voltage if on
+  public void stopEverything() {
+    algaeClaw.stopMotor();
+    climber.stop();
+    coralHolder.stop();
+    drive.stop();
+    elevator.stop();
+    pivot.stop();
   }
 
   // defines the poses for each component of the robot model in Advantage Scope
