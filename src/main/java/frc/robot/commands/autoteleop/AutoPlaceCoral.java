@@ -11,7 +11,6 @@ import frc.robot.AutoTeleopConstants;
 import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.AutoTeleopConstants.Level;
 import frc.robot.commands.gamepiecemanipulation.GoToPlacingCoralPosition;
-import frc.robot.commands.gamepiecemanipulation.ReleaseCoral;
 import frc.robot.subsystems.coralholder.CoralHolder;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
@@ -41,6 +40,6 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
             pathFindingCommand,
             new SequentialCommandGroup(
                 new WaitCommand(0.5), new GoToPlacingCoralPosition(height, pivot, elevator))),
-        new ReleaseCoral(coralHolder));
+        coralHolder.release());
   }
 }

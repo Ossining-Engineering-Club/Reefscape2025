@@ -1,7 +1,10 @@
 package frc.robot.subsystems.coralholder;
 
+import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.subsystems.coralholder.CoralHolderConstants.*;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
@@ -61,5 +64,19 @@ public class CoralHolder extends SubsystemBase {
 
   public CoralHolderState getState() {
     return state;
+  }
+
+  public Command intake() {
+    return Commands.runOnce(() -> this.forward(), this)
+            .andThen(Commands.waitUntil(() -> this.hasCoral()))
+            .andThen(Commands.waitTime(Seconds.of(CoralHolderConstants.intakeDelaySeconds)))
+            .andThen(Commands.runOnce(() -> this.stop(), this));
+  }
+
+  public Command release() {
+    return Commands.runOnce(() -> this.reverse(), this)
+            .andThen(Commands.waitUntil(() -> !this.hasCoral()))
+            .andThen(Commands.waitTime(Seconds.of(CoralHolderConstants.releaseDelaySeconds)))
+            .andThen(Commands.runOnce(() -> this.stop(), this));
   }
 }
