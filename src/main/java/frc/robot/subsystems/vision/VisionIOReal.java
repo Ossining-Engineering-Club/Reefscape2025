@@ -24,20 +24,27 @@ public class VisionIOReal implements VisionIO {
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
-    PhotonPipelineResult result = camera.getLatestResult();
-    var optionalEstimate = estimator.update(result);
-    if (optionalEstimate.isPresent()) {
-      List<PhotonTrackedTarget> tags = result.getTargets();
-      int[] tagIds = new int[tags.size()];
-      for (int i = 0; i < tags.size(); i++) {
-        tagIds[i] = tags.get(i).getFiducialId();
-      }
-      inputs.tagIds = tagIds;
+    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+    if (results.size() > 0) {
+      PhotonPipelineResult result = results.get(results.size() - 1);
+      // PhotonPipelineResult result = camera.getLatestResult();
+      var optionalEstimate = estimator.update(result);
+      if (optionalEstimate.isPresent()) {
+        List<PhotonTrackedTarget> tags = result.getTargets();
+        int[] tagIds = new int[tags.size()];
+        for (int i = 0; i < tags.size(); i++) {
+          tagIds[i] = tags.get(i).getFiducialId();
+        }
+        inputs.tagIds = tagIds;
 
-      inputs.estimatedPose = optionalEstimate.get().estimatedPose;
-      inputs.timestampSeconds = optionalEstimate.get().timestampSeconds;
-      inputs.strategy = optionalEstimate.get().strategy;
-      inputs.estimateIsPresent = true;
+        inputs.estimatedPose = optionalEstimate.get().estimatedPose;
+        inputs.timestampSeconds = optionalEstimate.get().timestampSeconds;
+        inputs.strategy = optionalEstimate.get().strategy;
+        inputs.estimateIsPresent = true;
+      } else {
+        inputs.estimateIsPresent = false;
+        inputs.tagIds = new int[0];
+      }
     } else {
       inputs.estimateIsPresent = false;
       inputs.tagIds = new int[0];

@@ -279,7 +279,9 @@ public class RobotContainer {
 
     controller
         .b()
-        .onTrue(Commands.runOnce(() -> stopEverything(), drive, pivot, elevator, coralHolder, algaeClaw));
+        .onTrue(
+            Commands.runOnce(
+                () -> stopEverything(), drive, pivot, elevator, coralHolder, algaeClaw));
 
     // controller.x().onTrue(new IntakeCoral(pivot, elevator, coralHolder));
     // controller

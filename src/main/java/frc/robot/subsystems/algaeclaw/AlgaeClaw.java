@@ -67,18 +67,18 @@ public class AlgaeClaw extends SubsystemBase {
 
   public Command intake() {
     return Commands.either(
-              Commands.runOnce(() -> this.startMotor(), this)
-                .andThen(Commands.waitUntil(() -> this.hasAlgae()))
-                .andThen(Commands.waitTime(Seconds.of(AlgaeClawConstants.intakeDelaySeconds)))
-                .andThen(Commands.runOnce(() -> this.stopMotor(), this)),
-              Commands.runOnce(() -> {}),
-              () -> !hasAlgae());
+        Commands.runOnce(() -> this.startMotor(), this)
+            .andThen(Commands.waitUntil(() -> this.hasAlgae()))
+            .andThen(Commands.waitTime(Seconds.of(AlgaeClawConstants.intakeDelaySeconds)))
+            .andThen(Commands.runOnce(() -> this.stopMotor(), this)),
+        Commands.runOnce(() -> {}),
+        () -> !hasAlgae());
   }
 
   public Command release() {
     return Commands.runOnce(() -> this.reverseMotor(), this)
-            .andThen(Commands.waitUntil(() -> !this.hasAlgae()))
-            .andThen(Commands.waitTime(Seconds.of(AlgaeClawConstants.releaseDelaySeconds)))
-            .andThen(Commands.runOnce(() -> this.stopMotor(), this));
+        .andThen(Commands.waitUntil(() -> !this.hasAlgae()))
+        .andThen(Commands.waitTime(Seconds.of(AlgaeClawConstants.releaseDelaySeconds)))
+        .andThen(Commands.runOnce(() -> this.stopMotor(), this));
   }
 }
