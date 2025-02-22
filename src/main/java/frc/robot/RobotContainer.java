@@ -296,9 +296,10 @@ public class RobotContainer {
     //             () -> (new AutoNetAlgae(pivot, elevator, algaeClaw,
     // drive.getPose())).schedule()));
 
-    // controller
-    //     .y()
-    //     .onTrue(new AutoGetCoral(coralStationAlignmentConfigs[1], pivot, elevator, coralHolder));
+    controller
+        .x()
+        .onTrue(new AutoGetCoral(coralStationAlignmentConfigs[0], pivot, elevator, coralHolder));
+    controller.y().onTrue(coralHolder.release());
 
     // manual mechanism control
     mechanismController
