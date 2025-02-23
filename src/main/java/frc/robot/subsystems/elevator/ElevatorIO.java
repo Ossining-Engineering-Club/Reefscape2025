@@ -8,6 +8,7 @@ public interface ElevatorIO {
         public double appliedVolts = 0.0;
         public double heightMeters = 0.0;
         public double statorCurrent = 0.0;
+        public double temperatureCelsius = 0.0;
     }
 
     /** Updates the set of loggable inputs. */

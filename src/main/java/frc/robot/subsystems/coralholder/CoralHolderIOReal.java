@@ -36,5 +36,6 @@ public class CoralHolderIOReal implements CoralHolderIO {
     public void updateInputs(CoralHolderIOInputs inputs) {
         inputs.appliedVolts = sparkMax.getAppliedOutput() * sparkMax.getBusVoltage();
         inputs.statorCurrent = sparkMax.getOutputCurrent();
+        inputs.temperatureCelsius = sparkMax.getMotorTemperature();
     }
 }

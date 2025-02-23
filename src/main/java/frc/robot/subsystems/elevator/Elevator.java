@@ -26,29 +26,29 @@ public class Elevator extends SubsystemBase {
         switch (Constants.currentMode) {
             case REAL:
                 pid =
-                        new ProfiledPIDController(
-                                kP, 0, kD, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
+                    new ProfiledPIDController(
+                        kP, 0, kD, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
                 feedforward = new ElevatorFeedforward(kS, kG, 0);
                 break;
             case SIM:
                 pid =
-                        new ProfiledPIDController(
-                                simP,
-                                0,
-                                simD,
-                                new TrapezoidProfile.Constraints(simMaxVelocity, simMaxAcceleration));
+                    new ProfiledPIDController(
+                        simP,
+                        0,
+                        simD,
+                        new TrapezoidProfile.Constraints(simMaxVelocity, simMaxAcceleration));
                 feedforward = new ElevatorFeedforward(simS, simG, 0);
                 break;
             case REPLAY:
                 pid =
-                        new ProfiledPIDController(
-                                kP, 0, kD, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
+                    new ProfiledPIDController(
+                        kP, 0, kD, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
                 feedforward = new ElevatorFeedforward(kS, kG, 0);
                 break;
             default:
                 pid =
-                        new ProfiledPIDController(
-                                kP, 0, kD, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
+                    new ProfiledPIDController(
+                        kP, 0, kD, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
                 feedforward = new ElevatorFeedforward(kS, kG, 0);
                 break;
         }

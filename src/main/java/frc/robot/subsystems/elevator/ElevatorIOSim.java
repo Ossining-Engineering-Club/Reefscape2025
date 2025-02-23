@@ -11,15 +11,15 @@ public class ElevatorIOSim implements ElevatorIO {
 
     public ElevatorIOSim() {
         elevatorSim =
-                new ElevatorSim(
-                        gearbox,
-                        motorReduction,
-                        massKg,
-                        drumRadiusMeters,
-                        minHeight,
-                        maxHeight,
-                        true,
-                        startHeight);
+            new ElevatorSim(
+                gearbox,
+                motorReduction,
+                massKg,
+                drumRadiusMeters,
+                minHeight,
+                maxHeight,
+                true,
+                startHeight);
 
         elevatorSim.setState(startHeight, 0);
     }

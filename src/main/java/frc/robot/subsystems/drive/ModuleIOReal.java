@@ -110,6 +110,7 @@ public class ModuleIOReal implements ModuleIO {
         inputs.driveAppliedVolts = driveTalon.getMotorVoltage().getValueAsDouble();
         inputs.driveStatorCurrent = driveTalon.getStatorCurrent().getValueAsDouble();
         inputs.driveSupplyCurrent = driveTalon.getSupplyCurrent().getValueAsDouble();
+        inputs.driveTemperatureCelsius = driveTalon.getDeviceTemp().getValueAsDouble();
 
         // Update turn inputs
         inputs.turnPosition =
@@ -118,6 +119,7 @@ public class ModuleIOReal implements ModuleIO {
         inputs.turnAppliedVolts = turnTalon.getMotorVoltage().getValueAsDouble();
         inputs.turnStatorCurrent = turnTalon.getStatorCurrent().getValueAsDouble();
         inputs.turnSupplyCurrent = turnTalon.getSupplyCurrent().getValueAsDouble();
+        inputs.turnTemperatureCelsius = turnTalon.getDeviceTemp().getValueAsDouble();
     }
 
     @Override

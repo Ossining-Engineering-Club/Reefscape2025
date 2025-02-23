@@ -43,6 +43,7 @@ public class ElevatorIOReal implements ElevatorIO {
         inputs.appliedVolts = sparkMax.getAppliedOutput() * sparkMax.getBusVoltage();
         inputs.heightMeters = encoder.getPosition();
         inputs.statorCurrent = sparkMax.getOutputCurrent();
+        inputs.temperatureCelsius = sparkMax.getMotorTemperature();
     }
 
     @Override
