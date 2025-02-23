@@ -66,6 +66,10 @@ public class CoralHolder extends SubsystemBase {
         return state;
     }
 
+    public void setState(CoralHolderState state) {
+        this.state = state;
+    }
+
     public Command intake() {
         return Commands.either(
                 Commands.runOnce(() -> this.forward(), this)

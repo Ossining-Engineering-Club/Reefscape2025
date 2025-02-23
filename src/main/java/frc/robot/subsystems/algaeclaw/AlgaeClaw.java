@@ -70,6 +70,14 @@ public class AlgaeClaw extends SubsystemBase {
         return photoelectricSensor.isTripped();
     }
 
+    public AlgaeClawState getState() {
+        return state;
+    }
+
+    public void setState(AlgaeClawState state) {
+        this.state = state;
+    }
+
     public Command intake() {
         return Commands.either(
                 Commands.runOnce(() -> this.startMotor(), this)

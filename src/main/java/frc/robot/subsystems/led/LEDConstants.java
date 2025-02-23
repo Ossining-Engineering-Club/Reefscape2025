@@ -2,10 +2,9 @@ package frc.robot.subsystems.led;
 
 public class LEDConstants {
 
-  // LEDS Constant
+    // LEDS Constant
 
-  public static final int pwmPort = 0;
-  public static final int length = 120;
-
-  public static final int startBrightness = 100;
+    public static final int pwmPort = 0;
+    public static final int length = 120;
+    public static final int startBrightness = 100;
 }

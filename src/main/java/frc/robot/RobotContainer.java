@@ -67,6 +67,9 @@ import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer.CoralState;
+import frc.robot.subsystems.led.LED;
+import frc.robot.subsystems.led.LEDIO;
+import frc.robot.subsystems.led.LEDIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOSim;
@@ -102,6 +105,7 @@ public class RobotContainer {
     private final CoralHolder coralHolder;
     private final AlgaeClaw algaeClaw;
     private final Climber climber;
+    private final LED led;
 
     // Controller
     private final CommandXboxController controller = new CommandXboxController(0);
@@ -144,6 +148,9 @@ public class RobotContainer {
                                 new PhotoelectricSensorIOReal(
                                         AlgaeClawConstants.algaeClawPEChannel));
                 climber = new Climber(new ClimberIOReal());
+
+                led = new LED(new LEDIOReal(), algaeClaw, coralHolder);
+
                 // pivot = new Pivot(new PivotIO() {});
                 // elevator = new Elevator(new ElevatorIO() {});
                 // coralHolder = new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO()
@@ -217,6 +224,7 @@ public class RobotContainer {
                         new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO() {});
                 algaeClaw = new AlgaeClaw(new AlgaeClawIO() {}, new PhotoelectricSensorIO() {});
                 climber = new Climber(new ClimberIO() {});
+                led = new LED(new LEDIO() {}, algaeClaw, coralHolder);
                 break;
         }
 
