@@ -76,7 +76,7 @@ public class Elevator extends SubsystemBase {
         }
 
         if (Constants.currentMode == Mode.SIM && !usingPID) {
-            io.setVoltage(feedforward.calculate(getHeight(), 0));
+            io.setVoltage(feedforward.calculate(getHeight()));
         }
     }
 
