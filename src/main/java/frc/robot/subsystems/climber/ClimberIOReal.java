@@ -27,7 +27,7 @@ public class ClimberIOReal implements ClimberIO {
                 .encoder
                 .positionConversionFactor(1.0 / chainMotorReduction * encoderPositionFactor)
                 .velocityConversionFactor(1.0 / chainMotorReduction * encoderVelocityFactor);
-        chainMotorConfig.smartCurrentLimit(chainMotorCurrentLimit, chainMotorCurrentLimit);
+        chainMotorConfig.smartCurrentLimit(chainMotorStallCurrentLimit, chainMotorFreeCurrentLimit);
         tryUntilOk(
                 chainMotor,
                 5,
@@ -39,7 +39,7 @@ public class ClimberIOReal implements ClimberIO {
 
         var ropeMotorConfig = new SparkMaxConfig();
         ropeMotorConfig.idleMode(IdleMode.kBrake);
-        ropeMotorConfig.smartCurrentLimit(ropeMotorCurrentLimit, ropeMotorCurrentLimit);
+        ropeMotorConfig.smartCurrentLimit(ropeMotorStallCurrentLimit, ropeMotorFreeCurrentLimit);
         tryUntilOk(
                 ropeMotor,
                 5,

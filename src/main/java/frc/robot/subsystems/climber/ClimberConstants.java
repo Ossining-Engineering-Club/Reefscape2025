@@ -14,8 +14,10 @@ public class ClimberConstants {
     public static final double encoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
     public static final double encoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
 
-    public static final int chainMotorCurrentLimit = 30;
-    public static final int ropeMotorCurrentLimit = 30;
+    public static final int chainMotorStallCurrentLimit = 30;
+    public static final int chainMotorFreeCurrentLimit = 30;
+    public static final int ropeMotorStallCurrentLimit = 30;
+    public static final int ropeMotorFreeCurrentLimit = 30;
 
     public static final double chainMotorForwardVoltage = 1.0;
     public static final double ropeMotorForwardVoltage = 4.0;
