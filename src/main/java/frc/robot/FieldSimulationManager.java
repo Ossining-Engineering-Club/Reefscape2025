@@ -44,7 +44,9 @@ public class FieldSimulationManager {
         Logger.recordOutput(
                 "within rotation",
                 withinRotationTolerance(
-                        robotPose.getRotation(), coralStationLeftRotation, coralStationRotationTolerance));
+                        robotPose.getRotation(),
+                        coralStationLeftRotation,
+                        coralStationRotationTolerance));
         Logger.recordOutput(
                 "within elevator",
                 withinTolerance(
@@ -54,8 +56,11 @@ public class FieldSimulationManager {
         Logger.recordOutput(
                 "within pivot",
                 withinTolerance(
-                        pivot.getAngle(), PivotConstants.intakeCoralAngle, 5 * PivotConstants.pidTolerance));
-        Logger.recordOutput("within holder state", coralHolder.getState() == CoralHolderState.FORWARD);
+                        pivot.getAngle(),
+                        PivotConstants.intakeCoralAngle,
+                        5 * PivotConstants.pidTolerance));
+        Logger.recordOutput(
+                "within holder state", coralHolder.getState() == CoralHolderState.FORWARD);
         Logger.recordOutput("within coral state", CoralVisualizer.coralState == CoralState.GONE);
         if (secondsSinceLastCoralDrop >= secondsPerCoralDrop
                 && ((withinArea(robotPose.getTranslation(), coralStationLeftDropArea)
@@ -73,7 +78,9 @@ public class FieldSimulationManager {
                         ElevatorConstants.intakeCoralHeight,
                         5 * ElevatorConstants.pidTolerance)
                 && withinTolerance(
-                        pivot.getAngle(), PivotConstants.intakeCoralAngle, 5 * PivotConstants.pidTolerance)
+                        pivot.getAngle(),
+                        PivotConstants.intakeCoralAngle,
+                        5 * PivotConstants.pidTolerance)
                 && coralHolder.getState() == CoralHolderState.FORWARD
                 && CoralVisualizer.coralState == CoralState.GONE) {
             // SimulatedArena.getInstance()
@@ -96,7 +103,8 @@ public class FieldSimulationManager {
     public static boolean withinArea(Translation2d point, Translation2d[] area) {
         boolean ret = true;
         for (int i = 0; i < area.length; i++) {
-            if ((area[(i + 1) % area.length].getX() - area[i].getX()) * (point.getY() - area[i].getY())
+            if ((area[(i + 1) % area.length].getX() - area[i].getX())
+                                    * (point.getY() - area[i].getY())
                             - (point.getX() - area[i].getX())
                                     * (area[(i + 1) % area.length].getY() - area[i].getY())
                     < 0) {

@@ -74,7 +74,9 @@ public class AlgaeClaw extends SubsystemBase {
         return Commands.either(
                 Commands.runOnce(() -> this.startMotor(), this)
                         .andThen(Commands.waitUntil(() -> this.hasAlgae()))
-                        .andThen(Commands.waitTime(Seconds.of(AlgaeClawConstants.intakeDelaySeconds)))
+                        .andThen(
+                                Commands.waitTime(
+                                        Seconds.of(AlgaeClawConstants.intakeDelaySeconds)))
                         .andThen(Commands.runOnce(() -> this.stopMotor(), this)),
                 Commands.runOnce(() -> {}),
                 () -> !hasAlgae());

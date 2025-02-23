@@ -73,13 +73,16 @@ public class ModuleIOSim implements ModuleIO {
             driveAppliedVolts =
                     driveFFVolts
                             + driveController.calculate(
-                                    moduleSimulation.getDriveWheelFinalSpeed().in(RadiansPerSecond));
+                                    moduleSimulation
+                                            .getDriveWheelFinalSpeed()
+                                            .in(RadiansPerSecond));
         } else {
             driveController.reset();
         }
         if (turnClosedLoop) {
             turnAppliedVolts =
-                    turnController.calculate(moduleSimulation.getSteerAbsoluteFacing().getRadians());
+                    turnController.calculate(
+                            moduleSimulation.getSteerAbsoluteFacing().getRadians());
         } else {
             turnController.reset();
         }
@@ -92,10 +95,13 @@ public class ModuleIOSim implements ModuleIO {
 
         // Update drive inputs
         inputs.drivePositionRad = moduleSimulation.getDriveWheelFinalPosition().in(Radians);
-        inputs.driveVelocityRadPerSec = moduleSimulation.getDriveWheelFinalSpeed().in(RadiansPerSecond);
+        inputs.driveVelocityRadPerSec =
+                moduleSimulation.getDriveWheelFinalSpeed().in(RadiansPerSecond);
         inputs.driveAppliedVolts = driveAppliedVolts;
-        inputs.driveStatorCurrent = Math.abs(moduleSimulation.getDriveMotorStatorCurrent().in(Amps));
-        inputs.driveSupplyCurrent = Math.abs(moduleSimulation.getDriveMotorSupplyCurrent().in(Amps));
+        inputs.driveStatorCurrent =
+                Math.abs(moduleSimulation.getDriveMotorStatorCurrent().in(Amps));
+        inputs.driveSupplyCurrent =
+                Math.abs(moduleSimulation.getDriveMotorSupplyCurrent().in(Amps));
 
         // Update turn inputs
         inputs.turnPosition = moduleSimulation.getSteerAbsoluteFacing();

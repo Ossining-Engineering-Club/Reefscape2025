@@ -26,6 +26,7 @@ public class AutoGetGroundAlgae extends SequentialCommandGroup {
                 new GoToGroundAlgaePosition(elevator, pivot),
                 new ParallelDeadlineGroup(
                         new IntakeGroundAlgae(elevator, pivot, algaeClaw),
-                        new LockOntoAlgae(drive, algaeDetector, xSupplier, ySupplier, omegaSupplier)));
+                        new LockOntoAlgae(
+                                drive, algaeDetector, xSupplier, ySupplier, omegaSupplier)));
     }
 }

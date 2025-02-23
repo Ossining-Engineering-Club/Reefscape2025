@@ -18,7 +18,8 @@ public class IntakeCoral extends SequentialCommandGroup {
                 new ConditionalCommand(
                         new ParallelDeadlineGroup(
                                 coralHolder.intake(),
-                                new ElevatorGoToHeight(elevator, ElevatorConstants.intakeCoralHeight),
+                                new ElevatorGoToHeight(
+                                        elevator, ElevatorConstants.intakeCoralHeight),
                                 new PivotGoToAngle(pivot, PivotConstants.intakeCoralAngle)),
                         Commands.runOnce(() -> {}),
                         () -> !coralHolder.hasCoral()));

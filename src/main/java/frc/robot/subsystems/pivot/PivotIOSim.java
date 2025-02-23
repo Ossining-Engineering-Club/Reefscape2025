@@ -13,7 +13,8 @@ public class PivotIOSim implements PivotIO {
     public PivotIOSim() {
         pivotSim =
                 new DCMotorSim(
-                        LinearSystemId.createDCMotorSystem(gearbox, pivotMOI, motorReduction), gearbox);
+                        LinearSystemId.createDCMotorSystem(gearbox, pivotMOI, motorReduction),
+                        gearbox);
         // pivotSim =
         //     new SingleJointedArmSim(
         //         LinearSystemId.createSingleJointedArmSystem(gearbox, pivotMOI, motorReduction),

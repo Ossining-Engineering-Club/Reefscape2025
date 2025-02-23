@@ -75,7 +75,8 @@ public class Robot extends LoggedRobot {
                 setUseTiming(false); // Run as fast as possible
                 String logPath = LogFileUtil.findReplayLog();
                 Logger.setReplaySource(new WPILOGReader(logPath));
-                Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+                Logger.addDataReceiver(
+                        new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
                 break;
         }
 
@@ -122,7 +123,9 @@ public class Robot extends LoggedRobot {
     @Override
     public void disabledPeriodic() {}
 
-    /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+    /**
+     * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
+     */
     @Override
     public void autonomousInit() {
         if (Constants.currentMode == Mode.SIM) {

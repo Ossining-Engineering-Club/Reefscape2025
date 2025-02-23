@@ -25,7 +25,8 @@ public class AutoNetAlgae extends SequentialCommandGroup {
             targetPose = new Pose2d(9.73, y, Rotation2d.fromDegrees(-90));
         }
         Command pathFindingCommand =
-                AutoBuilder.pathfindToPose(targetPose, AutoTeleopConstants.netAlignmentConstraints, 0.0);
+                AutoBuilder.pathfindToPose(
+                        targetPose, AutoTeleopConstants.netAlignmentConstraints, 0.0);
 
         if ((DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
                         && robotPose.getX() > 7.82)
@@ -38,7 +39,8 @@ public class AutoNetAlgae extends SequentialCommandGroup {
         } else {
             addCommands(
                     new ParallelCommandGroup(
-                            pathFindingCommand, new GoToNetAlgaePosition(pivot, elevator, algaeClaw)),
+                            pathFindingCommand,
+                            new GoToNetAlgaePosition(pivot, elevator, algaeClaw)),
                     algaeClaw.release());
         }
     }

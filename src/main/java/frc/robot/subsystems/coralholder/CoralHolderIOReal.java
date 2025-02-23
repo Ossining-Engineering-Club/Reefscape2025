@@ -24,7 +24,9 @@ public class CoralHolderIOReal implements CoralHolderIO {
                 5,
                 () ->
                         sparkMax.configure(
-                                config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+                                config,
+                                ResetMode.kResetSafeParameters,
+                                PersistMode.kPersistParameters));
     }
 
     @Override

@@ -59,7 +59,8 @@ public final class AutoTeleopConstants {
 
     public static final AlignmentConfig[] coralStationAlignmentConfigs =
             new AlignmentConfig[] {
-                new AlignmentConfig("Coral Station Left", 6), new AlignmentConfig("Coral Station Right", 0)
+                new AlignmentConfig("Coral Station Left", 6),
+                new AlignmentConfig("Coral Station Right", 0)
             };
 
     public static final AlignmentConfig processorAlignmentConfig =

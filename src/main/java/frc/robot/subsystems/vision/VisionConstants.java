@@ -39,7 +39,10 @@ public class VisionConstants {
                                     Units.inchesToMeters(13.72048),
                                     Units.inchesToMeters(10.202495),
                                     Units.inchesToMeters(7.780637)),
-                            new Rotation3d(0, Units.degreesToRadians(-21.875), Units.degreesToRadians(90 + 35))));
+                            new Rotation3d(
+                                    0,
+                                    Units.degreesToRadians(-21.875),
+                                    Units.degreesToRadians(90 + 35))));
 
     public static final CameraConfig FRONT_RIGHT_CAMERA_CONFIG =
             new CameraConfig(
@@ -50,7 +53,9 @@ public class VisionConstants {
                                     Units.inchesToMeters(-10.202495),
                                     Units.inchesToMeters(7.780637)),
                             new Rotation3d(
-                                    0, Units.degreesToRadians(-21.875), Units.degreesToRadians(-90 - 35))));
+                                    0,
+                                    Units.degreesToRadians(-21.875),
+                                    Units.degreesToRadians(-90 - 35))));
 
     public static final CameraConfig BACK_LEFT_CAMERA_CONFIG =
             new CameraConfig(
@@ -60,7 +65,10 @@ public class VisionConstants {
                                     Units.inchesToMeters(-13.72048),
                                     Units.inchesToMeters(10.202495),
                                     Units.inchesToMeters(7.780637)),
-                            new Rotation3d(0, Units.degreesToRadians(-21.875), Units.degreesToRadians(90 - 35))));
+                            new Rotation3d(
+                                    0,
+                                    Units.degreesToRadians(-21.875),
+                                    Units.degreesToRadians(90 - 35))));
 
     public static final CameraConfig BACK_RIGHT_CAMERA_CONFIG =
             new CameraConfig(
@@ -71,7 +79,9 @@ public class VisionConstants {
                                     Units.inchesToMeters(-10.202495),
                                     Units.inchesToMeters(7.780637)),
                             new Rotation3d(
-                                    0, Units.degreesToRadians(-21.875), Units.degreesToRadians(-90 + 35))));
+                                    0,
+                                    Units.degreesToRadians(-21.875),
+                                    Units.degreesToRadians(-90 + 35))));
 
     public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(1.5, 1.5, 7);
     public static final Matrix<N3, N1> MULTIPLE_TAG_STD_DEVS = VecBuilder.fill(0.3, 0.3, 4);

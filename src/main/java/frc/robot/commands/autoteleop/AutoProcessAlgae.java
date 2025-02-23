@@ -21,10 +21,12 @@ public class AutoProcessAlgae extends SequentialCommandGroup {
             throws FileVersionException, IOException, ParseException {
         PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
         Command pathFindingCommand =
-                AutoBuilder.pathfindThenFollowPath(path, AutoTeleopConstants.processorAlignmentConstraints);
+                AutoBuilder.pathfindThenFollowPath(
+                        path, AutoTeleopConstants.processorAlignmentConstraints);
 
         addCommands(
-                new ParallelCommandGroup(new GoToProcessingPosition(pivot, elevator), pathFindingCommand),
+                new ParallelCommandGroup(
+                        new GoToProcessingPosition(pivot, elevator), pathFindingCommand),
                 algaeClaw.release());
     }
 }

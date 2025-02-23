@@ -94,12 +94,15 @@ public class ModuleIOReal implements ModuleIO {
         turnConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
         turnConfig.MotorOutput.Inverted =
-                turnInverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+                turnInverted
+                        ? InvertedValue.Clockwise_Positive
+                        : InvertedValue.CounterClockwise_Positive;
         tryUntilOk(5, () -> turnTalon.getConfigurator().apply(turnConfig, 0.25));
         tryUntilOk(
                 5,
                 () ->
-                        turnTalon.setPosition(absEncoder.getPosition().getValueAsDouble() * 2 * Math.PI, 0.25));
+                        turnTalon.setPosition(
+                                absEncoder.getPosition().getValueAsDouble() * 2 * Math.PI, 0.25));
     }
 
     @Override

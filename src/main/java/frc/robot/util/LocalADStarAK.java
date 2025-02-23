@@ -88,8 +88,8 @@ public class LocalADStarAK implements Pathfinder {
     /**
      * Set the dynamic obstacles that should be avoided while pathfinding.
      *
-     * @param obs A List of Translation2d pairs representing obstacles. Each Translation2d represents
-     *     opposite corners of a bounding box.
+     * @param obs A List of Translation2d pairs representing obstacles. Each Translation2d
+     *     represents opposite corners of a bounding box.
      * @param currentRobotPos The current position of the robot. This is needed to change the start
      *     position of the path to properly avoid obstacles
      */
@@ -130,7 +130,8 @@ public class LocalADStarAK implements Pathfinder {
             List<PathPoint> pathPoints = new ArrayList<>();
             for (int i = 0; i < pointsLogged.length; i += 2) {
                 pathPoints.add(
-                        new PathPoint(new Translation2d(pointsLogged[i], pointsLogged[i + 1]), null));
+                        new PathPoint(
+                                new Translation2d(pointsLogged[i], pointsLogged[i + 1]), null));
             }
 
             currentPathPoints = pathPoints;
@@ -140,7 +141,8 @@ public class LocalADStarAK implements Pathfinder {
             isNewPathAvailable = adStar.isNewPathAvailable();
         }
 
-        public void updateCurrentPathPoints(PathConstraints constraints, GoalEndState goalEndState) {
+        public void updateCurrentPathPoints(
+                PathConstraints constraints, GoalEndState goalEndState) {
             PathPlannerPath currentPath = adStar.getCurrentPath(constraints, goalEndState);
 
             if (currentPath != null) {

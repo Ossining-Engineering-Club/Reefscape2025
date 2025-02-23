@@ -49,7 +49,8 @@ public class Module {
         // Apply setpoints
         io.setDriveVoltage(state.speedMetersPerSecond / DriveConstants.maxSpeedMetersPerSec * 12.0);
         // io.setTurnPosition(state.angle);
-        io.setTurnVoltage(pid.calculate(inputs.turnPosition.getRadians(), state.angle.getRadians()));
+        io.setTurnVoltage(
+                pid.calculate(inputs.turnPosition.getRadians(), state.angle.getRadians()));
     }
 
     /** Runs the module with the specified output while controlling to zero degrees. */

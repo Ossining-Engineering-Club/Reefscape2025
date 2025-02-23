@@ -136,15 +136,18 @@ public class RobotContainer {
                 coralHolder =
                         new CoralHolder(
                                 new CoralHolderIOReal(),
-                                new PhotoelectricSensorIOReal(CoralHolderConstants.coralHolderPEChannel));
+                                new PhotoelectricSensorIOReal(
+                                        CoralHolderConstants.coralHolderPEChannel));
                 algaeClaw =
                         new AlgaeClaw(
                                 new AlgaeClawIOReal(),
-                                new PhotoelectricSensorIOReal(AlgaeClawConstants.algaeClawPEChannel));
+                                new PhotoelectricSensorIOReal(
+                                        AlgaeClawConstants.algaeClawPEChannel));
                 climber = new Climber(new ClimberIOReal());
                 // pivot = new Pivot(new PivotIO() {});
                 // elevator = new Elevator(new ElevatorIO() {});
-                // coralHolder = new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO() {});
+                // coralHolder = new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO()
+                // {});
                 // algaeClaw = new AlgaeClaw(new AlgaeClawIO() {}, new PhotoelectricSensorIO() {});
                 // climber = new Climber(new ClimberIO() {});
                 break;
@@ -152,7 +155,8 @@ public class RobotContainer {
             case SIM:
                 // Sim robot, instantiate physics sim IO implementations
                 driveSimulation =
-                        new SwerveDriveSimulation(Drive.mapleSimConfig, new Pose2d(0, 0, new Rotation2d()));
+                        new SwerveDriveSimulation(
+                                Drive.mapleSimConfig, new Pose2d(0, 0, new Rotation2d()));
                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
                 vision =
                         new Vision(
@@ -193,7 +197,11 @@ public class RobotContainer {
             default:
                 // Replayed robot, disable IO implementations
                 vision =
-                        new Vision(new VisionIO() {}, new VisionIO() {}, new VisionIO() {}, new VisionIO() {});
+                        new Vision(
+                                new VisionIO() {},
+                                new VisionIO() {},
+                                new VisionIO() {},
+                                new VisionIO() {});
                 drive =
                         new Drive(
                                 new GyroIO() {},
@@ -205,7 +213,8 @@ public class RobotContainer {
                                 (robotPose) -> {});
                 pivot = new Pivot(new PivotIO() {});
                 elevator = new Elevator(new ElevatorIO() {});
-                coralHolder = new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO() {});
+                coralHolder =
+                        new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO() {});
                 algaeClaw = new AlgaeClaw(new AlgaeClawIO() {}, new PhotoelectricSensorIO() {});
                 climber = new Climber(new ClimberIO() {});
                 break;
@@ -219,9 +228,11 @@ public class RobotContainer {
 
         // Set up SysId routines
         // autoChooser.addOption(
-        //     "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+        //     "Drive Wheel Radius Characterization",
+        // DriveCommands.wheelRadiusCharacterization(drive));
         // autoChooser.addOption(
-        //     "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+        //     "Drive Simple FF Characterization",
+        // DriveCommands.feedforwardCharacterization(drive));
         // autoChooser.addOption(
         //     "Drive SysId (Quasistatic Forward)",
         //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -229,9 +240,11 @@ public class RobotContainer {
         //     "Drive SysId (Quasistatic Reverse)",
         //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
         // autoChooser.addOption(
-        //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        //     "Drive SysId (Dynamic Forward)",
+        // drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
         // autoChooser.addOption(
-        //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        //     "Drive SysId (Dynamic Reverse)",
+        // drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
 
     /**
@@ -244,7 +257,8 @@ public class RobotContainer {
      * @throws IOException
      * @throws FileVersionException
      */
-    private void configureButtonBindings() throws FileVersionException, IOException, ParseException {
+    private void configureButtonBindings()
+            throws FileVersionException, IOException, ParseException {
         // Default command, normal field-relative drive
         drive.setDefaultCommand(
                 DriveCommands.joystickDrive(
@@ -273,7 +287,9 @@ public class RobotContainer {
                         Commands.runOnce(
                                         () ->
                                                 drive.setPose(
-                                                        new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+                                                        new Pose2d(
+                                                                drive.getPose().getTranslation(),
+                                                                new Rotation2d())),
                                         drive)
                                 .ignoringDisable(true));
 
@@ -281,7 +297,12 @@ public class RobotContainer {
                 .b()
                 .onTrue(
                         Commands.runOnce(
-                                () -> stopEverything(), drive, pivot, elevator, coralHolder, algaeClaw));
+                                () -> stopEverything(),
+                                drive,
+                                pivot,
+                                elevator,
+                                coralHolder,
+                                algaeClaw));
 
         // controller.x().onTrue(new IntakeCoral(pivot, elevator, coralHolder));
         // controller
@@ -298,7 +319,9 @@ public class RobotContainer {
 
         controller
                 .x()
-                .onTrue(new AutoGetCoral(coralStationAlignmentConfigs[0], pivot, elevator, coralHolder));
+                .onTrue(
+                        new AutoGetCoral(
+                                coralStationAlignmentConfigs[0], pivot, elevator, coralHolder));
         controller.y().onTrue(coralHolder.release());
 
         // manual mechanism control
@@ -323,7 +346,9 @@ public class RobotContainer {
                 .onTrue(
                         Commands.runOnce(() -> algaeClaw.startMotor(), algaeClaw)
                                 .andThen(Commands.waitUntil(() -> algaeClaw.hasAlgae()))
-                                .andThen(Commands.waitTime(Seconds.of(AlgaeClawConstants.intakeDelaySeconds)))
+                                .andThen(
+                                        Commands.waitTime(
+                                                Seconds.of(AlgaeClawConstants.intakeDelaySeconds)))
                                 .andThen(Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw)));
         mechanismController
                 .leftTrigger(0.9)
@@ -339,14 +364,20 @@ public class RobotContainer {
                 Commands.runOnce(
                         () ->
                                 elevator.setVoltage(
-                                        0.2 * 12.0 * MathUtil.applyDeadband(-mechanismController.getRightY(), 0.2)),
+                                        0.2
+                                                * 12.0
+                                                * MathUtil.applyDeadband(
+                                                        -mechanismController.getRightY(), 0.2)),
                         elevator));
 
         pivot.setDefaultCommand(
                 Commands.runOnce(
                         () ->
                                 pivot.setVoltage(
-                                        0.2 * 12.0 * MathUtil.applyDeadband(-mechanismController.getLeftY(), 0.2)),
+                                        0.2
+                                                * 12.0
+                                                * MathUtil.applyDeadband(
+                                                        -mechanismController.getLeftY(), 0.2)),
                         pivot));
 
         mechanismController.povCenter().onTrue(Commands.runOnce(() -> climber.stop(), climber));
@@ -386,7 +417,8 @@ public class RobotContainer {
         }
         for (ReefAlgaeAlignmentConfig config : reefAlgaeAlignmentConfigs) {
             NamedCommands.registerCommand(
-                    config.pathName() + "_Algae", new AutoGetReefAlgae(config, pivot, elevator, algaeClaw));
+                    config.pathName() + "_Algae",
+                    new AutoGetReefAlgae(config, pivot, elevator, algaeClaw));
             buttonBox
                     .button(config.button1())
                     .and(buttonBox.button(config.button2()))
@@ -408,12 +440,20 @@ public class RobotContainer {
         NamedCommands.registerCommand(
                 "Net Algae",
                 Commands.runOnce(
-                        () -> (new AutoNetAlgae(pivot, elevator, algaeClaw, drive.getPose())).schedule()));
+                        () ->
+                                (new AutoNetAlgae(pivot, elevator, algaeClaw, drive.getPose()))
+                                        .schedule()));
         buttonBox
                 .button(netButton)
                 .onTrue(
                         Commands.runOnce(
-                                () -> (new AutoNetAlgae(pivot, elevator, algaeClaw, drive.getPose())).schedule()));
+                                () ->
+                                        (new AutoNetAlgae(
+                                                        pivot,
+                                                        elevator,
+                                                        algaeClaw,
+                                                        drive.getPose()))
+                                                .schedule()));
     }
 
     /**
@@ -448,18 +488,28 @@ public class RobotContainer {
     public void robotContainerPeriodic() {
         Logger.recordOutput(
                 "Zeroed Component Poses",
-                new Pose3d[] {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()});
+                new Pose3d[] {
+                    new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()
+                });
         Logger.recordOutput(
                 "Final Component Poses",
                 new Pose3d[] {
                     new Pose3d(
-                            -0.13335, 0, 0.1390922542 + elevator.getHeight() / 2.0, new Rotation3d(0, 0, 0)),
-                    new Pose3d(-0.1317625, 0, 0.1835422542 + elevator.getHeight(), new Rotation3d(0, 0, 0)),
+                            -0.13335,
+                            0,
+                            0.1390922542 + elevator.getHeight() / 2.0,
+                            new Rotation3d(0, 0, 0)),
+                    new Pose3d(
+                            -0.1317625,
+                            0,
+                            0.1835422542 + elevator.getHeight(),
+                            new Rotation3d(0, 0, 0)),
                     new Pose3d(
                             -0.093574997 + 0.041099997 - 0.0127,
                             0,
                             0.7931422542 + elevator.getHeight(),
-                            new Rotation3d(Units.degreesToRadians(53.763) - pivot.getAngle(), 0, 0)),
+                            new Rotation3d(
+                                    Units.degreesToRadians(53.763) - pivot.getAngle(), 0, 0)),
                 });
         switch (Constants.currentMode) {
             case REAL:
@@ -470,7 +520,8 @@ public class RobotContainer {
                 //     driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative());
                 break;
             case SIM:
-                Logger.recordOutput("SimTrueRobotPose", driveSimulation.getSimulatedDriveTrainPose());
+                Logger.recordOutput(
+                        "SimTrueRobotPose", driveSimulation.getSimulatedDriveTrainPose());
                 Logger.recordOutput(
                         "FieldSimulation/Algae",
                         SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
@@ -484,7 +535,10 @@ public class RobotContainer {
                             pivot.getAngle(),
                             driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative());
                     FieldSimulationManager.periodic(
-                            driveSimulation.getSimulatedDriveTrainPose(), elevator, pivot, coralHolder);
+                            driveSimulation.getSimulatedDriveTrainPose(),
+                            elevator,
+                            pivot,
+                            coralHolder);
                 }
                 break;
             case REPLAY:

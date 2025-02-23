@@ -20,11 +20,16 @@ import org.json.simple.parser.ParseException;
 
 public class AutoPlaceCoral extends SequentialCommandGroup {
     public AutoPlaceCoral(
-            AlignmentConfig config, Level level, Pivot pivot, Elevator elevator, CoralHolder coralHolder)
+            AlignmentConfig config,
+            Level level,
+            Pivot pivot,
+            Elevator elevator,
+            CoralHolder coralHolder)
             throws FileVersionException, IOException, ParseException {
         PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
         Command pathFindingCommand =
-                AutoBuilder.pathfindThenFollowPath(path, AutoTeleopConstants.reefCoralAlignmentConstraints);
+                AutoBuilder.pathfindThenFollowPath(
+                        path, AutoTeleopConstants.reefCoralAlignmentConstraints);
 
         double height =
                 switch (level) {
@@ -39,7 +44,8 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                 new ParallelCommandGroup(
                         pathFindingCommand,
                         new SequentialCommandGroup(
-                                new WaitCommand(0.5), new GoToPlacingCoralPosition(height, pivot, elevator))),
+                                new WaitCommand(0.5),
+                                new GoToPlacingCoralPosition(height, pivot, elevator))),
                 coralHolder.release());
     }
 }

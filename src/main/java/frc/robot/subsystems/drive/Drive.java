@@ -93,7 +93,8 @@ public class Drive extends SubsystemBase {
                 new SwerveModulePosition()
             };
     private SwerveDrivePoseEstimator poseEstimator =
-            new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+            new SwerveDrivePoseEstimator(
+                    kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
     private final Vision vision;
 
     private final Consumer<Pose2d> resetSimulationPoseCallBack;
@@ -115,7 +116,8 @@ public class Drive extends SubsystemBase {
         this.resetSimulationPoseCallBack = resetSimulationPoseCallBack;
 
         // Usage reporting for swerve template
-        HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
+        HAL.report(
+                tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
 
         // Configure AutoBuilder for PathPlanner
         AutoBuilder.configure(
@@ -132,7 +134,8 @@ public class Drive extends SubsystemBase {
         PathPlannerLogging.setLogActivePathCallback(
                 (activePath) -> {
                     Logger.recordOutput(
-                            "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+                            "Odometry/Trajectory",
+                            activePath.toArray(new Pose2d[activePath.size()]));
                 });
         PathPlannerLogging.setLogTargetPoseCallback(
                 (targetPose) -> {
@@ -146,7 +149,8 @@ public class Drive extends SubsystemBase {
                                 null,
                                 null,
                                 null,
-                                (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
+                                (state) ->
+                                        Logger.recordOutput("Drive/SysIdState", state.toString())),
                         new SysIdRoutine.Mechanism(
                                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
         PathfindingCommand.warmupCommand().schedule();
@@ -249,8 +253,8 @@ public class Drive extends SubsystemBase {
     }
 
     /**
-     * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
-     * return to their normal orientations the next time a nonzero velocity is requested.
+     * Stops the drive and turns the modules to an X arrangement to resist movement. The modules
+     * will return to their normal orientations the next time a nonzero velocity is requested.
      */
     public void stopWithX() {
         Rotation2d[] headings = new Rotation2d[4];
@@ -270,7 +274,9 @@ public class Drive extends SubsystemBase {
 
     /** Returns a command to run a dynamic test in the specified direction. */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return run(() -> runCharacterization(0.0)).withTimeout(1.0).andThen(sysId.dynamic(direction));
+        return run(() -> runCharacterization(0.0))
+                .withTimeout(1.0)
+                .andThen(sysId.dynamic(direction));
     }
 
     /** Returns the module states (turn angles and drive velocities) for all of the modules. */

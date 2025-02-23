@@ -32,7 +32,10 @@ public class LockOntoAlgae extends Command {
     public void execute() {
         if (algaeDetector.recentlyHadTarget()) {
             DriveCommands.joystickDrive(
-                            drive, xSupplier, ySupplier, () -> pid.calculate(algaeDetector.getYaw(), 0.0))
+                            drive,
+                            xSupplier,
+                            ySupplier,
+                            () -> pid.calculate(algaeDetector.getYaw(), 0.0))
                     .schedule();
         } else {
             DriveCommands.joystickDrive(drive, xSupplier, ySupplier, omegaSupplier).schedule();

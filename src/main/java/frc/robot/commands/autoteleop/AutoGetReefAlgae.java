@@ -22,7 +22,8 @@ public class AutoGetReefAlgae extends SequentialCommandGroup {
             throws FileVersionException, IOException, ParseException {
         PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
         Command pathFindingCommand =
-                AutoBuilder.pathfindThenFollowPath(path, AutoTeleopConstants.reefAlgaeAlignmentConstraints);
+                AutoBuilder.pathfindThenFollowPath(
+                        path, AutoTeleopConstants.reefAlgaeAlignmentConstraints);
 
         double height =
                 switch (config.pathName()) {
@@ -33,6 +34,7 @@ public class AutoGetReefAlgae extends SequentialCommandGroup {
 
         addCommands(
                 new ParallelCommandGroup(
-                        pathFindingCommand, new IntakeReefAlgae(height, pivot, elevator, algaeClaw)));
+                        pathFindingCommand,
+                        new IntakeReefAlgae(height, pivot, elevator, algaeClaw)));
     }
 }

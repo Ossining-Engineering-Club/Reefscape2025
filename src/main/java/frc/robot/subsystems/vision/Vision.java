@@ -46,7 +46,8 @@ public class Vision extends SubsystemBase {
                         .getTagPose(tagId)
                         .ifPresent(
                                 (tagPose) ->
-                                        detectedTagPoses.add(tagPose)); // if there's a pose, add it to the list
+                                        detectedTagPoses.add(
+                                                tagPose)); // if there's a pose, add it to the list
             }
 
             boolean addedPose = false;
@@ -55,27 +56,32 @@ public class Vision extends SubsystemBase {
                 if (!(inputs[i].estimatedPose.getX() > 0.0
                         && inputs[i].estimatedPose.getX() <= FieldConstants.fieldLengthMeters
                         && inputs[i].estimatedPose.getY() > 0.0
-                        && inputs[i].estimatedPose.getY() <= FieldConstants.fieldWidthMeters)) continue;
+                        && inputs[i].estimatedPose.getY() <= FieldConstants.fieldWidthMeters))
+                    continue;
                 // don't use if estimate is too high, or too tilted
                 if (Math.abs(inputs[i].estimatedPose.getZ()) > VisionConstants.MAX_HEIGHT) continue;
-                if (Math.abs(inputs[i].estimatedPose.getRotation().getX()) > VisionConstants.MAX_ANGLE)
-                    continue;
-                if (Math.abs(inputs[i].estimatedPose.getRotation().getY()) > VisionConstants.MAX_ANGLE)
-                    continue;
+                if (Math.abs(inputs[i].estimatedPose.getRotation().getX())
+                        > VisionConstants.MAX_ANGLE) continue;
+                if (Math.abs(inputs[i].estimatedPose.getRotation().getY())
+                        > VisionConstants.MAX_ANGLE) continue;
 
                 Matrix<N3, N1> stddevs =
                         getEstimationStdDevs(inputs[i].estimatedPose.toPose2d(), inputs[i].tagIds);
 
                 addedPose = true;
-                Logger.recordOutput("/Camera" + i + "/Raw Vision", inputs[i].estimatedPose.toPose2d());
-                Logger.recordOutput("/Camera" + i + "/Vision Timestamp", inputs[i].timestampSeconds);
+                Logger.recordOutput(
+                        "/Camera" + i + "/Raw Vision", inputs[i].estimatedPose.toPose2d());
+                Logger.recordOutput(
+                        "/Camera" + i + "/Vision Timestamp", inputs[i].timestampSeconds);
                 Logger.recordOutput(
                         "/Camera" + i + "/Vision Std Dev",
                         new double[] {stddevs.get(0, 0), stddevs.get(1, 0), stddevs.get(2, 0)});
 
                 estimates.add(
                         new PoseEstimate(
-                                inputs[i].estimatedPose.toPose2d(), inputs[i].timestampSeconds, stddevs));
+                                inputs[i].estimatedPose.toPose2d(),
+                                inputs[i].timestampSeconds,
+                                stddevs));
             }
             if (!addedPose) {
                 Logger.recordOutput("/" + i + "/Raw Vision", new Pose2d[] {});
@@ -98,7 +104,10 @@ public class Vision extends SubsystemBase {
 
             numTags++;
             avgDist +=
-                    tagPose.get().toPose2d().getTranslation().getDistance(estimatedPose.getTranslation());
+                    tagPose.get()
+                            .toPose2d()
+                            .getTranslation()
+                            .getDistance(estimatedPose.getTranslation());
         }
         if (numTags == 0) return estStdDevs;
 

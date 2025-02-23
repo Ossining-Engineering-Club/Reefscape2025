@@ -22,8 +22,7 @@ public class PivotIOReal implements PivotIO {
 
         var config = new SparkMaxConfig();
         config.inverted(isInverted).idleMode(IdleMode.kBrake);
-        config
-                .encoder
+        config.encoder
                 .positionConversionFactor(1.0 / motorReduction * encoderPositionFactor)
                 .velocityConversionFactor(1.0 / motorReduction * encoderVelocityFactor);
         config.smartCurrentLimit(currentLimit);
@@ -32,7 +31,9 @@ public class PivotIOReal implements PivotIO {
                 5,
                 () ->
                         sparkMax.configure(
-                                config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+                                config,
+                                ResetMode.kResetSafeParameters,
+                                PersistMode.kPersistParameters));
 
         encoder.setPosition(startAngle);
     }

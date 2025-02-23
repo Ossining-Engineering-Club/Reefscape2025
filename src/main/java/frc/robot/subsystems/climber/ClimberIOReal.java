@@ -33,7 +33,9 @@ public class ClimberIOReal implements ClimberIO {
                 5,
                 () ->
                         chainMotor.configure(
-                                chainMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+                                chainMotorConfig,
+                                ResetMode.kResetSafeParameters,
+                                PersistMode.kPersistParameters));
 
         encoder.setPosition(startAngle);
 
@@ -45,7 +47,9 @@ public class ClimberIOReal implements ClimberIO {
                 5,
                 () ->
                         ropeMotor.configure(
-                                ropeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+                                ropeMotorConfig,
+                                ResetMode.kResetSafeParameters,
+                                PersistMode.kPersistParameters));
     }
 
     @Override

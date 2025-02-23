@@ -76,7 +76,8 @@ public class DriveCommands {
                 () -> {
                     // Get linear velocity
                     Translation2d linearVelocity =
-                            getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+                            getLinearVelocityFromJoysticks(
+                                    xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
                     // Apply rotation deadband
                     double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
@@ -120,7 +121,8 @@ public class DriveCommands {
                         ANGLE_KP,
                         0.0,
                         ANGLE_KD,
-                        new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+                        new TrapezoidProfile.Constraints(
+                                ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
         angleController.enableContinuousInput(-Math.PI, Math.PI);
 
         // Construct command
@@ -128,18 +130,22 @@ public class DriveCommands {
                         () -> {
                             // Get linear velocity
                             Translation2d linearVelocity =
-                                    getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+                                    getLinearVelocityFromJoysticks(
+                                            xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
                             // Calculate angular speed
                             double omega =
                                     angleController.calculate(
-                                            drive.getRotation().getRadians(), rotationSupplier.get().getRadians());
+                                            drive.getRotation().getRadians(),
+                                            rotationSupplier.get().getRadians());
 
                             // Convert to field relative speeds & send command
                             ChassisSpeeds speeds =
                                     new ChassisSpeeds(
-                                            linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                                            linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                                            linearVelocity.getX()
+                                                    * drive.getMaxLinearSpeedMetersPerSec(),
+                                            linearVelocity.getY()
+                                                    * drive.getMaxLinearSpeedMetersPerSec(),
                                             omega);
                             boolean isFlipped =
                                     DriverStation.getAlliance().isPresent()
@@ -148,7 +154,8 @@ public class DriveCommands {
                                     ChassisSpeeds.fromFieldRelativeSpeeds(
                                             speeds,
                                             isFlipped
-                                                    ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                                                    ? drive.getRotation()
+                                                            .plus(new Rotation2d(Math.PI))
                                                     : drive.getRotation()));
                         },
                         drive)
@@ -210,11 +217,15 @@ public class DriveCommands {
                                         sumXY += velocitySamples.get(i) * voltageSamples.get(i);
                                         sumX2 += velocitySamples.get(i) * velocitySamples.get(i);
                                     }
-                                    double kS = (sumY * sumX2 - sumX * sumXY) / (n * sumX2 - sumX * sumX);
-                                    double kV = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+                                    double kS =
+                                            (sumY * sumX2 - sumX * sumXY)
+                                                    / (n * sumX2 - sumX * sumX);
+                                    double kV =
+                                            (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
 
                                     NumberFormat formatter = new DecimalFormat("#0.00000");
-                                    System.out.println("********** Drive FF Characterization Results **********");
+                                    System.out.println(
+                                            "********** Drive FF Characterization Results **********");
                                     System.out.println("\tkS: " + formatter.format(kS));
                                     System.out.println("\tkV: " + formatter.format(kV));
                                 }));
@@ -250,7 +261,8 @@ public class DriveCommands {
                         // Record starting measurement
                         Commands.runOnce(
                                 () -> {
-                                    state.positions = drive.getWheelRadiusCharacterizationPositions();
+                                    state.positions =
+                                            drive.getWheelRadiusCharacterizationPositions();
                                     state.lastAngle = drive.getRotation();
                                     state.gyroDelta = 0.0;
                                 }),
@@ -259,33 +271,48 @@ public class DriveCommands {
                         Commands.run(
                                         () -> {
                                             var rotation = drive.getRotation();
-                                            state.gyroDelta += Math.abs(rotation.minus(state.lastAngle).getRadians());
+                                            state.gyroDelta +=
+                                                    Math.abs(
+                                                            rotation.minus(state.lastAngle)
+                                                                    .getRadians());
                                             state.lastAngle = rotation;
                                         })
 
                                 // When cancelled, calculate and print results
                                 .finallyDo(
                                         () -> {
-                                            double[] positions = drive.getWheelRadiusCharacterizationPositions();
+                                            double[] positions =
+                                                    drive.getWheelRadiusCharacterizationPositions();
                                             double wheelDelta = 0.0;
                                             for (int i = 0; i < 4; i++) {
-                                                wheelDelta += Math.abs(positions[i] - state.positions[i]) / 4.0;
+                                                wheelDelta +=
+                                                        Math.abs(positions[i] - state.positions[i])
+                                                                / 4.0;
                                             }
                                             double wheelRadius =
-                                                    (state.gyroDelta * DriveConstants.driveBaseRadius) / wheelDelta;
+                                                    (state.gyroDelta
+                                                                    * DriveConstants
+                                                                            .driveBaseRadius)
+                                                            / wheelDelta;
 
                                             NumberFormat formatter = new DecimalFormat("#0.000");
                                             System.out.println(
                                                     "********** Wheel Radius Characterization Results **********");
                                             System.out.println(
-                                                    "\tWheel Delta: " + formatter.format(wheelDelta) + " radians");
+                                                    "\tWheel Delta: "
+                                                            + formatter.format(wheelDelta)
+                                                            + " radians");
                                             System.out.println(
-                                                    "\tGyro Delta: " + formatter.format(state.gyroDelta) + " radians");
+                                                    "\tGyro Delta: "
+                                                            + formatter.format(state.gyroDelta)
+                                                            + " radians");
                                             System.out.println(
                                                     "\tWheel Radius: "
                                                             + formatter.format(wheelRadius)
                                                             + " meters, "
-                                                            + formatter.format(Units.metersToInches(wheelRadius))
+                                                            + formatter.format(
+                                                                    Units.metersToInches(
+                                                                            wheelRadius))
                                                             + " inches");
                                         })));
     }
