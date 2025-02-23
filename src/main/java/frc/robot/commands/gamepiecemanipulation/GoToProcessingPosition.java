@@ -10,10 +10,10 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotConstants;
 
 public class GoToProcessingPosition extends SequentialCommandGroup {
-  public GoToProcessingPosition(Pivot pivot, Elevator elevator) {
-    addCommands(
-        new ParallelCommandGroup(
-            new ElevatorGoToHeight(elevator, ElevatorConstants.processorHeight),
-            new PivotGoToAngle(pivot, PivotConstants.processorAngle)));
-  }
+    public GoToProcessingPosition(Pivot pivot, Elevator elevator) {
+        addCommands(
+                new ParallelCommandGroup(
+                        new ElevatorGoToHeight(elevator, ElevatorConstants.processorHeight),
+                        new PivotGoToAngle(pivot, PivotConstants.processorAngle)));
+    }
 }

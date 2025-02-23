@@ -16,16 +16,16 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 public class AutoGetCoral extends SequentialCommandGroup {
-  public AutoGetCoral(
-      AlignmentConfig config, Pivot pivot, Elevator elevator, CoralHolder coralHolder)
-      throws FileVersionException, IOException, ParseException {
-    PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
-    Command pathFindingCommand =
-        AutoBuilder.pathfindThenFollowPath(
-            path, AutoTeleopConstants.coralStationAlignmentConstraints);
+    public AutoGetCoral(
+            AlignmentConfig config, Pivot pivot, Elevator elevator, CoralHolder coralHolder)
+            throws FileVersionException, IOException, ParseException {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
+        Command pathFindingCommand =
+                AutoBuilder.pathfindThenFollowPath(
+                        path, AutoTeleopConstants.coralStationAlignmentConstraints);
 
-    addCommands(
-        new ParallelCommandGroup(
-            pathFindingCommand, new IntakeCoral(pivot, elevator, coralHolder)));
-  }
+        addCommands(
+                new ParallelCommandGroup(
+                        pathFindingCommand, new IntakeCoral(pivot, elevator, coralHolder)));
+    }
 }

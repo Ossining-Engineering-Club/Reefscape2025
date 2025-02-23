@@ -17,22 +17,22 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 public class AutoGetReefAlgae extends SequentialCommandGroup {
-  public AutoGetReefAlgae(
-      ReefAlgaeAlignmentConfig config, Pivot pivot, Elevator elevator, AlgaeClaw algaeClaw)
-      throws FileVersionException, IOException, ParseException {
-    PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
-    Command pathFindingCommand =
-        AutoBuilder.pathfindThenFollowPath(path, AutoTeleopConstants.reefAlgaeAlignmentConstraints);
+    public AutoGetReefAlgae(
+            ReefAlgaeAlignmentConfig config, Pivot pivot, Elevator elevator, AlgaeClaw algaeClaw)
+            throws FileVersionException, IOException, ParseException {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
+        Command pathFindingCommand =
+                AutoBuilder.pathfindThenFollowPath(path, AutoTeleopConstants.reefAlgaeAlignmentConstraints);
 
-    double height =
-        switch (config.pathName()) {
-          case "CD", "GH", "KL" -> ElevatorConstants.lowerAlgaeHeight;
-          case "AB", "EF", "IJ" -> ElevatorConstants.upperAlgaeHeight;
-          default -> 0.0;
-        };
+        double height =
+                switch (config.pathName()) {
+                    case "CD", "GH", "KL" -> ElevatorConstants.lowerAlgaeHeight;
+                    case "AB", "EF", "IJ" -> ElevatorConstants.upperAlgaeHeight;
+                    default -> 0.0;
+                };
 
-    addCommands(
-        new ParallelCommandGroup(
-            pathFindingCommand, new IntakeReefAlgae(height, pivot, elevator, algaeClaw)));
-  }
+        addCommands(
+                new ParallelCommandGroup(
+                        pathFindingCommand, new IntakeReefAlgae(height, pivot, elevator, algaeClaw)));
+    }
 }

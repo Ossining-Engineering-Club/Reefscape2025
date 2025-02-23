@@ -12,41 +12,41 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class ElevatorIOReal implements ElevatorIO {
-  private final SparkMax sparkMax;
-  private final RelativeEncoder encoder;
+    private final SparkMax sparkMax;
+    private final RelativeEncoder encoder;
 
-  public ElevatorIOReal() {
-    sparkMax = new SparkMax(canId, MotorType.kBrushless);
-    encoder = sparkMax.getEncoder();
+    public ElevatorIOReal() {
+        sparkMax = new SparkMax(canId, MotorType.kBrushless);
+        encoder = sparkMax.getEncoder();
 
-    var config = new SparkMaxConfig();
-    config.inverted(isInverted).idleMode(IdleMode.kBrake);
-    config
-        .encoder
-        .positionConversionFactor(
-            1.0 / motorReduction * 2 * Math.PI * drumRadiusMeters * encoderPositionFactor)
-        .velocityConversionFactor(
-            1.0 / motorReduction * 2 * Math.PI * drumRadiusMeters * encoderVelocityFactor);
-    config.smartCurrentLimit(currentLimit);
-    tryUntilOk(
-        sparkMax,
-        5,
-        () ->
-            sparkMax.configure(
-                config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+        var config = new SparkMaxConfig();
+        config.inverted(isInverted).idleMode(IdleMode.kBrake);
+        config
+                .encoder
+                .positionConversionFactor(
+                        1.0 / motorReduction * 2 * Math.PI * drumRadiusMeters * encoderPositionFactor)
+                .velocityConversionFactor(
+                        1.0 / motorReduction * 2 * Math.PI * drumRadiusMeters * encoderVelocityFactor);
+        config.smartCurrentLimit(currentLimit);
+        tryUntilOk(
+                sparkMax,
+                5,
+                () ->
+                        sparkMax.configure(
+                                config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
-    encoder.setPosition(startHeight);
-  }
+        encoder.setPosition(startHeight);
+    }
 
-  @Override
-  public void updateInputs(ElevatorIOInputs inputs) {
-    inputs.appliedVolts = sparkMax.getAppliedOutput() * sparkMax.getBusVoltage();
-    inputs.heightMeters = encoder.getPosition();
-    inputs.statorCurrent = sparkMax.getOutputCurrent();
-  }
+    @Override
+    public void updateInputs(ElevatorIOInputs inputs) {
+        inputs.appliedVolts = sparkMax.getAppliedOutput() * sparkMax.getBusVoltage();
+        inputs.heightMeters = encoder.getPosition();
+        inputs.statorCurrent = sparkMax.getOutputCurrent();
+    }
 
-  @Override
-  public void setVoltage(double voltage) {
-    sparkMax.setVoltage(voltage);
-  }
+    @Override
+    public void setVoltage(double voltage) {
+        sparkMax.setVoltage(voltage);
+    }
 }

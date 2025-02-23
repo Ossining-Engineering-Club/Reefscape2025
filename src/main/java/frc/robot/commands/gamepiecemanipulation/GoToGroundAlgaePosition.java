@@ -10,10 +10,10 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotConstants;
 
 public class GoToGroundAlgaePosition extends SequentialCommandGroup {
-  public GoToGroundAlgaePosition(Elevator elevator, Pivot pivot) {
-    addCommands(
-        new ParallelCommandGroup(
-            new ElevatorGoToHeight(elevator, ElevatorConstants.groundAlgaeHeight),
-            new PivotGoToAngle(pivot, PivotConstants.groundAlgaeAngle)));
-  }
+    public GoToGroundAlgaePosition(Elevator elevator, Pivot pivot) {
+        addCommands(
+                new ParallelCommandGroup(
+                        new ElevatorGoToHeight(elevator, ElevatorConstants.groundAlgaeHeight),
+                        new PivotGoToAngle(pivot, PivotConstants.groundAlgaeAngle)));
+    }
 }

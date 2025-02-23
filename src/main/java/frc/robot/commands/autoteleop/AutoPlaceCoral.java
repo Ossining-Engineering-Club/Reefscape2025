@@ -19,27 +19,27 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 public class AutoPlaceCoral extends SequentialCommandGroup {
-  public AutoPlaceCoral(
-      AlignmentConfig config, Level level, Pivot pivot, Elevator elevator, CoralHolder coralHolder)
-      throws FileVersionException, IOException, ParseException {
-    PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
-    Command pathFindingCommand =
-        AutoBuilder.pathfindThenFollowPath(path, AutoTeleopConstants.reefCoralAlignmentConstraints);
+    public AutoPlaceCoral(
+            AlignmentConfig config, Level level, Pivot pivot, Elevator elevator, CoralHolder coralHolder)
+            throws FileVersionException, IOException, ParseException {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
+        Command pathFindingCommand =
+                AutoBuilder.pathfindThenFollowPath(path, AutoTeleopConstants.reefCoralAlignmentConstraints);
 
-    double height =
-        switch (level) {
-          case L1 -> ElevatorConstants.l1Height;
-          case L2 -> ElevatorConstants.l2Height;
-          case L3 -> ElevatorConstants.l3Height;
-          case L4 -> ElevatorConstants.l4Height;
-          default -> 0.0;
-        };
+        double height =
+                switch (level) {
+                    case L1 -> ElevatorConstants.l1Height;
+                    case L2 -> ElevatorConstants.l2Height;
+                    case L3 -> ElevatorConstants.l3Height;
+                    case L4 -> ElevatorConstants.l4Height;
+                    default -> 0.0;
+                };
 
-    addCommands(
-        new ParallelCommandGroup(
-            pathFindingCommand,
-            new SequentialCommandGroup(
-                new WaitCommand(0.5), new GoToPlacingCoralPosition(height, pivot, elevator))),
-        coralHolder.release());
-  }
+        addCommands(
+                new ParallelCommandGroup(
+                        pathFindingCommand,
+                        new SequentialCommandGroup(
+                                new WaitCommand(0.5), new GoToPlacingCoralPosition(height, pivot, elevator))),
+                coralHolder.release());
+    }
 }

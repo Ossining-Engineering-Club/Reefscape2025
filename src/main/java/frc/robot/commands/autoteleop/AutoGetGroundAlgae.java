@@ -13,19 +13,19 @@ import frc.robot.subsystems.pivot.Pivot;
 import java.util.function.DoubleSupplier;
 
 public class AutoGetGroundAlgae extends SequentialCommandGroup {
-  public AutoGetGroundAlgae(
-      Elevator elevator,
-      Pivot pivot,
-      AlgaeClaw algaeClaw,
-      Drive drive,
-      ObjectDetector algaeDetector,
-      DoubleSupplier xSupplier,
-      DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier) {
-    addCommands(
-        new GoToGroundAlgaePosition(elevator, pivot),
-        new ParallelDeadlineGroup(
-            new IntakeGroundAlgae(elevator, pivot, algaeClaw),
-            new LockOntoAlgae(drive, algaeDetector, xSupplier, ySupplier, omegaSupplier)));
-  }
+    public AutoGetGroundAlgae(
+            Elevator elevator,
+            Pivot pivot,
+            AlgaeClaw algaeClaw,
+            Drive drive,
+            ObjectDetector algaeDetector,
+            DoubleSupplier xSupplier,
+            DoubleSupplier ySupplier,
+            DoubleSupplier omegaSupplier) {
+        addCommands(
+                new GoToGroundAlgaePosition(elevator, pivot),
+                new ParallelDeadlineGroup(
+                        new IntakeGroundAlgae(elevator, pivot, algaeClaw),
+                        new LockOntoAlgae(drive, algaeDetector, xSupplier, ySupplier, omegaSupplier)));
+    }
 }

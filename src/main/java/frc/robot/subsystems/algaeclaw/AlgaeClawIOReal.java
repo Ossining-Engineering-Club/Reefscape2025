@@ -8,28 +8,28 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class AlgaeClawIOReal implements AlgaeClawIO {
-  private final TalonFX clawMotor;
+    private final TalonFX clawMotor;
 
-  public AlgaeClawIOReal() {
-    clawMotor = new TalonFX(AlgaeClawConstants.clawCANID);
+    public AlgaeClawIOReal() {
+        clawMotor = new TalonFX(AlgaeClawConstants.clawCANID);
 
-    var config = new TalonFXConfiguration();
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.CurrentLimits.StatorCurrentLimit = currentLimit;
-    config.CurrentLimits.StatorCurrentLimitEnable = true;
-    tryUntilOk(5, () -> clawMotor.getConfigurator().apply(config, 0.25));
-  }
+        var config = new TalonFXConfiguration();
+        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        config.CurrentLimits.StatorCurrentLimit = currentLimit;
+        config.CurrentLimits.StatorCurrentLimitEnable = true;
+        tryUntilOk(5, () -> clawMotor.getConfigurator().apply(config, 0.25));
+    }
 
-  @Override
-  public void updateInputs(AlgaeClawIOInputs inputs) {
-    inputs.appliedVolts = clawMotor.getMotorVoltage().getValueAsDouble();
-    inputs.statorCurrent = clawMotor.getStatorCurrent().getValueAsDouble();
-    inputs.supplyCurrent = clawMotor.getSupplyCurrent().getValueAsDouble();
-    inputs.temperatureCelsius = clawMotor.getDeviceTemp().getValueAsDouble();
-  }
+    @Override
+    public void updateInputs(AlgaeClawIOInputs inputs) {
+        inputs.appliedVolts = clawMotor.getMotorVoltage().getValueAsDouble();
+        inputs.statorCurrent = clawMotor.getStatorCurrent().getValueAsDouble();
+        inputs.supplyCurrent = clawMotor.getSupplyCurrent().getValueAsDouble();
+        inputs.temperatureCelsius = clawMotor.getDeviceTemp().getValueAsDouble();
+    }
 
-  @Override
-  public void setVoltage(double voltage) {
-    clawMotor.setVoltage(voltage);
-  }
+    @Override
+    public void setVoltage(double voltage) {
+        clawMotor.setVoltage(voltage);
+    }
 }

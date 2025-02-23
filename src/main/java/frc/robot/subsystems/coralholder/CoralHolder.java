@@ -14,72 +14,72 @@ import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
 import org.littletonrobotics.junction.Logger;
 
 public class CoralHolder extends SubsystemBase {
-  public static enum CoralHolderState {
-    FORWARD,
-    STOPPED,
-    REVERSE
-  }
-
-  private final CoralHolderIO io;
-  private final PhotoelectricSensor photoelectricSensor;
-  private final CoralHolderIOInputsAutoLogged inputs = new CoralHolderIOInputsAutoLogged();
-
-  private CoralHolderState state;
-
-  public CoralHolder(CoralHolderIO io, PhotoelectricSensorIO photoelectricSensorIO) {
-    this.io = io;
-    photoelectricSensor = new PhotoelectricSensor(photoelectricSensorIO, coralHolderPEId);
-    state = CoralHolderState.STOPPED;
-  }
-
-  @Override
-  public void periodic() {
-    io.updateInputs(inputs);
-    Logger.processInputs("Coral Holder", inputs);
-
-    Logger.recordOutput("has coral", hasCoral());
-  }
-
-  public void stop() {
-    state = CoralHolderState.STOPPED;
-    io.setVoltage(0);
-  }
-
-  public void forward() {
-    state = CoralHolderState.FORWARD;
-    io.setVoltage(forwardVoltage);
-  }
-
-  public void reverse() {
-    state = CoralHolderState.REVERSE;
-    if (Constants.currentMode == Mode.SIM) {
-      CoralVisualizer.shootCoral();
+    public static enum CoralHolderState {
+        FORWARD,
+        STOPPED,
+        REVERSE
     }
-    io.setVoltage(reverseVoltage);
-  }
 
-  public boolean hasCoral() {
-    return photoelectricSensor.isTripped();
-  }
+    private final CoralHolderIO io;
+    private final PhotoelectricSensor photoelectricSensor;
+    private final CoralHolderIOInputsAutoLogged inputs = new CoralHolderIOInputsAutoLogged();
 
-  public CoralHolderState getState() {
-    return state;
-  }
+    private CoralHolderState state;
 
-  public Command intake() {
-    return Commands.either(
-        Commands.runOnce(() -> this.forward(), this)
-            .andThen(Commands.waitUntil(() -> this.hasCoral()))
-            .andThen(Commands.waitTime(Seconds.of(CoralHolderConstants.intakeDelaySeconds)))
-            .andThen(Commands.runOnce(() -> this.stop(), this)),
-        Commands.runOnce(() -> {}),
-        () -> !hasCoral());
-  }
+    public CoralHolder(CoralHolderIO io, PhotoelectricSensorIO photoelectricSensorIO) {
+        this.io = io;
+        photoelectricSensor = new PhotoelectricSensor(photoelectricSensorIO, coralHolderPEId);
+        state = CoralHolderState.STOPPED;
+    }
 
-  public Command release() {
-    return Commands.runOnce(() -> this.reverse(), this)
-        .andThen(Commands.waitUntil(() -> !this.hasCoral()))
-        .andThen(Commands.waitTime(Seconds.of(CoralHolderConstants.releaseDelaySeconds)))
-        .andThen(Commands.runOnce(() -> this.stop(), this));
-  }
+    @Override
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs("Coral Holder", inputs);
+
+        Logger.recordOutput("has coral", hasCoral());
+    }
+
+    public void stop() {
+        state = CoralHolderState.STOPPED;
+        io.setVoltage(0);
+    }
+
+    public void forward() {
+        state = CoralHolderState.FORWARD;
+        io.setVoltage(forwardVoltage);
+    }
+
+    public void reverse() {
+        state = CoralHolderState.REVERSE;
+        if (Constants.currentMode == Mode.SIM) {
+            CoralVisualizer.shootCoral();
+        }
+        io.setVoltage(reverseVoltage);
+    }
+
+    public boolean hasCoral() {
+        return photoelectricSensor.isTripped();
+    }
+
+    public CoralHolderState getState() {
+        return state;
+    }
+
+    public Command intake() {
+        return Commands.either(
+                Commands.runOnce(() -> this.forward(), this)
+                        .andThen(Commands.waitUntil(() -> this.hasCoral()))
+                        .andThen(Commands.waitTime(Seconds.of(CoralHolderConstants.intakeDelaySeconds)))
+                        .andThen(Commands.runOnce(() -> this.stop(), this)),
+                Commands.runOnce(() -> {}),
+                () -> !hasCoral());
+    }
+
+    public Command release() {
+        return Commands.runOnce(() -> this.reverse(), this)
+                .andThen(Commands.waitUntil(() -> !this.hasCoral()))
+                .andThen(Commands.waitTime(Seconds.of(CoralHolderConstants.releaseDelaySeconds)))
+                .andThen(Commands.runOnce(() -> this.stop(), this));
+    }
 }

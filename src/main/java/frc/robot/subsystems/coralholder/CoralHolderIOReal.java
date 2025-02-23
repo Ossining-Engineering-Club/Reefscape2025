@@ -11,30 +11,30 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class CoralHolderIOReal implements CoralHolderIO {
-  private final SparkMax sparkMax;
+    private final SparkMax sparkMax;
 
-  public CoralHolderIOReal() {
-    sparkMax = new SparkMax(canid, MotorType.kBrushless);
+    public CoralHolderIOReal() {
+        sparkMax = new SparkMax(canid, MotorType.kBrushless);
 
-    var config = new SparkMaxConfig();
-    config.idleMode(IdleMode.kBrake);
-    config.smartCurrentLimit(currentLimit);
-    tryUntilOk(
-        sparkMax,
-        5,
-        () ->
-            sparkMax.configure(
-                config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
-  }
+        var config = new SparkMaxConfig();
+        config.idleMode(IdleMode.kBrake);
+        config.smartCurrentLimit(currentLimit);
+        tryUntilOk(
+                sparkMax,
+                5,
+                () ->
+                        sparkMax.configure(
+                                config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+    }
 
-  @Override
-  public void setVoltage(double voltage) {
-    sparkMax.setVoltage(voltage);
-  }
+    @Override
+    public void setVoltage(double voltage) {
+        sparkMax.setVoltage(voltage);
+    }
 
-  @Override
-  public void updateInputs(CoralHolderIOInputs inputs) {
-    inputs.appliedVolts = sparkMax.getAppliedOutput() * sparkMax.getBusVoltage();
-    inputs.statorCurrent = sparkMax.getOutputCurrent();
-  }
+    @Override
+    public void updateInputs(CoralHolderIOInputs inputs) {
+        inputs.appliedVolts = sparkMax.getAppliedOutput() * sparkMax.getBusVoltage();
+        inputs.statorCurrent = sparkMax.getOutputCurrent();
+    }
 }

@@ -7,9 +7,9 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.pivot.Pivot;
 
 public class IntakeGroundAlgae extends SequentialCommandGroup {
-  public IntakeGroundAlgae(Elevator elevator, Pivot pivot, AlgaeClaw algaeClaw) {
-    addCommands(
-        new ParallelDeadlineGroup(
-            algaeClaw.intake(), new GoToGroundAlgaePosition(elevator, pivot)));
-  }
+    public IntakeGroundAlgae(Elevator elevator, Pivot pivot, AlgaeClaw algaeClaw) {
+        addCommands(
+                new ParallelDeadlineGroup(
+                        algaeClaw.intake(), new GoToGroundAlgaePosition(elevator, pivot)));
+    }
 }

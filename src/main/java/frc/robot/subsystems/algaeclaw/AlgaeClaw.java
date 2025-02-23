@@ -12,75 +12,75 @@ import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
 import org.littletonrobotics.junction.Logger;
 
 public class AlgaeClaw extends SubsystemBase {
-  private static enum AlgaeClawState {
-    FORWARD,
-    STOPPED,
-    REVERSE
-  }
+    private static enum AlgaeClawState {
+        FORWARD,
+        STOPPED,
+        REVERSE
+    }
 
-  private final PhotoelectricSensor photoelectricSensor;
-  private final AlgaeClawIO io;
-  private final AlgaeClawIOInputsAutoLogged inputs = new AlgaeClawIOInputsAutoLogged();
+    private final PhotoelectricSensor photoelectricSensor;
+    private final AlgaeClawIO io;
+    private final AlgaeClawIOInputsAutoLogged inputs = new AlgaeClawIOInputsAutoLogged();
 
-  private AlgaeClawState state;
+    private AlgaeClawState state;
 
-  /** Algae Claw construction */
-  public AlgaeClaw(AlgaeClawIO io, PhotoelectricSensorIO photoelectricSensorIO) {
-    this.io = io;
-    this.photoelectricSensor =
-        new PhotoelectricSensor(photoelectricSensorIO, AlgaeClawConstants.algaeClawPEID);
-    state = AlgaeClawState.STOPPED;
-  }
+    /** Algae Claw construction */
+    public AlgaeClaw(AlgaeClawIO io, PhotoelectricSensorIO photoelectricSensorIO) {
+        this.io = io;
+        this.photoelectricSensor =
+                new PhotoelectricSensor(photoelectricSensorIO, AlgaeClawConstants.algaeClawPEID);
+        state = AlgaeClawState.STOPPED;
+    }
 
-  @Override
-  public void periodic() {
-    io.updateInputs(inputs);
-    Logger.processInputs("Algae Claw", inputs);
+    @Override
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs("Algae Claw", inputs);
 
-    Logger.recordOutput("has algae", hasAlgae());
-    SmartDashboard.putNumber("algae claw temp C", inputs.temperatureCelsius);
+        Logger.recordOutput("has algae", hasAlgae());
+        SmartDashboard.putNumber("algae claw temp C", inputs.temperatureCelsius);
 
-    if (state == AlgaeClawState.STOPPED && hasAlgae()) io.setVoltage(holdingVoltage);
-  }
+        if (state == AlgaeClawState.STOPPED && hasAlgae()) io.setVoltage(holdingVoltage);
+    }
 
-  /** Sets motor voltage to predefined voltage */
-  public void startMotor() {
-    state = AlgaeClawState.FORWARD;
-    io.setVoltage(AlgaeClawConstants.clawVoltage);
-  }
+    /** Sets motor voltage to predefined voltage */
+    public void startMotor() {
+        state = AlgaeClawState.FORWARD;
+        io.setVoltage(AlgaeClawConstants.clawVoltage);
+    }
 
-  /** Reverses algae claw motor */
-  public void reverseMotor() {
-    state = AlgaeClawState.REVERSE;
-    io.setVoltage(AlgaeClawConstants.reverseVoltage);
-  }
+    /** Reverses algae claw motor */
+    public void reverseMotor() {
+        state = AlgaeClawState.REVERSE;
+        io.setVoltage(AlgaeClawConstants.reverseVoltage);
+    }
 
-  /** Stops motor or runs holding voltage */
-  public void stopMotor() {
-    state = AlgaeClawState.STOPPED;
-    if (hasAlgae()) io.setVoltage(holdingVoltage);
-    else io.setVoltage(0.0);
-  }
+    /** Stops motor or runs holding voltage */
+    public void stopMotor() {
+        state = AlgaeClawState.STOPPED;
+        if (hasAlgae()) io.setVoltage(holdingVoltage);
+        else io.setVoltage(0.0);
+    }
 
-  /** Gets state of AlgaeClaw breakbeam */
-  public boolean hasAlgae() {
-    return photoelectricSensor.isTripped();
-  }
+    /** Gets state of AlgaeClaw breakbeam */
+    public boolean hasAlgae() {
+        return photoelectricSensor.isTripped();
+    }
 
-  public Command intake() {
-    return Commands.either(
-        Commands.runOnce(() -> this.startMotor(), this)
-            .andThen(Commands.waitUntil(() -> this.hasAlgae()))
-            .andThen(Commands.waitTime(Seconds.of(AlgaeClawConstants.intakeDelaySeconds)))
-            .andThen(Commands.runOnce(() -> this.stopMotor(), this)),
-        Commands.runOnce(() -> {}),
-        () -> !hasAlgae());
-  }
+    public Command intake() {
+        return Commands.either(
+                Commands.runOnce(() -> this.startMotor(), this)
+                        .andThen(Commands.waitUntil(() -> this.hasAlgae()))
+                        .andThen(Commands.waitTime(Seconds.of(AlgaeClawConstants.intakeDelaySeconds)))
+                        .andThen(Commands.runOnce(() -> this.stopMotor(), this)),
+                Commands.runOnce(() -> {}),
+                () -> !hasAlgae());
+    }
 
-  public Command release() {
-    return Commands.runOnce(() -> this.reverseMotor(), this)
-        .andThen(Commands.waitUntil(() -> !this.hasAlgae()))
-        .andThen(Commands.waitTime(Seconds.of(AlgaeClawConstants.releaseDelaySeconds)))
-        .andThen(Commands.runOnce(() -> this.stopMotor(), this));
-  }
+    public Command release() {
+        return Commands.runOnce(() -> this.reverseMotor(), this)
+                .andThen(Commands.waitUntil(() -> !this.hasAlgae()))
+                .andThen(Commands.waitTime(Seconds.of(AlgaeClawConstants.releaseDelaySeconds)))
+                .andThen(Commands.runOnce(() -> this.stopMotor(), this));
+    }
 }

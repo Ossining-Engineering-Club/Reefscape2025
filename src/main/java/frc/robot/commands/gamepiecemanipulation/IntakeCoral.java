@@ -13,14 +13,14 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotConstants;
 
 public class IntakeCoral extends SequentialCommandGroup {
-  public IntakeCoral(Pivot pivot, Elevator elevator, CoralHolder coralHolder) {
-    addCommands(
-        new ConditionalCommand(
-            new ParallelDeadlineGroup(
-                coralHolder.intake(),
-                new ElevatorGoToHeight(elevator, ElevatorConstants.intakeCoralHeight),
-                new PivotGoToAngle(pivot, PivotConstants.intakeCoralAngle)),
-            Commands.runOnce(() -> {}),
-            () -> !coralHolder.hasCoral()));
-  }
+    public IntakeCoral(Pivot pivot, Elevator elevator, CoralHolder coralHolder) {
+        addCommands(
+                new ConditionalCommand(
+                        new ParallelDeadlineGroup(
+                                coralHolder.intake(),
+                                new ElevatorGoToHeight(elevator, ElevatorConstants.intakeCoralHeight),
+                                new PivotGoToAngle(pivot, PivotConstants.intakeCoralAngle)),
+                        Commands.runOnce(() -> {}),
+                        () -> !coralHolder.hasCoral()));
+    }
 }

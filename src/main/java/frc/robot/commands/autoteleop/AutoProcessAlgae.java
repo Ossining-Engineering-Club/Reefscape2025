@@ -16,15 +16,15 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 public class AutoProcessAlgae extends SequentialCommandGroup {
-  public AutoProcessAlgae(
-      AlignmentConfig config, Pivot pivot, Elevator elevator, AlgaeClaw algaeClaw)
-      throws FileVersionException, IOException, ParseException {
-    PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
-    Command pathFindingCommand =
-        AutoBuilder.pathfindThenFollowPath(path, AutoTeleopConstants.processorAlignmentConstraints);
+    public AutoProcessAlgae(
+            AlignmentConfig config, Pivot pivot, Elevator elevator, AlgaeClaw algaeClaw)
+            throws FileVersionException, IOException, ParseException {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
+        Command pathFindingCommand =
+                AutoBuilder.pathfindThenFollowPath(path, AutoTeleopConstants.processorAlignmentConstraints);
 
-    addCommands(
-        new ParallelCommandGroup(new GoToProcessingPosition(pivot, elevator), pathFindingCommand),
-        algaeClaw.release());
-  }
+        addCommands(
+                new ParallelCommandGroup(new GoToProcessingPosition(pivot, elevator), pathFindingCommand),
+                algaeClaw.release());
+    }
 }

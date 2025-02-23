@@ -22,14 +22,14 @@ import edu.wpi.first.math.util.Units;
 
 /** IO implementation for NavX. */
 public class GyroIONavX implements GyroIO {
-  private final AHRS navX = new AHRS(NavXComType.kMXP_SPI, (byte) odometryFrequency);
+    private final AHRS navX = new AHRS(NavXComType.kMXP_SPI, (byte) odometryFrequency);
 
-  public GyroIONavX() {}
+    public GyroIONavX() {}
 
-  @Override
-  public void updateInputs(GyroIOInputs inputs) {
-    inputs.connected = navX.isConnected();
-    inputs.yawPosition = Rotation2d.fromDegrees(-navX.getAngle());
-    inputs.yawVelocityRadPerSec = Units.degreesToRadians(-navX.getRawGyroZ());
-  }
+    @Override
+    public void updateInputs(GyroIOInputs inputs) {
+        inputs.connected = navX.isConnected();
+        inputs.yawPosition = Rotation2d.fromDegrees(-navX.getAngle());
+        inputs.yawVelocityRadPerSec = Units.degreesToRadians(-navX.getRawGyroZ());
+    }
 }

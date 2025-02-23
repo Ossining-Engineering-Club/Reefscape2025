@@ -9,10 +9,10 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotConstants;
 
 public class GoToPlacingCoralPosition extends SequentialCommandGroup {
-  public GoToPlacingCoralPosition(double height, Pivot pivot, Elevator elevator) {
-    addCommands(
-        new ParallelCommandGroup(
-            new PivotGoToAngle(pivot, PivotConstants.placeCoralAngle),
-            new ElevatorGoToHeight(elevator, height)));
-  }
+    public GoToPlacingCoralPosition(double height, Pivot pivot, Elevator elevator) {
+        addCommands(
+                new ParallelCommandGroup(
+                        new PivotGoToAngle(pivot, PivotConstants.placeCoralAngle),
+                        new ElevatorGoToHeight(elevator, height)));
+    }
 }

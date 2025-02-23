@@ -23,22 +23,22 @@ import java.text.ParseException;
  * call.
  */
 public final class Main {
-  private Main() {}
+    private Main() {}
 
-  /**
-   * Main initialization function. Do not perform any initialization here.
-   *
-   * <p>If you change your main robot class, change the parameter type.
-   */
-  public static void main(String... args) {
-    RobotBase.startRobot(
-        () -> {
-          try {
-            return new Robot();
-          } catch (IOException | ParseException | org.json.simple.parser.ParseException e) {
-            e.printStackTrace();
-          }
-          return null;
-        });
-  }
+    /**
+     * Main initialization function. Do not perform any initialization here.
+     *
+     * <p>If you change your main robot class, change the parameter type.
+     */
+    public static void main(String... args) {
+        RobotBase.startRobot(
+                () -> {
+                    try {
+                        return new Robot();
+                    } catch (IOException | ParseException | org.json.simple.parser.ParseException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                });
+    }
 }
