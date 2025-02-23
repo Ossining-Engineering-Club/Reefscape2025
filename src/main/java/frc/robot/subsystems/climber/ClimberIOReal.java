@@ -24,16 +24,16 @@ public class ClimberIOReal implements ClimberIO {
         var chainMotorConfig = new SparkMaxConfig();
         chainMotorConfig.inverted(isInverted).idleMode(IdleMode.kBrake);
         chainMotorConfig
-            .encoder
-            .positionConversionFactor(1.0 / chainMotorReduction * encoderPositionFactor)
-            .velocityConversionFactor(1.0 / chainMotorReduction * encoderVelocityFactor);
+                .encoder
+                .positionConversionFactor(1.0 / chainMotorReduction * encoderPositionFactor)
+                .velocityConversionFactor(1.0 / chainMotorReduction * encoderVelocityFactor);
         chainMotorConfig.smartCurrentLimit(chainMotorStallCurrentLimit, chainMotorFreeCurrentLimit);
         tryUntilOk(
-            chainMotor,
-            5,
-            () ->
-                chainMotor.configure(
-                    chainMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+                chainMotor,
+                5,
+                () ->
+                        chainMotor.configure(
+                                chainMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
         encoder.setPosition(startAngle);
 
@@ -41,11 +41,11 @@ public class ClimberIOReal implements ClimberIO {
         ropeMotorConfig.idleMode(IdleMode.kBrake);
         ropeMotorConfig.smartCurrentLimit(ropeMotorStallCurrentLimit, ropeMotorFreeCurrentLimit);
         tryUntilOk(
-            ropeMotor,
-            5,
-            () ->
-                ropeMotor.configure(
-                    ropeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+                ropeMotor,
+                5,
+                () ->
+                        ropeMotor.configure(
+                                ropeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
     }
 
     @Override

@@ -40,7 +40,10 @@ public class AlgaeClaw extends SubsystemBase {
         Logger.recordOutput("has algae", hasAlgae());
         SmartDashboard.putNumber("algae claw temp C", inputs.temperatureCelsius);
 
-        if (state == AlgaeClawState.STOPPED && hasAlgae()) io.setVoltage(holdingVoltage);
+        if (state == AlgaeClawState.STOPPED) {
+            if (hasAlgae()) io.setVoltage(holdingVoltage);
+            else io.setVoltage(0.0);
+        }
     }
 
     /** Sets motor voltage to predefined voltage */
