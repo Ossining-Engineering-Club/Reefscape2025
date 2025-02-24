@@ -65,6 +65,8 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.gamepiecevisualizers.AlgaeVisualizer;
+import frc.robot.subsystems.gamepiecevisualizers.AlgaeVisualizer.AlgaeState;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer.CoralState;
 import frc.robot.subsystems.led.LED;
@@ -327,12 +329,13 @@ public class RobotContainer {
         //             () -> (new AutoNetAlgae(pivot, elevator, algaeClaw,
         // drive.getPose())).schedule()));
 
-        controller
-                .x()
-                .onTrue(
-                        new AutoGetCoral(
-                                coralStationAlignmentConfigs[0], pivot, elevator, coralHolder));
-        controller.y().onTrue(coralHolder.release());
+        // controller
+        //         .x()
+        //         .onTrue(
+        //                 new AutoGetCoral(
+        //                         coralStationAlignmentConfigs[0], pivot, elevator, coralHolder));
+        // controller.y().onTrue(coralHolder.release());
+        controller.y().onTrue(algaeClaw.release());
 
         // manual mechanism control
         mechanismController
@@ -482,6 +485,7 @@ public class RobotContainer {
         pivot.resetSimState();
         elevator.resetSimState();
         CoralVisualizer.setCoralState(CoralState.LOADED);
+        AlgaeVisualizer.setAlgaeState(AlgaeState.LOADED);
     }
 
     // stops everything except keeps algae claw holding voltage if on
@@ -523,11 +527,16 @@ public class RobotContainer {
                 });
         switch (Constants.currentMode) {
             case REAL:
-                // CoralVisualizer.update(
-                //     drive.getPose(),
-                //     elevator.getHeight(),
-                //     pivot.getAngle(),
-                //     driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative());
+                CoralVisualizer.update(
+                        drive.getPose(),
+                        elevator.getHeight(),
+                        pivot.getAngle(),
+                        drive.getChassisSpeeds());
+                AlgaeVisualizer.update(
+                        drive.getPose(),
+                        elevator.getHeight(),
+                        pivot.getAngle(),
+                        drive.getChassisSpeeds());
                 break;
             case SIM:
                 Logger.recordOutput(
@@ -538,12 +547,17 @@ public class RobotContainer {
                 Logger.recordOutput(
                         "FieldSimulation/Coral",
                         SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
+                CoralVisualizer.update(
+                        driveSimulation.getSimulatedDriveTrainPose(),
+                        elevator.getHeight(),
+                        pivot.getAngle(),
+                        driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative());
+                AlgaeVisualizer.update(
+                        driveSimulation.getSimulatedDriveTrainPose(),
+                        elevator.getHeight(),
+                        pivot.getAngle(),
+                        driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative());
                 if (DriverStation.isEnabled()) {
-                    CoralVisualizer.update(
-                            driveSimulation.getSimulatedDriveTrainPose(),
-                            elevator.getHeight(),
-                            pivot.getAngle(),
-                            driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative());
                     FieldSimulationManager.periodic(
                             driveSimulation.getSimulatedDriveTrainPose(),
                             elevator,

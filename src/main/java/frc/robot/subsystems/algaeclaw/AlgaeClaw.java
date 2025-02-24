@@ -7,6 +7,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.Mode;
+import frc.robot.subsystems.gamepiecevisualizers.AlgaeVisualizer;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensor;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
 import org.littletonrobotics.junction.Logger;
@@ -55,6 +58,9 @@ public class AlgaeClaw extends SubsystemBase {
     /** Reverses algae claw motor */
     public void reverseMotor() {
         state = AlgaeClawState.REVERSE;
+        if (Constants.currentMode == Mode.SIM) {
+            AlgaeVisualizer.shootAlgae();
+        }
         io.setVoltage(AlgaeClawConstants.reverseVoltage);
     }
 
