@@ -6,18 +6,18 @@ import static frc.robot.util.SparkUtil.tryUntilOk;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class ElevatorIOReal implements ElevatorIO {
-    private final SparkMax sparkMax;
+    private final SparkFlex sparkFlex;
     private final RelativeEncoder encoder;
 
     public ElevatorIOReal() {
-        sparkMax = new SparkMax(canId, MotorType.kBrushless);
-        encoder = sparkMax.getEncoder();
+        sparkFlex = new SparkFlex(canId, MotorType.kBrushless);
+        encoder = sparkFlex.getEncoder();
 
         var config = new SparkMaxConfig();
         config.inverted(isInverted).idleMode(IdleMode.kBrake);
@@ -28,10 +28,10 @@ public class ElevatorIOReal implements ElevatorIO {
                         2.0 * 1.0 / motorReduction * 2 * Math.PI * drumRadiusMeters / 60.0);
         config.smartCurrentLimit(stallCurrentLimit, freeCurrentLimit);
         tryUntilOk(
-                sparkMax,
+                sparkFlex,
                 5,
                 () ->
-                        sparkMax.configure(
+                        sparkFlex.configure(
                                 config,
                                 ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters));
@@ -41,14 +41,14 @@ public class ElevatorIOReal implements ElevatorIO {
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
-        inputs.appliedVolts = sparkMax.getAppliedOutput() * sparkMax.getBusVoltage();
+        inputs.appliedVolts = sparkFlex.getAppliedOutput() * sparkFlex.getBusVoltage();
         inputs.heightMeters = encoder.getPosition();
-        inputs.statorCurrent = sparkMax.getOutputCurrent();
-        inputs.temperatureCelsius = sparkMax.getMotorTemperature();
+        inputs.statorCurrent = sparkFlex.getOutputCurrent();
+        inputs.temperatureCelsius = sparkFlex.getMotorTemperature();
     }
 
     @Override
     public void setVoltage(double voltage) {
-        sparkMax.setVoltage(voltage);
+        sparkFlex.setVoltage(voltage);
     }
 }
