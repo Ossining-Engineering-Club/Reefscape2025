@@ -24,14 +24,14 @@ public class Climber extends SubsystemBase {
     public void forward() {
         // if (inputs.angleRadians < maxAngle) {
         io.setChainMotorVoltage(chainMotorForwardVoltage);
-        // io.setWinchMotorVoltage(ropeMotorForwardVoltage);
+        io.setWinchMotorVoltage(winchMotorForwardVoltage);
         // } else stop();
     }
 
     public void reverse() {
         // if (inputs.angleRadians > minAngle) {
         io.setChainMotorVoltage(chainMotorReverseVoltage);
-        // io.setWinchMotorVoltage(ropeMotorReverseVoltage);
+        io.setWinchMotorVoltage(winchMotorReverseVoltage);
         // } else stop();
     }
 
@@ -44,15 +44,15 @@ public class Climber extends SubsystemBase {
         return inputs.angleRadians;
     }
 
-    public double calculateWinchVoltage(double angle) {
-        return winchMaxVoltage
-                * Math.cos(
-                        Math.atan(
-                                (climberRadius * Math.sin(angle) + winchOffsetY)
-                                                / (-climberRadius * Math.cos(angle) + winchOffsetX)
-                                        + angle
-                                        - Math.PI / 2.0));
-    }
+    // public double calculateWinchVoltage(double angle) {
+    //     return winchMaxVoltage
+    //             * Math.cos(
+    //                     Math.atan(
+    //                             (climberRadius * Math.sin(angle) + winchOffsetY)
+    //                                             / (-climberRadius * Math.cos(angle) + winchOffsetX)
+    //                                     + angle
+    //                                     - Math.PI / 2.0));
+    // }
 
     public Command extend() {
         return Commands.runOnce(() -> forward())
