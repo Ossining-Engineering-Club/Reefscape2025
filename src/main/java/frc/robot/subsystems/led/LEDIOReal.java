@@ -12,7 +12,7 @@ public class LEDIOReal implements LEDIO {
 
     public LEDIOReal() {
         leds = new AddressableLED(pwmPort);
-        buffer = new AddressableLEDBuffer(120);
+        buffer = new AddressableLEDBuffer(length);
     }
 
     @Override

@@ -70,6 +70,7 @@ import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer.CoralState;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.led.LEDIO;
 import frc.robot.subsystems.led.LEDIOReal;
+import frc.robot.subsystems.led.LEDIOSim;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOSim;
@@ -199,6 +200,7 @@ public class RobotContainer {
                                 new AlgaeClawIOSim(),
                                 new PhotoelectricSensorIOSim(AlgaeClawConstants.algaeClawPEID));
                 climber = new Climber(new ClimberIO() {});
+                led = new LED(new LEDIOSim(), algaeClaw, coralHolder);
                 break;
 
             default:
