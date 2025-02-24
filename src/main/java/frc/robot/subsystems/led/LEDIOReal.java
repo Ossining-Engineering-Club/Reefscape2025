@@ -13,10 +13,21 @@ public class LEDIOReal implements LEDIO {
     public LEDIOReal() {
         leds = new AddressableLED(pwmPort);
         buffer = new AddressableLEDBuffer(length);
+
+        leds.setLength(buffer.getLength());
+        setAll(200, 0, 0);
     }
 
     @Override
-    public void setData(AddressableLEDBuffer buffer) {
-        leds.setData(buffer);
+    public void start() {
+        leds.start();
+    }
+
+    @Override
+    public void setAll(int r, int g, int b) {
+        for (int i = 0; i < length; i++) {
+            buffer.setRGB(i, r, g, b);
+            leds.setData(buffer);
+        }
     }
 }
