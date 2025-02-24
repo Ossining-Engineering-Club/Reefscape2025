@@ -117,7 +117,7 @@ public class LED extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInput(inputs);
-        
+
         updateState();
         updateBuffer();
     }
