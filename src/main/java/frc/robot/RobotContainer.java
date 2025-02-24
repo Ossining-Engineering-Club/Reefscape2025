@@ -41,6 +41,7 @@ import frc.robot.commands.autoteleop.AutoNetAlgae;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
 import frc.robot.commands.drive.DriveCommands;
+import frc.robot.commands.pivot.PivotGoToAngle;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.algaeclaw.AlgaeClawConstants;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIO;
@@ -368,6 +369,13 @@ public class RobotContainer {
         mechanismController
                 .rightTrigger(0.9)
                 .onFalse(Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw));
+
+        // mechanismController.a().onTrue(Commands.runOnce(() -> elevator.setVoltage(0.25)));
+        // mechanismController.a().onFalse(Commands.runOnce(() -> elevator.setVoltage(0.0)));
+        // mechanismController.a().onTrue(new ElevatorGoToHeight(elevator, 0.6));
+        // mechanismController.b().onTrue(new ElevatorGoToHeight(elevator, 0.1));
+        mechanismController.x().onTrue(new PivotGoToAngle(pivot, -3.9));
+        mechanismController.y().onTrue(new PivotGoToAngle(pivot, Units.degreesToRadians(53.763)));
 
         elevator.setDefaultCommand(
                 Commands.runOnce(

@@ -6,14 +6,14 @@ import edu.wpi.first.math.util.Units;
 public class PivotConstants {
     // motor constants
     public static final int canId = 17;
-    public static final double motorReduction = 50.0 / 1.0;
+    public static final double motorReduction = 383.333325 / 1.0;
     public static final double encoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
     public static final double encoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
-    public static final boolean isInverted = false;
+    public static final boolean isInverted = true;
     public static final int currentLimit = 30;
 
     // control system
-    public static final double kP = 1.0;
+    public static final double kP = 20.0;
     public static final double kD = 0.0;
     public static final double maxVelocity = Units.degreesToRadians(360.0);
     public static final double maxAcceleration = Units.degreesToRadians(360.0);
@@ -24,9 +24,9 @@ public class PivotConstants {
     public static final double pidTolerance = Units.degreesToRadians(0.5);
 
     // angle setpoints
-    public static final double startAngle = Units.degreesToRadians(53.763);
-    public static final double maxAngle = Units.degreesToRadians(90);
-    public static final double minAngle = Units.degreesToRadians(-135.0);
+    public static final double startAngle = Units.degreesToRadians(50.0);
+    public static final double maxAngle = Units.degreesToRadians(50.0);
+    public static final double minAngle = Units.degreesToRadians(-225.0);
     public static final double stowAngle = Units.degreesToRadians(0);
     public static final double intakeCoralAngle = Units.degreesToRadians(35.0);
     public static final double placeCoralAngle = Units.degreesToRadians(-35.0);

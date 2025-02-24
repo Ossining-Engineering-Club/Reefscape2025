@@ -7,17 +7,15 @@ public class ElevatorConstants {
     // motor constants
     public static final int canId = 16;
     public static final double motorReduction = 25.0 / 1.0;
-    public static final double encoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
-    public static final double encoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
     public static final boolean isInverted = false;
     public static final int stallCurrentLimit = 30;
     public static final int freeCurrentLimit = 50;
 
     // control system
-    public static final double kP = 1.0;
+    public static final double kP = 150.0;
     public static final double kD = 0.0;
-    public static final double kS = 0.1;
-    public static final double kG = 0.1;
+    public static final double kS = 0.0;
+    public static final double kG = 0.25;
     public static final double maxVelocity = 0.75; // m/s
     public static final double maxAcceleration = 1.5; // m/s^2
     public static final double simP = 200.0;
@@ -30,7 +28,7 @@ public class ElevatorConstants {
 
     // height setpoints
     public static final double startHeight = 0.0;
-    public static final double maxHeight = Units.inchesToMeters(53);
+    public static final double maxHeight = 1.169;
     public static final double minHeight = 0.0;
     public static final double l1Height = Units.inchesToMeters(3.0);
     public static final double l2Height = Units.inchesToMeters(14.0);
@@ -46,5 +44,5 @@ public class ElevatorConstants {
     // sim settings
     public static final DCMotor gearbox = DCMotor.getKrakenX60(2);
     public static final double massKg = 18.1437 / 2.0;
-    public static final double drumRadiusMeters = Units.inchesToMeters(1.0);
+    public static final double drumRadiusMeters = 0.03316409 / 2.0 * 1.06601466993;
 }

@@ -49,7 +49,8 @@ public class Climber extends SubsystemBase {
     //             * Math.cos(
     //                     Math.atan(
     //                             (climberRadius * Math.sin(angle) + winchOffsetY)
-    //                                             / (-climberRadius * Math.cos(angle) + winchOffsetX)
+    //                                             / (-climberRadius * Math.cos(angle) +
+    // winchOffsetX)
     //                                     + angle
     //                                     - Math.PI / 2.0));
     // }

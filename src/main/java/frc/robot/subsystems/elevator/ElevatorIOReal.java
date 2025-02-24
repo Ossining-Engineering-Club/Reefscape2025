@@ -23,19 +23,9 @@ public class ElevatorIOReal implements ElevatorIO {
         config.inverted(isInverted).idleMode(IdleMode.kBrake);
         config.encoder
                 .positionConversionFactor(
-                        1.0
-                                / motorReduction
-                                * 2
-                                * Math.PI
-                                * drumRadiusMeters
-                                * encoderPositionFactor)
+                        2.0 * 1.0 / motorReduction * 2 * Math.PI * drumRadiusMeters)
                 .velocityConversionFactor(
-                        1.0
-                                / motorReduction
-                                * 2
-                                * Math.PI
-                                * drumRadiusMeters
-                                * encoderVelocityFactor);
+                        2.0 * 1.0 / motorReduction * 2 * Math.PI * drumRadiusMeters / 60.0);
         config.smartCurrentLimit(stallCurrentLimit, freeCurrentLimit);
         tryUntilOk(
                 sparkMax,
