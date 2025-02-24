@@ -13,12 +13,12 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class ClimberIOReal implements ClimberIO {
     private final SparkMax chainMotor;
-    private final SparkMax ropeMotor;
+    private final SparkMax winchMotor;
     private final RelativeEncoder encoder;
 
     public ClimberIOReal() {
         chainMotor = new SparkMax(chainMotorCanId, MotorType.kBrushless);
-        ropeMotor = new SparkMax(ropeMotorCanId, MotorType.kBrushless);
+        winchMotor = new SparkMax(winchMotorCanId, MotorType.kBrushless);
         encoder = chainMotor.getEncoder();
 
         var chainMotorConfig = new SparkMaxConfig();
@@ -39,15 +39,15 @@ public class ClimberIOReal implements ClimberIO {
 
         encoder.setPosition(startAngle);
 
-        var ropeMotorConfig = new SparkMaxConfig();
-        ropeMotorConfig.idleMode(IdleMode.kBrake);
-        ropeMotorConfig.smartCurrentLimit(ropeMotorStallCurrentLimit, ropeMotorFreeCurrentLimit);
+        var winchMotorConfig = new SparkMaxConfig();
+        winchMotorConfig.idleMode(IdleMode.kBrake);
+        winchMotorConfig.smartCurrentLimit(winchMotorStallCurrentLimit, winchMotorFreeCurrentLimit);
         tryUntilOk(
-                ropeMotor,
+                winchMotor,
                 5,
                 () ->
-                        ropeMotor.configure(
-                                ropeMotorConfig,
+                        winchMotor.configure(
+                                winchMotorConfig,
                                 ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters));
     }
@@ -55,12 +55,12 @@ public class ClimberIOReal implements ClimberIO {
     @Override
     public void updateInputs(ClimberIOInputs inputs) {
         inputs.chainMotorAppliedVolts = chainMotor.getAppliedOutput() * chainMotor.getBusVoltage();
-        inputs.ropeMotorAppliedVolts = ropeMotor.getAppliedOutput() * ropeMotor.getBusVoltage();
+        inputs.winchMotorAppliedVolts = winchMotor.getAppliedOutput() * winchMotor.getBusVoltage();
         inputs.angleRadians = encoder.getPosition();
         inputs.chainMotorStatorCurrent = chainMotor.getOutputCurrent();
-        inputs.ropeMotorStatorCurrent = ropeMotor.getOutputCurrent();
+        inputs.winchMotorStatorCurrent = winchMotor.getOutputCurrent();
         inputs.chainMotorTemperatureCelsius = chainMotor.getMotorTemperature();
-        inputs.ropeMotorTemperatureCelsius = ropeMotor.getMotorTemperature();
+        inputs.winchMotorTemperatureCelsius = winchMotor.getMotorTemperature();
     }
 
     @Override
@@ -69,7 +69,7 @@ public class ClimberIOReal implements ClimberIO {
     }
 
     @Override
-    public void setRopeMotorVoltage(double voltage) {
-        ropeMotor.setVoltage(voltage);
+    public void setWinchMotorVoltage(double voltage) {
+        winchMotor.setVoltage(voltage);
     }
 }

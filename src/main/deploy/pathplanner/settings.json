@@ -35,6 +35,6 @@
     "bumperOffsetY": 0.0,
     "robotFeatures": [
         "{\"name\":\"Coral Intake\",\"type\":\"circle\",\"data\":{\"center\":{\"x\":-0.023,\"y\":-0.42},\"radius\":0.04,\"strokeWidth\":0.02,\"filled\":false}}",
-        "{\"name\":\"Algae Intake\",\"type\":\"circle\",\"data\":{\"center\":{\"x\":0.084865721,\"y\":0.42},\"radius\":0.04,\"strokeWidth\":0.02,\"filled\":false}}"
+        "{\"name\":\"Algae Intake\",\"type\":\"circle\",\"data\":{\"center\":{\"x\":0.085,\"y\":0.42},\"radius\":0.04,\"strokeWidth\":0.02,\"filled\":false}}"
     ]
 }
