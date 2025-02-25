@@ -15,7 +15,7 @@ public class LEDIOReal implements LEDIO {
         buffer = new AddressableLEDBuffer(length);
 
         leds.setLength(buffer.getLength());
-        setAll(200, 0, 0);
+        setAll(255, 0, 0);
     }
 
     @Override

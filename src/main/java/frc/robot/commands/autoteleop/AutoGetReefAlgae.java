@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoTeleopConstants;
 import frc.robot.AutoTeleopConstants.ReefAlgaeAlignmentConfig;
-import frc.robot.commands.gamepiecemanipulation.IntakeReefAlgae;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
@@ -34,7 +33,7 @@ public class AutoGetReefAlgae extends SequentialCommandGroup {
 
         addCommands(
                 new ParallelCommandGroup(
-                        pathFindingCommand,
-                        new IntakeReefAlgae(height, pivot, elevator, algaeClaw)));
+                        pathFindingCommand // ,
+                        /*new IntakeReefAlgae(height, pivot, elevator, algaeClaw)*/ ));
     }
 }

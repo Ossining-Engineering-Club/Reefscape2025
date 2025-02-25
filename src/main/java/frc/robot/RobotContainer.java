@@ -70,6 +70,9 @@ import frc.robot.subsystems.gamepiecevisualizers.AlgaeVisualizer;
 import frc.robot.subsystems.gamepiecevisualizers.AlgaeVisualizer.AlgaeState;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer.CoralState;
+import frc.robot.subsystems.led.LED;
+import frc.robot.subsystems.led.LEDIO;
+import frc.robot.subsystems.led.LEDIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOSim;
@@ -105,7 +108,7 @@ public class RobotContainer {
     private final CoralHolder coralHolder;
     private final AlgaeClaw algaeClaw;
     private final Climber climber;
-    // private final LED led;
+    private final LED led;
 
     // Controller
     private final CommandXboxController controller = new CommandXboxController(0);
@@ -149,7 +152,7 @@ public class RobotContainer {
                                         AlgaeClawConstants.algaeClawPEChannel));
                 climber = new Climber(new ClimberIOReal());
 
-                // led = new LED(new LEDIOReal(), algaeClaw, coralHolder);
+                led = new LED(new LEDIOReal(), algaeClaw, coralHolder);
 
                 // pivot = new Pivot(new PivotIO() {});
                 // elevator = new Elevator(new ElevatorIO() {});
@@ -199,7 +202,7 @@ public class RobotContainer {
                                 new AlgaeClawIOSim(),
                                 new PhotoelectricSensorIOSim(AlgaeClawConstants.algaeClawPEID));
                 climber = new Climber(new ClimberIO() {});
-                // led = new LED(new LEDIOSim(), algaeClaw, coralHolder);
+                led = new LED(new LEDIO() {}, algaeClaw, coralHolder);
                 break;
 
             default:
@@ -225,7 +228,7 @@ public class RobotContainer {
                         new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO() {});
                 algaeClaw = new AlgaeClaw(new AlgaeClawIO() {}, new PhotoelectricSensorIO() {});
                 climber = new Climber(new ClimberIO() {});
-                // led = new LED(new LEDIO() {}, algaeClaw, coralHolder);
+                led = new LED(new LEDIO() {}, algaeClaw, coralHolder);
                 break;
         }
 
@@ -272,9 +275,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
                 DriveCommands.joystickDrive(
                         drive,
-                        () -> -0.6 * controller.getLeftY(),
-                        () -> -0.6 * controller.getLeftX(),
-                        () -> -0.6 * controller.getRightX()));
+                        () -> -0.8 * controller.getLeftY(),
+                        () -> -0.8 * controller.getLeftX(),
+                        () -> -0.8 * controller.getRightX()));
 
         // Lock to 0° when A button is held
         // controller
@@ -374,8 +377,8 @@ public class RobotContainer {
         // mechanismController.a().onFalse(Commands.runOnce(() -> elevator.setVoltage(0.0)));
         // mechanismController.a().onTrue(new ElevatorGoToHeight(elevator, 0.6));
         // mechanismController.b().onTrue(new ElevatorGoToHeight(elevator, 0.1));
-        mechanismController.a().onTrue(new PivotGoToAngle(pivot, -3.9));
-        mechanismController.b().onTrue(new PivotGoToAngle(pivot, Units.degreesToRadians(53.763)));
+        mechanismController.a().onTrue(new PivotGoToAngle(pivot, -3.922));
+        mechanismController.b().onTrue(new PivotGoToAngle(pivot, Units.degreesToRadians(46.0)));
 
         elevator.setDefaultCommand(
                 Commands.runOnce(
@@ -391,7 +394,7 @@ public class RobotContainer {
                 Commands.runOnce(
                         () ->
                                 pivot.setVoltage(
-                                        0.2
+                                        0.5
                                                 * 12.0
                                                 * MathUtil.applyDeadband(
                                                         -mechanismController.getLeftY(), 0.2)),

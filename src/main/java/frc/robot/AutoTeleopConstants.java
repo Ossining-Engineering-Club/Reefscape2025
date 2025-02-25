@@ -11,7 +11,7 @@ public final class AutoTeleopConstants {
     ;
 
     public static final int aButton = 11;
-    public static final int bButton = 0; // 8;
+    public static final int bButton = 8;
     public static final int cButton = 0;
     public static final int dButton = 0;
     public static final int eButton = 0;
@@ -29,7 +29,7 @@ public final class AutoTeleopConstants {
     public static final int l4Button = 4;
 
     public static final int processorButton = 0;
-    public static final int netButton = 8;
+    public static final int netButton = 0;
 
     public static final AlignmentConfig[] reefCoralAlignmentConfigs =
             new AlignmentConfig[] {

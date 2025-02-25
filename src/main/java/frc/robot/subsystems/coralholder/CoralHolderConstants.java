@@ -13,7 +13,7 @@ public class CoralHolderConstants {
     public static final int coralHolderPEChannel = 0;
 
     public static final double intakeDelaySeconds = 0.0;
-    public static final double releaseDelaySeconds = 0.5;
+    public static final double releaseDelaySeconds = 2.0;
 
     // motor constants
     public static final int currentLimit = 30;

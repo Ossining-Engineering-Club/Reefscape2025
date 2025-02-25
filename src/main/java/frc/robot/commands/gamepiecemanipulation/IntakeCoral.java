@@ -2,7 +2,7 @@ package frc.robot.commands.gamepiecemanipulation;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.elevator.ElevatorGoToHeight;
 import frc.robot.commands.pivot.PivotGoToAngle;
@@ -16,8 +16,8 @@ public class IntakeCoral extends SequentialCommandGroup {
     public IntakeCoral(Pivot pivot, Elevator elevator, CoralHolder coralHolder) {
         addCommands(
                 new ConditionalCommand(
-                        new ParallelDeadlineGroup(
-                                coralHolder.intake(),
+                        new ParallelCommandGroup( // change to parallel deadline group
+                                // coralHolder.intake(),
                                 new ElevatorGoToHeight(
                                         elevator, ElevatorConstants.intakeCoralHeight),
                                 new PivotGoToAngle(pivot, PivotConstants.intakeCoralAngle)),
