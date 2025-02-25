@@ -13,11 +13,11 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import org.littletonrobotics.junction.Logger;
 
-public class PivotIOReal implements PivotIO {
+public class PivotIOSparkFlex implements PivotIO {
     private final SparkFlex sparkFlex;
     private final RelativeEncoder encoder;
 
-    public PivotIOReal() {
+    public PivotIOSparkFlex() {
         sparkFlex = new SparkFlex(canId, MotorType.kBrushless);
         encoder = sparkFlex.getEncoder();
 
@@ -26,7 +26,7 @@ public class PivotIOReal implements PivotIO {
         config.encoder
                 .positionConversionFactor(1.0 / motorReduction * encoderPositionFactor)
                 .velocityConversionFactor(1.0 / motorReduction * encoderVelocityFactor);
-        config.smartCurrentLimit(currentLimit);
+        config.smartCurrentLimit(stallCurrentLimit, freeCurrentLimit);
         tryUntilOk(
                 sparkFlex,
                 5,

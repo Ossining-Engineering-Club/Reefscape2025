@@ -75,8 +75,8 @@ import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOSim;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIO;
-import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.pivot.PivotIOSim;
+import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -135,7 +135,7 @@ public class RobotContainer {
                                 new ModuleIOReal(3),
                                 vision,
                                 (robotPose) -> {});
-                pivot = new Pivot(new PivotIOReal());
+                pivot = new Pivot(new PivotIOTalonFX());
                 elevator = new Elevator(new ElevatorIOReal());
                 coralHolder =
                         new CoralHolder(
@@ -374,8 +374,8 @@ public class RobotContainer {
         // mechanismController.a().onFalse(Commands.runOnce(() -> elevator.setVoltage(0.0)));
         // mechanismController.a().onTrue(new ElevatorGoToHeight(elevator, 0.6));
         // mechanismController.b().onTrue(new ElevatorGoToHeight(elevator, 0.1));
-        mechanismController.x().onTrue(new PivotGoToAngle(pivot, -3.9));
-        mechanismController.y().onTrue(new PivotGoToAngle(pivot, Units.degreesToRadians(53.763)));
+        mechanismController.a().onTrue(new PivotGoToAngle(pivot, -3.9));
+        mechanismController.b().onTrue(new PivotGoToAngle(pivot, Units.degreesToRadians(53.763)));
 
         elevator.setDefaultCommand(
                 Commands.runOnce(

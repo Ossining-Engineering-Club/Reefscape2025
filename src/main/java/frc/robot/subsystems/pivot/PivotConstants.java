@@ -9,8 +9,12 @@ public class PivotConstants {
     public static final double motorReduction = 383.333325 / 1.0;
     public static final double encoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
     public static final double encoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
+    public static final double sensorMechanismRatio =
+            1 / (2 * Math.PI / motorReduction); // Rotor Rotations -> Radians
     public static final boolean isInverted = true;
-    public static final int currentLimit = 30;
+    public static final int currentLimit = 38;
+    public static final int stallCurrentLimit = 38;
+    public static final int freeCurrentLimit = 38;
 
     // control system
     public static final double kP = 20.0;
