@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
+import org.littletonrobotics.junction.Logger;
 
 public class PivotIOReal implements PivotIO {
     private final SparkFlex sparkFlex;
@@ -49,6 +50,7 @@ public class PivotIOReal implements PivotIO {
     @Override
     public void setVoltage(double voltage) {
         double appliedVolts = MathUtil.clamp(voltage, -12.0, 12.0);
+        Logger.recordOutput("pivot set voltage", appliedVolts);
         sparkFlex.setVoltage(appliedVolts);
     }
 }

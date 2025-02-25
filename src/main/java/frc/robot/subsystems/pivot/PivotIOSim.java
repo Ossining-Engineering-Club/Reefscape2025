@@ -5,6 +5,7 @@ import static frc.robot.subsystems.pivot.PivotConstants.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import org.littletonrobotics.junction.Logger;
 
 public class PivotIOSim implements PivotIO {
     public final DCMotorSim pivotSim;
@@ -40,6 +41,7 @@ public class PivotIOSim implements PivotIO {
     @Override
     public void setVoltage(double voltage) {
         appliedVolts = MathUtil.clamp(voltage, -12.0, 12.0);
+        Logger.recordOutput("pivot set voltage", appliedVolts);
         pivotSim.setInputVoltage(appliedVolts);
     }
 
