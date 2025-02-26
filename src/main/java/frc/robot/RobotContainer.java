@@ -305,16 +305,16 @@ public class RobotContainer {
                                         drive)
                                 .ignoringDisable(true));
 
-        controller
-                .b()
-                .onTrue(
-                        Commands.runOnce(
-                                () -> stopEverything(),
-                                drive,
-                                pivot,
-                                elevator,
-                                coralHolder,
-                                algaeClaw));
+        // controller
+        //         .b()
+        //         .onTrue(
+        //                 Commands.runOnce(
+        //                         () -> stopEverything(),
+        //                         drive,
+        //                         pivot,
+        //                         elevator,
+        //                         coralHolder,
+        //                         algaeClaw));
 
         // controller.x().onTrue(new IntakeCoral(pivot, elevator, coralHolder));
         // controller
@@ -329,13 +329,31 @@ public class RobotContainer {
         //             () -> (new AutoNetAlgae(pivot, elevator, algaeClaw,
         // drive.getPose())).schedule()));
 
-        // controller
-        //         .x()
-        //         .onTrue(
-        //                 new AutoGetCoral(
-        //                         coralStationAlignmentConfigs[0], pivot, elevator, coralHolder));
+        controller
+                .x()
+                .onTrue(
+                        new AutoGetCoral(
+                                coralStationAlignmentConfigs[0], pivot, elevator, coralHolder));
+        controller
+                .y()
+                .onTrue(
+                        new AutoPlaceCoral(
+                                new AlignmentConfig("L", 0),
+                                Level.L2,
+                                pivot,
+                                elevator,
+                                coralHolder));
+        controller
+                .b()
+                .onTrue(
+                        new AutoPlaceCoral(
+                                new AlignmentConfig("K", 0),
+                                Level.L2,
+                                pivot,
+                                elevator,
+                                coralHolder));
         // controller.y().onTrue(coralHolder.release());
-        controller.y().onTrue(algaeClaw.release());
+        // controller.y().onTrue(algaeClaw.release());
 
         // manual mechanism control
         mechanismController
@@ -492,7 +510,7 @@ public class RobotContainer {
         pivot.resetSimState();
         elevator.resetSimState();
         CoralVisualizer.setCoralState(CoralState.LOADED);
-        AlgaeVisualizer.setAlgaeState(AlgaeState.LOADED);
+        AlgaeVisualizer.setAlgaeState(AlgaeState.GONE);
     }
 
     // stops everything except keeps algae claw holding voltage if on
