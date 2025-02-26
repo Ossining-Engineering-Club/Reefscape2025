@@ -8,11 +8,11 @@ public class ElevatorConstants {
     public static final int canId = 16;
     public static final double motorReduction = 25.0 / 1.0;
     public static final boolean isInverted = false;
-    public static final int stallCurrentLimit = 30;
-    public static final int freeCurrentLimit = 50;
+    public static final int stallCurrentLimit = 38;
+    public static final int freeCurrentLimit = 38;
 
     // control system
-    public static final double kP = 150.0;
+    public static final double kP = 30.0;
     public static final double kD = 0.0;
     public static final double kS = 0.0;
     public static final double kG = 0.25;

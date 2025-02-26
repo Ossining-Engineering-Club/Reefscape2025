@@ -46,6 +46,8 @@ public class ElevatorIOReal implements ElevatorIO {
         inputs.appliedVolts = sparkFlex.getAppliedOutput() * sparkFlex.getBusVoltage();
         inputs.heightMeters = encoder.getPosition();
         inputs.statorCurrent = sparkFlex.getOutputCurrent();
+        inputs.supplyCurrent =
+                inputs.statorCurrent * inputs.appliedVolts / sparkFlex.getBusVoltage();
         inputs.temperatureCelsius = sparkFlex.getMotorTemperature();
     }
 
