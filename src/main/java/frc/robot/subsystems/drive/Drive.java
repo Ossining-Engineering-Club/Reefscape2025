@@ -210,7 +210,7 @@ public class Drive extends SubsystemBase {
                 });
 
         // correct odometry with vision
-        updateEstimates(vision.getEstimatedGlobalPoses());
+        updateEstimates(vision.getEstimatedGlobalPoses(getPose()));
 
         // Update gyro alert
         gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
@@ -222,6 +222,11 @@ public class Drive extends SubsystemBase {
      * @param speeds Speeds in meters/sec
      */
     public void runVelocity(ChassisSpeeds speeds) {
+        if (Math.abs(Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond)) < 0.07
+                && Math.abs(speeds.omegaRadiansPerSecond) < 0.05) {
+            speeds = new ChassisSpeeds();
+        }
+
         // Calculate module setpoints
         ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
         SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);

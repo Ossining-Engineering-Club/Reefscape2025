@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.72,
-        "y": 5.07
+        "x": 3.675,
+        "y": 5.14
       },
       "prevControl": {
-        "x": 3.595,
-        "y": 5.28650635094611
+        "x": 3.55,
+        "y": 5.356506350946109
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 4.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -47,7 +47,7 @@
   "reversed": false,
   "folder": "TeleOp Alignments",
   "idealStartingState": {
-    "velocity": 0.5,
+    "velocity": 0.1,
     "rotation": 29.999999999999996
   },
   "useDefaultConstraints": false

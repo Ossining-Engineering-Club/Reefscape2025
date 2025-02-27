@@ -17,7 +17,7 @@ public class PivotConstants {
     public static final int freeCurrentLimit = 38;
 
     // control system
-    public static final double kP = 15.0;
+    public static final double kP = 50.0;
     public static final double kD = 0.0;
     public static final double maxVelocity = Units.degreesToRadians(180.0);
     public static final double maxAcceleration = Units.degreesToRadians(360.0);
@@ -34,6 +34,8 @@ public class PivotConstants {
     public static final double stowAngle = Units.degreesToRadians(0);
     public static final double intakeCoralAngle = 0.537;
     public static final double placeCoralAngle = -0.539;
+    public static final double placeL4CoralAngle = -0.304;
+    public static final double knockL4CoralAngle = 0.272;
     public static final double intakeReefAlgaeAngle = Units.degreesToRadians(30.0);
     public static final double processorAngle = Units.degreesToRadians(35.0);
     public static final double netAngle = Units.degreesToRadians(-135.0);

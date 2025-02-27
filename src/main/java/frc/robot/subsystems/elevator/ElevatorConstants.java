@@ -12,8 +12,8 @@ public class ElevatorConstants {
     public static final int freeCurrentLimit = 38;
 
     // control system
-    public static final double kP = 30.0;
-    public static final double kD = 0.0;
+    public static final double kP = 100.0;
+    public static final double kD = 1.0;
     public static final double kS = 0.0;
     public static final double kG = 0.25;
     public static final double maxVelocity = 0.75; // m/s
@@ -28,12 +28,12 @@ public class ElevatorConstants {
 
     // height setpoints
     public static final double startHeight = 0.0;
-    public static final double maxHeight = 1.169;
+    public static final double maxHeight = 1.223;
     public static final double minHeight = 0.0;
     public static final double l1Height = Units.inchesToMeters(3.0);
     public static final double l2Height = 0.34;
     public static final double l3Height = 0.716;
-    public static final double l4Height = Units.inchesToMeters(53);
+    public static final double l4Height = 1.163;
     public static final double intakeCoralHeight = Units.inchesToMeters(0);
     public static final double lowerAlgaeHeight = Units.inchesToMeters(16);
     public static final double upperAlgaeHeight = Units.inchesToMeters(32);

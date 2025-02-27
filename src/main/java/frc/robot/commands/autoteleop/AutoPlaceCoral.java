@@ -11,10 +11,12 @@ import frc.robot.AutoTeleopConstants;
 import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.AutoTeleopConstants.Level;
 import frc.robot.commands.gamepiecemanipulation.GoToPlacingCoralPosition;
+import frc.robot.commands.pivot.PivotGoToAngle;
 import frc.robot.subsystems.coralholder.CoralHolder;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.pivot.PivotConstants;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
@@ -40,12 +42,23 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                     default -> 0.0;
                 };
 
-        addCommands(
-                new ParallelCommandGroup(
-                        pathFindingCommand,
-                        new SequentialCommandGroup(
-                                new WaitCommand(0.5),
-                                new GoToPlacingCoralPosition(height, pivot, elevator))),
-                coralHolder.release());
+        if (level == Level.L4) {
+            addCommands(
+                    new ParallelCommandGroup(
+                            pathFindingCommand,
+                            new SequentialCommandGroup(
+                                    new WaitCommand(0.5),
+                                    new GoToPlacingCoralPosition(height, level, pivot, elevator))),
+                    coralHolder.release(),
+                    new PivotGoToAngle(pivot, PivotConstants.knockL4CoralAngle));
+        } else {
+            addCommands(
+                    new ParallelCommandGroup(
+                            pathFindingCommand,
+                            new SequentialCommandGroup(
+                                    new WaitCommand(0.5),
+                                    new GoToPlacingCoralPosition(height, level, pivot, elevator))),
+                    coralHolder.release());
+        }
     }
 }

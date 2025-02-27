@@ -32,7 +32,7 @@ public class Vision extends SubsystemBase {
         for (int i = 0; i < ios.length; i++) {}
     }
 
-    public PoseEstimate[] getEstimatedGlobalPoses() {
+    public PoseEstimate[] getEstimatedGlobalPoses(Pose2d robotPose) {
         List<PoseEstimate> estimates = new ArrayList<>();
         Set<Pose3d> detectedTagPoses = new HashSet<Pose3d>();
         for (int i = 0; i < ios.length; i++) {
@@ -65,8 +65,16 @@ public class Vision extends SubsystemBase {
                 if (Math.abs(inputs[i].estimatedPose.getRotation().getY())
                         > VisionConstants.MAX_ANGLE) continue;
 
+                double translationalDelta =
+                        Math.hypot(
+                                inputs[i].estimatedPose.getX() - robotPose.getX(),
+                                inputs[i].estimatedPose.getY() - robotPose.getY());
+
                 Matrix<N3, N1> stddevs =
-                        getEstimationStdDevs(inputs[i].estimatedPose.toPose2d(), inputs[i].tagIds);
+                        getEstimationStdDevs(
+                                inputs[i].estimatedPose.toPose2d(),
+                                inputs[i].tagIds,
+                                translationalDelta);
 
                 addedPose = true;
                 Logger.recordOutput(
@@ -93,7 +101,8 @@ public class Vision extends SubsystemBase {
         return estimates.toArray(PoseEstimate[]::new);
     }
 
-    public Matrix<N3, N1> getEstimationStdDevs(Pose2d estimatedPose, int[] tagIds) {
+    public Matrix<N3, N1> getEstimationStdDevs(
+            Pose2d estimatedPose, int[] tagIds, double translationalDelta) {
         var estStdDevs = VisionConstants.SINGLE_TAG_STD_DEVS;
         int numTags = 0;
         double avgDist = 0;
@@ -118,7 +127,12 @@ public class Vision extends SubsystemBase {
         // increase std devs based on (average) distance
         if (numTags == 1 && avgDist > 7)
             estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-        else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+        else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 15));
+
+        if (numTags == 1
+                && translationalDelta > VisionConstants.MAX_SINGLE_TAG_TRANSLATIONAL_DELTA) {
+            estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+        }
 
         if (VisionConstants.IGNORE_YAW) estStdDevs.set(2, 0, Double.MAX_VALUE);
 
