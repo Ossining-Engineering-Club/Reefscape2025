@@ -62,13 +62,13 @@ public class VisionConstants {
                     "OV9782_BL",
                     new Transform3d(
                             new Translation3d(
-                                    Units.inchesToMeters(-13.72048),
-                                    Units.inchesToMeters(10.202495),
-                                    Units.inchesToMeters(7.780637)),
+                                    Units.inchesToMeters(-11.505845),
+                                    Units.inchesToMeters(-7.254641),
+                                    Units.inchesToMeters(34.738822 - 0.125)),
                             new Rotation3d(
                                     0,
-                                    Units.degreesToRadians(-21.875),
-                                    Units.degreesToRadians(90 - 35))));
+                                    Units.degreesToRadians(-50.0),
+                                    Units.degreesToRadians(-57.5))));
 
     public static final CameraConfig BACK_RIGHT_CAMERA_CONFIG =
             new CameraConfig(

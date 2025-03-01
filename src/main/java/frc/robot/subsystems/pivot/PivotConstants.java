@@ -32,7 +32,7 @@ public class PivotConstants {
     public static final double maxAngle = Units.degreesToRadians(49.0);
     public static final double minAngle = Units.degreesToRadians(-225.0);
     public static final double stowAngle = Units.degreesToRadians(0);
-    public static final double intakeCoralAngle = 0.537;
+    public static final double intakeCoralAngle = 0.458;
     public static final double placeCoralAngle = -0.539;
     public static final double placeL4CoralAngle = -0.304;
     public static final double knockL4CoralAngle = 0.272;

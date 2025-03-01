@@ -245,4 +245,8 @@ public class Vision extends SubsystemBase {
             ios[i].setFocusTag(tag);
         }
     }
+
+    public int getFocusTag() {
+        return focusTag;
+    }
 }

@@ -479,10 +479,10 @@ public class RobotContainer {
         // mechanismController.povDown().onTrue(Commands.runOnce(() -> climber.reverse(), climber));
 
         // Pathfinding
-        configuePathfindingCommandsV1();
+        configurePathfindingCommandsV2();
     }
 
-    private void configuePathfindingCommandsV1()
+    private void configurePathfindingCommandsV1()
             throws FileVersionException, IOException, ParseException {
         for (AlignmentConfig config : reefCoralAlignmentConfigs) {
             NamedCommands.registerCommand(

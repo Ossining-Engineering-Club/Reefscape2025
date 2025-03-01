@@ -1,13 +1,14 @@
 package frc.robot.commands.autoteleop;
 
+import static frc.robot.AutoTeleopConstants.coralStationAlignmentConstraints;
 import static frc.robot.AutoTeleopConstants.getTagIdOfPosition;
-import static frc.robot.AutoTeleopConstants.reefCoralAlignmentConstraints;
 import static frc.robot.AutoTeleopConstants.switchingToSpecializedRotationalTolerance;
 import static frc.robot.AutoTeleopConstants.switchingToSpecializedTranslationalTolerance;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoTeleopConstants.PositioningConfig;
@@ -33,11 +34,10 @@ public class AutoGetCoralV2 extends SequentialCommandGroup {
                                 config.depthOffset())
                         .get();
         Command pathfindingCommand =
-                AutoBuilder.pathfindToPose(targetPose, reefCoralAlignmentConstraints, 0.0);
-
-        vision.setFocusTag(getTagIdOfPosition(config.position()));
+                AutoBuilder.pathfindToPose(targetPose, coralStationAlignmentConstraints, 0.0);
 
         addCommands(
+                Commands.runOnce(() -> vision.setFocusTag(getTagIdOfPosition(config.position()))),
                 new ParallelCommandGroup(
                         new SequentialCommandGroup(
                                 pathfindingCommand.until(
@@ -62,7 +62,7 @@ public class AutoGetCoralV2 extends SequentialCommandGroup {
                                         config.position(),
                                         config.sidewaysOffset(),
                                         config.depthOffset(),
-                                        reefCoralAlignmentConstraints)),
+                                        coralStationAlignmentConstraints)),
                         new IntakeCoral(pivot, elevator, coralHolder)));
     }
 }

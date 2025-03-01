@@ -129,7 +129,7 @@ public class Drive extends SubsystemBase {
                 this::getChassisSpeeds,
                 this::runVelocity,
                 new PPHolonomicDriveController(
-                        new PIDConstants(7.0, 0.0, 0.0), new PIDConstants(8.0, 0.0, 0.0)),
+                        new PIDConstants(7.0, 0.0, 0.0), new PIDConstants(6.0, 0.0, 0.0)),
                 ppConfig,
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this);
@@ -359,6 +359,7 @@ public class Drive extends SubsystemBase {
     /** Returns the current specialized odometry pose. */
     @AutoLogOutput(key = "Odometry/Specialized")
     public Pose2d getSpecializedPose() {
+        if (vision.getFocusTag() == 0) return getPose();
         return specializedPoseEstimator.getEstimatedPosition();
     }
 

@@ -106,28 +106,29 @@ public final class AutoTeleopConstants {
             new AlignmentConfig("Processor", processorButton);
 
     public static final PathConstraints reefCoralAlignmentConstraints =
-            new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+            new PathConstraints(3.0, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
     public static final PathConstraints reefAlgaeAlignmentConstraints =
-            new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+            new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
     public static final PathConstraints coralStationAlignmentConstraints =
-            new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+            new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
     public static final PathConstraints processorAlignmentConstraints =
-            new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+            new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
     public static final PathConstraints netAlignmentConstraints =
             new PathConstraints(1.0, 1.0, Units.degreesToRadians(360), Units.degreesToRadians(360));
 
     public static final double sidewaysReefCoralOffset = Units.inchesToMeters(6.5);
     public static final double depthReefCoralOffset =
-            Units.inchesToMeters(2.0) + Constants.robotWidth / 2.0;
+            Units.inchesToMeters(3.0) + Constants.robotWidth / 2.0;
 
-    public static final double depthCoralStationOffset = Constants.robotWidth / 2.0;
+    public static final double depthCoralStationOffset =
+            Units.inchesToMeters(3.0) + Constants.robotWidth / 2.0;
 
-    public static final double translationalTolerance = 0.01;
-    public static final double rotationalTolerance = Units.degreesToRadians(2);
+    public static final double translationalTolerance = 0.02;
+    public static final double rotationalTolerance = Units.degreesToRadians(5);
 
     public static final double switchingToSpecializedTranslationalTolerance = 2.0;
     public static final double switchingToSpecializedRotationalTolerance =

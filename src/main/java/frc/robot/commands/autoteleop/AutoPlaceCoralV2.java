@@ -1,7 +1,7 @@
 package frc.robot.commands.autoteleop;
 
-import static frc.robot.AutoTeleopConstants.coralStationAlignmentConstraints;
 import static frc.robot.AutoTeleopConstants.getTagIdOfPosition;
+import static frc.robot.AutoTeleopConstants.reefCoralAlignmentConstraints;
 import static frc.robot.AutoTeleopConstants.switchingToSpecializedRotationalTolerance;
 import static frc.robot.AutoTeleopConstants.switchingToSpecializedTranslationalTolerance;
 
@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -44,7 +45,7 @@ public class AutoPlaceCoralV2 extends SequentialCommandGroup {
                                 config.depthOffset())
                         .get();
         Command pathfindingCommand =
-                AutoBuilder.pathfindToPose(targetPose, coralStationAlignmentConstraints, 0.0);
+                AutoBuilder.pathfindToPose(targetPose, reefCoralAlignmentConstraints, 0.0);
 
         double height =
                 switch (level) {
@@ -57,6 +58,8 @@ public class AutoPlaceCoralV2 extends SequentialCommandGroup {
 
         if (level == Level.L4) {
             addCommands(
+                    Commands.runOnce(
+                            () -> vision.setFocusTag(getTagIdOfPosition(config.position()))),
                     new ParallelCommandGroup(
                             new SequentialCommandGroup(
                                     pathfindingCommand.until(
@@ -83,14 +86,16 @@ public class AutoPlaceCoralV2 extends SequentialCommandGroup {
                                             config.position(),
                                             config.sidewaysOffset(),
                                             config.depthOffset(),
-                                            coralStationAlignmentConstraints)),
+                                            reefCoralAlignmentConstraints)),
                             new SequentialCommandGroup(
-                                    new WaitCommand(0.5),
+                                    new WaitCommand(1.5),
                                     new GoToPlacingCoralPosition(height, level, pivot, elevator))),
                     coralHolder.release(),
                     new PivotGoToAngle(pivot, PivotConstants.knockL4CoralAngle));
         } else {
             addCommands(
+                    Commands.runOnce(
+                            () -> vision.setFocusTag(getTagIdOfPosition(config.position()))),
                     new ParallelCommandGroup(
                             new SequentialCommandGroup(
                                     pathfindingCommand.until(
@@ -117,9 +122,9 @@ public class AutoPlaceCoralV2 extends SequentialCommandGroup {
                                             config.position(),
                                             config.sidewaysOffset(),
                                             config.depthOffset(),
-                                            coralStationAlignmentConstraints)),
+                                            reefCoralAlignmentConstraints)),
                             new SequentialCommandGroup(
-                                    new WaitCommand(0.5),
+                                    new WaitCommand(1.5),
                                     new GoToPlacingCoralPosition(height, level, pivot, elevator))),
                     coralHolder.release());
         }

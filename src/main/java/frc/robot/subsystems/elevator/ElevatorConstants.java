@@ -32,7 +32,7 @@ public class ElevatorConstants {
     public static final double minHeight = 0.0;
     public static final double l1Height = Units.inchesToMeters(3.0);
     public static final double l2Height = 0.34;
-    public static final double l3Height = 0.716;
+    public static final double l3Height = 0.746;
     public static final double l4Height = 1.163;
     public static final double intakeCoralHeight = Units.inchesToMeters(0);
     public static final double lowerAlgaeHeight = Units.inchesToMeters(16);

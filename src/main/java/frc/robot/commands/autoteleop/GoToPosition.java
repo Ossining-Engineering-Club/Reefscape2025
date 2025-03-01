@@ -63,7 +63,7 @@ public class GoToPosition extends Command {
                                 pathConstraints.maxAccelerationMPSSq()));
         rotpid =
                 new ProfiledPIDController(
-                        8.0,
+                        2.0,
                         0,
                         0,
                         new TrapezoidProfile.Constraints(
