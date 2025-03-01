@@ -1,11 +1,12 @@
 package frc.robot.subsystems.vision;
 
+import static frc.robot.subsystems.vision.VisionConstants.TAG_LAYOUT;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -22,6 +23,7 @@ import org.littletonrobotics.junction.Logger;
 public class Vision extends SubsystemBase {
     private final VisionIO[] ios;
     private final VisionIOInputsAutoLogged[] inputs;
+    private int focusTag = 0;
 
     public Vision(VisionIO... ios) {
         this.ios = ios;
@@ -143,60 +145,104 @@ public class Vision extends SubsystemBase {
         return estStdDevs;
     }
 
-    public boolean hasFocusTag() {
+    public boolean seesFocusTag() {
         for (int i = 0; i < inputs.length; i++) {
-            if (inputs[i].hasFocusTag) return true;
+            if (inputs[i].seesFocusTag) return true;
         }
         return false;
     }
 
-    public Pose2d getSpecializedRobotPose(Rotation2d robotRotation) {
+    public PoseEstimate getSpecializedRobotPose(Rotation2d robotRotation) {
         List<Pose2d> robotPoses = new ArrayList<Pose2d>();
         double averageTimestamp = 0.0;
-        for (var input : inputs) {
-            Translation3d robotToTag =
-                    new Translation3d(
-                            input.distance
-                                            * Math.cos(
-                                                    Units.degreesToRadians(input.pitch)
-                                                            - input.robotToCam.getRotation().getY())
-                                            * Math.cos(
-                                                    Units.degreesToRadians(input.yaw)
-                                                            - input.robotToCam.getRotation().getZ())
-                                    - input.robotToCam.getX(),
-                            input.distance
-                                            * Math.cos(
-                                                    Units.degreesToRadians(input.pitch)
-                                                            - input.robotToCam.getRotation().getY())
-                                            * Math.sin(
-                                                    Units.degreesToRadians(input.yaw)
-                                                            - input.robotToCam.getRotation().getZ())
-                                    - input.robotToCam.getY(),
-                            input.distance
-                                            * Math.cos(
-                                                    Units.degreesToRadians(input.pitch)
-                                                            - input.robotToCam.getRotation().getY())
-                                    - input.robotToCam.getZ());
-            Pose2d robotPose =
-                    new Pose2d(
-                            robotToTag.getX() * Math.cos(robotRotation.getRadians())
-                                    + robotToTag.getY() * Math.sin(robotRotation.getRadians()),
-                            robotToTag.getX() * Math.sin(robotRotation.getRadians())
-                                    + robotToTag.getY() * Math.cos(robotRotation.getRadians()),
-                            new Rotation2d(
-                                    Units.degreesToRadians(input.yaw)
-                                            - input.robotToCam.getRotation().getZ()
-                                            + robotRotation.getRadians()));
-            robotPoses.add(robotPose);
+        for (int i = 0; i < inputs.length; i++) {
+            var input = inputs[i];
+            if (input.seesFocusTag) {
+                averageTimestamp += input.timestampSeconds;
+                Translation3d robotToTag =
+                        new Translation3d(
+                                input.distance
+                                                * Math.cos(
+                                                        Units.degreesToRadians(input.pitch)
+                                                                - input.robotToCam
+                                                                        .getRotation()
+                                                                        .getY())
+                                                * Math.cos(
+                                                        Units.degreesToRadians(-input.yaw)
+                                                                + input.robotToCam
+                                                                        .getRotation()
+                                                                        .getZ())
+                                        + input.robotToCam.getX(),
+                                input.distance
+                                                * Math.cos(
+                                                        Units.degreesToRadians(input.pitch)
+                                                                - input.robotToCam
+                                                                        .getRotation()
+                                                                        .getY())
+                                                * Math.sin(
+                                                        Units.degreesToRadians(-input.yaw)
+                                                                + input.robotToCam
+                                                                        .getRotation()
+                                                                        .getZ())
+                                        + input.robotToCam.getY(),
+                                input.distance
+                                                * Math.cos(
+                                                        Units.degreesToRadians(input.pitch)
+                                                                - input.robotToCam
+                                                                        .getRotation()
+                                                                        .getY())
+                                        + input.robotToCam.getZ());
+                Pose2d robotToTagFieldRelative =
+                        new Pose2d(
+                                robotToTag.getX() * Math.cos(robotRotation.getRadians())
+                                        - robotToTag.getY() * Math.sin(robotRotation.getRadians()),
+                                robotToTag.getX() * Math.sin(robotRotation.getRadians())
+                                        + robotToTag.getY() * Math.cos(robotRotation.getRadians()),
+                                robotRotation);
+                Logger.recordOutput("/Camera" + i + "/robotToTag", robotToTag);
+                Logger.recordOutput(
+                        "/Camera" + i + "/robotToTagFieldRelative", robotToTagFieldRelative);
+                TAG_LAYOUT
+                        .getTagPose(focusTag)
+                        .ifPresent(
+                                (Pose3d tagPose) -> {
+                                    Pose2d robotPose =
+                                            new Pose2d(
+                                                    tagPose.getX() - robotToTagFieldRelative.getX(),
+                                                    tagPose.getY() - robotToTagFieldRelative.getY(),
+                                                    robotToTagFieldRelative.getRotation());
+                                    robotPoses.add(robotPose);
+                                });
+            }
         }
         Logger.recordOutput("specialized pose estimates", robotPoses.toArray(Pose2d[]::new));
-        Pose2d averagePose = new Pose2d();
+        if (robotPoses.size() == 0)
+            return new PoseEstimate(
+                    new Pose2d(),
+                    0.0,
+                    VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE));
+        double sumX = 0.0;
+        double sumY = 0.0;
+        double sumRotation = 0.0;
         for (Pose2d pose : robotPoses) {
-            averagePose =
-                    averagePose.transformBy(
-                            new Transform2d(pose.getTranslation(), pose.getRotation()));
+            sumX += pose.getX();
+            sumY += pose.getY();
+            sumRotation += pose.getRotation().getRadians();
         }
-        averagePose = averagePose.div(robotPoses.size());
-        return averagePose;
+        Pose2d averagePose =
+                new Pose2d(
+                        sumX / robotPoses.size(),
+                        sumY / robotPoses.size(),
+                        new Rotation2d(sumRotation / robotPoses.size()));
+        averageTimestamp /= robotPoses.size();
+        Logger.recordOutput("average specialized pose estimate", averagePose);
+        return new PoseEstimate(averagePose, averageTimestamp, VecBuilder.fill(0, 0, 0));
+    }
+
+    public void setFocusTag(int tag) {
+        focusTag = tag;
+        for (int i = 0; i < ios.length; i++) {
+            ios[i].setFocusTag(tag);
+        }
     }
 }

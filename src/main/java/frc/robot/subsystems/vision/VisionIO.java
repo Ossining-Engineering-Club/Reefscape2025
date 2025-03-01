@@ -18,7 +18,7 @@ public interface VisionIO {
         public double pitch = 0.0;
         public double yaw = 0.0;
         public double distance = 0.0;
-        public boolean hasFocusTag = false;
+        public boolean seesFocusTag = false;
         public int focusTag = 0;
         public Transform3d robotToCam;
     }

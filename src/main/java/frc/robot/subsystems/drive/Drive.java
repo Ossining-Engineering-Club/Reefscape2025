@@ -95,6 +95,9 @@ public class Drive extends SubsystemBase {
     private SwerveDrivePoseEstimator poseEstimator =
             new SwerveDrivePoseEstimator(
                     kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+    private SwerveDrivePoseEstimator specializedPoseEstimator =
+            new SwerveDrivePoseEstimator(
+                    kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
     private final Vision vision;
 
     private final Consumer<Pose2d> resetSimulationPoseCallBack;
@@ -208,9 +211,20 @@ public class Drive extends SubsystemBase {
                     modules[2].getPosition(),
                     modules[3].getPosition()
                 });
+        specializedPoseEstimator.update(
+                rawGyroRotation,
+                new SwerveModulePosition[] {
+                    modules[0].getPosition(),
+                    modules[1].getPosition(),
+                    modules[2].getPosition(),
+                    modules[3].getPosition()
+                });
 
         // correct odometry with vision
         updateEstimates(vision.getEstimatedGlobalPoses(getPose()));
+        updateSpecializedEstimate(vision.getSpecializedRobotPose(getRotation()));
+
+        getSpecializedPose(); // calling get specialized pose for logging purposes
 
         // Update gyro alert
         gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
@@ -222,10 +236,10 @@ public class Drive extends SubsystemBase {
      * @param speeds Speeds in meters/sec
      */
     public void runVelocity(ChassisSpeeds speeds) {
-        if (Math.abs(Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond)) < 0.07
-                && Math.abs(speeds.omegaRadiansPerSecond) < 0.05) {
-            speeds = new ChassisSpeeds();
-        }
+        // if (Math.abs(Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond)) < 0.07
+        //         && Math.abs(speeds.omegaRadiansPerSecond) < 0.05) {
+        //     speeds = new ChassisSpeeds();
+        // }
 
         // Calculate module setpoints
         ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
@@ -243,6 +257,10 @@ public class Drive extends SubsystemBase {
 
         // Log optimized setpoints (runSetpoint mutates each state)
         Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
+    }
+
+    public void runVelocityFieldRelative(ChassisSpeeds speeds) {
+        runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getRotation()));
     }
 
     /** Runs the drive in a straight line with the specified drive output. */
@@ -309,6 +327,11 @@ public class Drive extends SubsystemBase {
         return kinematics.toChassisSpeeds(getModuleStates());
     }
 
+    @AutoLogOutput(key = "SwerveChassisSpeeds/MeasuredFieldRelative")
+    public ChassisSpeeds getFieldRelativeChassisSpeeds() {
+        return ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getRotation());
+    }
+
     /** Returns the position of each module in radians. */
     public double[] getWheelRadiusCharacterizationPositions() {
         double[] values = new double[4];
@@ -333,6 +356,12 @@ public class Drive extends SubsystemBase {
         return poseEstimator.getEstimatedPosition();
     }
 
+    /** Returns the current specialized odometry pose. */
+    @AutoLogOutput(key = "Odometry/Specialized")
+    public Pose2d getSpecializedPose() {
+        return specializedPoseEstimator.getEstimatedPosition();
+    }
+
     /** Returns the current odometry rotation. */
     public Rotation2d getRotation() {
         return getPose().getRotation();
@@ -342,6 +371,7 @@ public class Drive extends SubsystemBase {
     public void setPose(Pose2d pose) {
         resetSimulationPoseCallBack.accept(pose);
         poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
+        specializedPoseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
     }
 
     /** Updates pose estimator with vision measurements. */
@@ -350,6 +380,14 @@ public class Drive extends SubsystemBase {
             poseEstimator.addVisionMeasurement(
                     poses[i].estimatedPose(), poses[i].timestampSeconds(), poses[i].standardDev());
         }
+    }
+
+    /** Updates specialized pose estimator with vision measurements. */
+    public void updateSpecializedEstimate(PoseEstimate poseEstimate) {
+        specializedPoseEstimator.addVisionMeasurement(
+                poseEstimate.estimatedPose(),
+                poseEstimate.timestampSeconds(),
+                poseEstimate.standardDev());
     }
 
     /** Returns the maximum linear speed in meters per sec. */

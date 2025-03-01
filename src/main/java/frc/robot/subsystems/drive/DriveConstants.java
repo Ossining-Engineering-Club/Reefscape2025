@@ -58,7 +58,7 @@ public class DriveConstants {
     public static final int backRightAbsCanId = 12;
 
     // Drive motor configuration
-    public static final int driveMotorCurrentLimit = 50;
+    public static final int driveMotorCurrentLimit = 48;
     public static final double wheelRadiusMeters = 0.0967 / 2.0;
     public static final double driveMotorReduction = (6.75 / 1.0);
     public static final DCMotor driveGearbox = DCMotor.getKrakenX60(1);

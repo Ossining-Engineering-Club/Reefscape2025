@@ -36,9 +36,11 @@ import frc.robot.AutoTeleopConstants.Level;
 import frc.robot.AutoTeleopConstants.ReefAlgaeAlignmentConfig;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.autoteleop.AutoGetCoral;
+import frc.robot.commands.autoteleop.AutoGetCoralV2;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
 import frc.robot.commands.autoteleop.AutoNetAlgae;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
+import frc.robot.commands.autoteleop.AutoPlaceCoralV2;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
 import frc.robot.commands.climber.ExtendClimber;
 import frc.robot.commands.climber.RetractClimber;
@@ -237,6 +239,8 @@ public class RobotContainer {
         // Configure the button bindings
         configureButtonBindings();
 
+        // vision.setFocusTag(19);
+
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -321,6 +325,39 @@ public class RobotContainer {
 
         controller.povUp().onTrue(new ExtendClimber(climber, pivot));
         controller.povDown().onTrue(new RetractClimber(climber, pivot));
+
+        // controller
+        //         .x()
+        //         .onTrue(
+        //                 new GoToPosition(
+        //                         drive,
+        //                         vision,
+        //                         Position.K,
+        //                         AutoTeleopConstants.sidewaysReefCoralOffset,
+        //                         AutoTeleopConstants.depthReefCoralOffset,
+        //                         reefCoralAlignmentConstraints));
+
+        // controller
+        //         .x()
+        //         .onTrue(
+        //                 new AutoGetCoralV2(
+        //                         coralStationPositioningConfigs[0],
+        //                         pivot,
+        //                         elevator,
+        //                         coralHolder,
+        //                         drive,
+        //                         vision));
+        // controller
+        //         .y()
+        //         .onTrue(
+        //                 new AutoPlaceCoralV2(
+        //                         reefCoralPositioningConfigs[10],
+        //                         Level.L3,
+        //                         pivot,
+        //                         elevator,
+        //                         coralHolder,
+        //                         drive,
+        //                         vision));
 
         // controller.x().onTrue(new IntakeCoral(pivot, elevator, coralHolder));
         // controller
@@ -442,6 +479,11 @@ public class RobotContainer {
         // mechanismController.povDown().onTrue(Commands.runOnce(() -> climber.reverse(), climber));
 
         // Pathfinding
+        configuePathfindingCommandsV1();
+    }
+
+    private void configuePathfindingCommandsV1()
+            throws FileVersionException, IOException, ParseException {
         for (AlignmentConfig config : reefCoralAlignmentConfigs) {
             NamedCommands.registerCommand(
                     config.pathName() + "_L1",
@@ -511,6 +553,62 @@ public class RobotContainer {
                                                         algaeClaw,
                                                         drive.getPose()))
                                                 .schedule()));
+    }
+
+    private void configurePathfindingCommandsV2()
+            throws FileVersionException, IOException, ParseException {
+        for (PositioningConfig config : reefCoralPositioningConfigs) {
+            NamedCommands.registerCommand(
+                    config.namedCommandName() + "_L1",
+                    new AutoPlaceCoralV2(
+                            config, Level.L1, pivot, elevator, coralHolder, drive, vision));
+            NamedCommands.registerCommand(
+                    config.namedCommandName() + "_L2",
+                    new AutoPlaceCoralV2(
+                            config, Level.L2, pivot, elevator, coralHolder, drive, vision));
+            NamedCommands.registerCommand(
+                    config.namedCommandName() + "_L3",
+                    new AutoPlaceCoralV2(
+                            config, Level.L3, pivot, elevator, coralHolder, drive, vision));
+            NamedCommands.registerCommand(
+                    config.namedCommandName() + "_L4",
+                    new AutoPlaceCoralV2(
+                            config, Level.L4, pivot, elevator, coralHolder, drive, vision));
+            buttonBox
+                    .button(config.button())
+                    .and(buttonBox.button(l1Button))
+                    .onTrue(
+                            new AutoPlaceCoralV2(
+                                    config, Level.L1, pivot, elevator, coralHolder, drive, vision));
+            buttonBox
+                    .button(config.button())
+                    .and(buttonBox.button(l2Button))
+                    .onTrue(
+                            new AutoPlaceCoralV2(
+                                    config, Level.L2, pivot, elevator, coralHolder, drive, vision));
+            buttonBox
+                    .button(config.button())
+                    .and(buttonBox.button(l3Button))
+                    .onTrue(
+                            new AutoPlaceCoralV2(
+                                    config, Level.L3, pivot, elevator, coralHolder, drive, vision));
+            buttonBox
+                    .button(config.button())
+                    .and(buttonBox.button(l4Button))
+                    .onTrue(
+                            new AutoPlaceCoralV2(
+                                    config, Level.L4, pivot, elevator, coralHolder, drive, vision));
+        }
+        for (PositioningConfig config : coralStationPositioningConfigs) {
+            NamedCommands.registerCommand(
+                    config.namedCommandName(),
+                    new AutoGetCoralV2(config, pivot, elevator, coralHolder, drive, vision));
+            buttonBox
+                    .button(config.button())
+                    .onTrue(
+                            new AutoGetCoralV2(
+                                    config, pivot, elevator, coralHolder, drive, vision));
+        }
     }
 
     /**

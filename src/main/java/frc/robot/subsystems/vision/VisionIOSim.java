@@ -75,12 +75,12 @@ public class VisionIOSim implements VisionIO {
                                     Math.hypot(
                                             tag.getBestCameraToTarget().getY(),
                                             tag.getBestCameraToTarget().getZ()));
-                    inputs.hasFocusTag = true;
+                    inputs.seesFocusTag = true;
                     inputs.focusTag = focusTag;
                     resultHadFocusTag = true;
                 }
             }
-            if (!resultHadFocusTag) inputs.hasFocusTag = false;
+            if (!resultHadFocusTag) inputs.seesFocusTag = false;
 
             // PhotonPipelineResult result = camera.getLatestResult();
             var optionalEstimate = estimator.update(result);
@@ -103,7 +103,7 @@ public class VisionIOSim implements VisionIO {
         } else {
             inputs.estimateIsPresent = false;
             inputs.tagIds = new int[0];
-            inputs.hasFocusTag = false;
+            inputs.seesFocusTag = false;
         }
     }
 

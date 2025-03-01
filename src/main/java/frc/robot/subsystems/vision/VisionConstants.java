@@ -19,8 +19,8 @@ public class VisionConstants {
     public static record PoseEstimate(
             Pose2d estimatedPose, double timestampSeconds, Matrix<N3, N1> standardDev) {}
 
-    public static final AprilTagFieldLayout TAG_LAYOUT = getTagLayout();
-    // AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+    public static final AprilTagFieldLayout TAG_LAYOUT = // getTagLayout();
+            AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
     private static AprilTagFieldLayout getTagLayout() {
         try {
