@@ -35,6 +35,22 @@ public class Climber extends SubsystemBase {
         // } else stop();
     }
 
+    public void forwardWinch() {
+        io.setWinchMotorVoltage(winchMotorForwardVoltage);
+    }
+
+    public void reverseWinch() {
+        io.setWinchMotorVoltage(winchMotorReverseVoltage);
+    }
+
+    public void forwardChain() {
+        io.setChainMotorVoltage(chainMotorForwardVoltage);
+    }
+
+    public void reverseChain() {
+        io.setChainMotorVoltage(chainMotorReverseVoltage);
+    }
+
     public void stop() {
         io.setChainMotorVoltage(0.0);
         io.setWinchMotorVoltage(0.0);

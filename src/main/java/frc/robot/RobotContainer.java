@@ -40,6 +40,8 @@ import frc.robot.commands.autoteleop.AutoGetReefAlgae;
 import frc.robot.commands.autoteleop.AutoNetAlgae;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
+import frc.robot.commands.climber.ExtendClimber;
+import frc.robot.commands.climber.RetractClimber;
 import frc.robot.commands.drive.DriveCommands;
 import frc.robot.commands.pivot.PivotGoToAngle;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
@@ -275,9 +277,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
                 DriveCommands.joystickDrive(
                         drive,
-                        () -> -0.8 * controller.getLeftY(),
-                        () -> -0.8 * controller.getLeftX(),
-                        () -> -0.8 * controller.getRightX()));
+                        () -> -0.5 * controller.getLeftY(),
+                        () -> -0.5 * controller.getLeftX(),
+                        () -> -0.5 * controller.getRightX()));
 
         // Lock to 0° when A button is held
         // controller
@@ -305,16 +307,20 @@ public class RobotContainer {
                                         drive)
                                 .ignoringDisable(true));
 
-        // controller
-        //         .b()
-        //         .onTrue(
-        //                 Commands.runOnce(
-        //                         () -> stopEverything(),
-        //                         drive,
-        //                         pivot,
-        //                         elevator,
-        //                         coralHolder,
-        //                         algaeClaw));
+        controller
+                .b()
+                .onTrue(
+                        Commands.runOnce(
+                                () -> stopEverything(),
+                                drive,
+                                pivot,
+                                elevator,
+                                coralHolder,
+                                algaeClaw,
+                                climber));
+
+        controller.povUp().onTrue(new ExtendClimber(climber, pivot));
+        controller.povDown().onTrue(new RetractClimber(climber, pivot));
 
         // controller.x().onTrue(new IntakeCoral(pivot, elevator, coralHolder));
         // controller
@@ -396,7 +402,7 @@ public class RobotContainer {
         // mechanismController.a().onTrue(new ElevatorGoToHeight(elevator, 0.6));
         // mechanismController.b().onTrue(new ElevatorGoToHeight(elevator, 0.1));
         mechanismController.a().onTrue(new PivotGoToAngle(pivot, -3.922));
-        mechanismController.b().onTrue(new PivotGoToAngle(pivot, Units.degreesToRadians(46.0)));
+        mechanismController.b().onTrue(new PivotGoToAngle(pivot, Units.degreesToRadians(49.0)));
 
         elevator.setDefaultCommand(
                 Commands.runOnce(
@@ -418,9 +424,22 @@ public class RobotContainer {
                                                         -mechanismController.getLeftY(), 0.2)),
                         pivot));
 
-        mechanismController.povCenter().onTrue(Commands.runOnce(() -> climber.stop(), climber));
-        mechanismController.povUp().onTrue(Commands.runOnce(() -> climber.reverse(), climber));
-        mechanismController.povDown().onTrue(Commands.runOnce(() -> climber.forward(), climber));
+        // mechanismController.leftBumper().onTrue(Commands.runOnce(() -> climber.forwardWinch()));
+        // mechanismController.rightBumper().onTrue(Commands.runOnce(() -> climber.reverseWinch()));
+        // mechanismController.leftBumper().onFalse(Commands.runOnce(() -> climber.stop()));
+        // mechanismController.rightBumper().onFalse(Commands.runOnce(() -> climber.stop()));
+
+        // mechanismController.leftTrigger(0.9).onTrue(Commands.runOnce(() ->
+        // climber.forwardChain()));
+        // mechanismController
+        //         .rightTrigger(0.9)
+        //         .onTrue(Commands.runOnce(() -> climber.reverseChain()));
+        // mechanismController.leftTrigger(0.9).onFalse(Commands.runOnce(() -> climber.stop()));
+        // mechanismController.rightTrigger(0.9).onFalse(Commands.runOnce(() -> climber.stop()));
+
+        // mechanismController.povCenter().onTrue(Commands.runOnce(() -> climber.stop(), climber));
+        // mechanismController.povUp().onTrue(Commands.runOnce(() -> climber.forward(), climber));
+        // mechanismController.povDown().onTrue(Commands.runOnce(() -> climber.reverse(), climber));
 
         // Pathfinding
         for (AlignmentConfig config : reefCoralAlignmentConfigs) {

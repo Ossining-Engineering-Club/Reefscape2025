@@ -4,6 +4,7 @@ import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionConstants.CameraConfig;
 import java.util.List;
 import java.util.function.Supplier;
@@ -22,6 +23,8 @@ public class VisionIOSim implements VisionIO {
     private final PhotonCameraSim cameraSim;
     private final PhotonPoseEstimator estimator;
     private final Supplier<Pose2d> robotPoseSupplier;
+    private final Transform3d robotToCam;
+    public int focusTag = 0;
 
     public VisionIOSim(CameraConfig config, Supplier<Pose2d> robotPoseSupplier) {
         this.robotPoseSupplier = robotPoseSupplier;
@@ -47,15 +50,38 @@ public class VisionIOSim implements VisionIO {
         estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
         visionSim.addCamera(cameraSim, config.robotToCam());
+
+        robotToCam = config.robotToCam();
     }
 
     @Override
     public void updateInputs(VisionIOInputs inputs) {
+        inputs.robotToCam = robotToCam;
+
         visionSim.update(robotPoseSupplier.get());
 
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
         if (results.size() > 0) {
             PhotonPipelineResult result = results.get(results.size() - 1);
+
+            boolean resultHadFocusTag = false;
+            for (var tag : result.getTargets()) {
+                if (tag.fiducialId == focusTag) {
+                    inputs.pitch = tag.pitch;
+                    inputs.yaw = tag.yaw;
+                    inputs.distance =
+                            Math.hypot(
+                                    tag.getBestCameraToTarget().getX(),
+                                    Math.hypot(
+                                            tag.getBestCameraToTarget().getY(),
+                                            tag.getBestCameraToTarget().getZ()));
+                    inputs.hasFocusTag = true;
+                    inputs.focusTag = focusTag;
+                    resultHadFocusTag = true;
+                }
+            }
+            if (!resultHadFocusTag) inputs.hasFocusTag = false;
+
             // PhotonPipelineResult result = camera.getLatestResult();
             var optionalEstimate = estimator.update(result);
             if (optionalEstimate.isPresent()) {
@@ -77,6 +103,12 @@ public class VisionIOSim implements VisionIO {
         } else {
             inputs.estimateIsPresent = false;
             inputs.tagIds = new int[0];
+            inputs.hasFocusTag = false;
         }
+    }
+
+    @Override
+    public void setFocusTag(int tag) {
+        focusTag = tag;
     }
 }

@@ -28,8 +28,8 @@ public class PivotConstants {
     public static final double pidTolerance = Units.degreesToRadians(0.5);
 
     // angle setpoints
-    public static final double startAngle = Units.degreesToRadians(46.0);
-    public static final double maxAngle = Units.degreesToRadians(50.0);
+    public static final double startAngle = Units.degreesToRadians(49.0);
+    public static final double maxAngle = Units.degreesToRadians(49.0);
     public static final double minAngle = Units.degreesToRadians(-225.0);
     public static final double stowAngle = Units.degreesToRadians(0);
     public static final double intakeCoralAngle = 0.537;

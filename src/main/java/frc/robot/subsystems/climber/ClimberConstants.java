@@ -6,30 +6,37 @@ public class ClimberConstants {
     public static final int chainMotorCanId = 14;
     public static final int winchMotorCanId = 15;
 
-    public static final double startAngle = Units.degreesToRadians(0.0);
+    public static final double startAngle = Units.degreesToRadians(-19.0);
     public static final boolean isInverted = false;
 
-    public static final double chainMotorReduction = 64.0 / 1.0;
+    public static final double chainMotorReduction = 36.0 / 15.0 * 64.0 / 1.0;
     public static final double winchMotorReduction = 64.0 / 1.0;
     public static final double encoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
     public static final double encoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
 
-    public static final int chainMotorStallCurrentLimit = 30;
-    public static final int chainMotorFreeCurrentLimit = 30;
-    public static final int winchMotorStallCurrentLimit = 30;
-    public static final int winchMotorFreeCurrentLimit = 30;
+    public static final int chainMotorStallCurrentLimit = 38;
+    public static final int chainMotorFreeCurrentLimit = 38;
+    public static final int winchMotorStallCurrentLimit = 38;
+    public static final int winchMotorFreeCurrentLimit = 38;
 
-    public static final double chainMotorForwardVoltage = 0.5;
-    public static final double winchMotorForwardVoltage = 4.0;
+    public static final double chainMotorForwardVoltage = 1.5 * 0.8;
+    public static final double winchMotorForwardVoltage = 12.0 * 0.8;
 
-    public static final double chainMotorReverseVoltage = -0.5;
-    public static final double winchMotorReverseVoltage = -4.0;
+    public static final double chainMotorReverseVoltage = -1.5 * 0.8;
+    public static final double winchMotorReverseVoltage = -12.0 * 0.8;
 
-    public static final double minAngle = Units.degreesToRadians(0.0);
+    public static final double minAngle = Units.degreesToRadians(-19.0);
     public static final double maxAngle = Units.degreesToRadians(180.0);
 
-    public static final double retractAngle = Units.degreesToRadians(0.0);
-    public static final double extendAngle = Units.degreesToRadians(180.0);
+    public static final double retractAngle = Units.degreesToRadians(43.0);
+    public static final double extendAngle = Units.degreesToRadians(175.0);
+
+    /*
+     * Note:
+     * Starting configuration for winch:
+     * 7.5 in unspooled on right
+     * 6.0 in unspooled left
+     */
 
     // winch motor curve constants
     // public static final double chainMotorVoltage = 0.5;

@@ -4,8 +4,12 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.vision.VisionConstants.PoseEstimate;
@@ -29,17 +33,17 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        for (int i = 0; i < ios.length; i++) {}
+        for (int i = 0; i < ios.length; i++) {
+            // updating vision io inputs
+            ios[i].updateInputs(inputs[i]);
+            Logger.processInputs("Vision/Camera" + i, inputs[i]);
+        }
     }
 
     public PoseEstimate[] getEstimatedGlobalPoses(Pose2d robotPose) {
         List<PoseEstimate> estimates = new ArrayList<>();
         Set<Pose3d> detectedTagPoses = new HashSet<Pose3d>();
         for (int i = 0; i < ios.length; i++) {
-            // updating vision io inputs
-            ios[i].updateInputs(inputs[i]);
-            Logger.processInputs("Vision/Camera" + i, inputs[i]);
-
             // adding detected tags to list to be logged
             for (int tagId : inputs[i].tagIds) {
                 VisionConstants.TAG_LAYOUT
@@ -127,15 +131,72 @@ public class Vision extends SubsystemBase {
         // increase std devs based on (average) distance
         if (numTags == 1 && avgDist > 7)
             estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-        else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 15));
+        else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
 
-        if (numTags == 1
-                && translationalDelta > VisionConstants.MAX_SINGLE_TAG_TRANSLATIONAL_DELTA) {
-            estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-        }
+        // if (numTags == 1
+        //         && translationalDelta > VisionConstants.MAX_SINGLE_TAG_TRANSLATIONAL_DELTA) {
+        //     estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+        // }
 
         if (VisionConstants.IGNORE_YAW) estStdDevs.set(2, 0, Double.MAX_VALUE);
 
         return estStdDevs;
+    }
+
+    public boolean hasFocusTag() {
+        for (int i = 0; i < inputs.length; i++) {
+            if (inputs[i].hasFocusTag) return true;
+        }
+        return false;
+    }
+
+    public Pose2d getSpecializedRobotPose(Rotation2d robotRotation) {
+        List<Pose2d> robotPoses = new ArrayList<Pose2d>();
+        double averageTimestamp = 0.0;
+        for (var input : inputs) {
+            Translation3d robotToTag =
+                    new Translation3d(
+                            input.distance
+                                            * Math.cos(
+                                                    Units.degreesToRadians(input.pitch)
+                                                            - input.robotToCam.getRotation().getY())
+                                            * Math.cos(
+                                                    Units.degreesToRadians(input.yaw)
+                                                            - input.robotToCam.getRotation().getZ())
+                                    - input.robotToCam.getX(),
+                            input.distance
+                                            * Math.cos(
+                                                    Units.degreesToRadians(input.pitch)
+                                                            - input.robotToCam.getRotation().getY())
+                                            * Math.sin(
+                                                    Units.degreesToRadians(input.yaw)
+                                                            - input.robotToCam.getRotation().getZ())
+                                    - input.robotToCam.getY(),
+                            input.distance
+                                            * Math.cos(
+                                                    Units.degreesToRadians(input.pitch)
+                                                            - input.robotToCam.getRotation().getY())
+                                    - input.robotToCam.getZ());
+            Pose2d robotPose =
+                    new Pose2d(
+                            robotToTag.getX() * Math.cos(robotRotation.getRadians())
+                                    + robotToTag.getY() * Math.sin(robotRotation.getRadians()),
+                            robotToTag.getX() * Math.sin(robotRotation.getRadians())
+                                    + robotToTag.getY() * Math.cos(robotRotation.getRadians()),
+                            new Rotation2d(
+                                    Units.degreesToRadians(input.yaw)
+                                            - input.robotToCam.getRotation().getZ()
+                                            + robotRotation.getRadians()));
+            robotPoses.add(robotPose);
+        }
+        Logger.recordOutput("specialized pose estimates", robotPoses.toArray(Pose2d[]::new));
+        Pose2d averagePose = new Pose2d();
+        for (Pose2d pose : robotPoses) {
+            averagePose =
+                    averagePose.transformBy(
+                            new Transform2d(pose.getTranslation(), pose.getRotation()));
+        }
+        averagePose = averagePose.div(robotPoses.size());
+        return averagePose;
     }
 }

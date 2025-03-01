@@ -83,8 +83,8 @@ public class VisionConstants {
                                     Units.degreesToRadians(-21.875),
                                     Units.degreesToRadians(-90 + 35))));
 
-    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(3.6, 3.6, 7);
-    public static final Matrix<N3, N1> MULTIPLE_TAG_STD_DEVS = VecBuilder.fill(0.6, 0.6, 4);
+    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(1.5, 1.5, 7);
+    public static final Matrix<N3, N1> MULTIPLE_TAG_STD_DEVS = VecBuilder.fill(0.3, 0.3, 4);
 
     public static final boolean IGNORE_YAW = false;
 
