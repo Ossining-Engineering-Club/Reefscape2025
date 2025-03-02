@@ -15,10 +15,13 @@ public class IntakeReefAlgae extends SequentialCommandGroup {
     public IntakeReefAlgae(double height, Pivot pivot, Elevator elevator, AlgaeClaw algaeClaw) {
         addCommands(
                 new ConditionalCommand(
-                        new ParallelDeadlineGroup(
-                                algaeClaw.intake(),
-                                new ElevatorGoToHeight(elevator, height),
-                                new PivotGoToAngle(pivot, PivotConstants.intakeReefAlgaeAngle)),
+                        new SequentialCommandGroup(
+                                new ParallelDeadlineGroup(
+                                        algaeClaw.intake(),
+                                        new ElevatorGoToHeight(elevator, height),
+                                        new PivotGoToAngle(
+                                                pivot, PivotConstants.intakeReefAlgaeAngle)),
+                                new PivotGoToAngle(pivot, PivotConstants.removeReefAlgaeAngle)),
                         Commands.runOnce(() -> {}),
                         () -> !algaeClaw.hasAlgae()));
     }

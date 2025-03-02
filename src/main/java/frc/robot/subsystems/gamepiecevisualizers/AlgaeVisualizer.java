@@ -1,21 +1,14 @@
 package frc.robot.subsystems.gamepiecevisualizers;
 
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Radians;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
-import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnFly;
 import org.littletonrobotics.junction.Logger;
 
 public class AlgaeVisualizer {
@@ -67,22 +60,23 @@ public class AlgaeVisualizer {
 
     public static void shootAlgae() {
         if (AlgaeVisualizer.algaeState == AlgaeState.LOADED && Constants.currentMode == Mode.SIM) {
-            SimulatedArena.getInstance()
-                    .addGamePieceProjectile(
-                            new ReefscapeAlgaeOnFly(
-                                    robotPose.getTranslation(),
-                                    new Translation2d(
-                                            -loadedAlgaePoseRobotRelative.getY(),
-                                            loadedAlgaePoseRobotRelative.getX()),
-                                    chassisSpeeds,
-                                    new Rotation2d(
-                                            robotPose.getRotation().getRadians() - Math.PI / 2.0),
-                                    Meters.of(loadedAlgaePoseRobotRelative.getZ()),
-                                    MetersPerSecond.of(0.5),
-                                    Radians.of(
-                                            pivotAngleRadians
-                                                    + Math.PI
-                                                    - Units.degreesToRadians(50))));
+            // SimulatedArena.getInstance()
+            //         .addGamePieceProjectile(
+            //                 new ReefscapeAlgaeOnFly(
+            //                         robotPose.getTranslation(),
+            //                         new Translation2d(
+            //                                 -loadedAlgaePoseRobotRelative.getY(),
+            //                                 loadedAlgaePoseRobotRelative.getX()),
+            //                         chassisSpeeds,
+            //                         new Rotation2d(
+            //                                 robotPose.getRotation().getRadians() - Math.PI /
+            // 2.0),
+            //                         Meters.of(loadedAlgaePoseRobotRelative.getZ()),
+            //                         MetersPerSecond.of(0.5),
+            //                         Radians.of(
+            //                                 pivotAngleRadians
+            //                                         + Math.PI
+            //                                         - Units.degreesToRadians(50))));
             AlgaeVisualizer.algaeState = AlgaeState.GONE;
         }
     }

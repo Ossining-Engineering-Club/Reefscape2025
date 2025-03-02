@@ -4,6 +4,7 @@ import static frc.robot.AutoTeleopConstants.getTagIdOfPosition;
 import static frc.robot.subsystems.vision.VisionConstants.TAG_LAYOUT;
 
 import com.pathplanner.lib.path.PathConstraints;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,7 +18,7 @@ import frc.robot.subsystems.vision.Vision;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
-public class GoToPosition extends Command {
+public class GoToPositionSpecialized extends Command {
     private final Drive drive;
     private final Vision vision;
     private final Position position;
@@ -29,9 +30,9 @@ public class GoToPosition extends Command {
     private final ProfiledPIDController ypid;
     private final ProfiledPIDController rotpid;
 
-    private final Optional<Pose2d> targetPose;
+    private Optional<Pose2d> targetPose;
 
-    public GoToPosition(
+    public GoToPositionSpecialized(
             Drive drive,
             Vision vision,
             Position position,
@@ -71,13 +72,18 @@ public class GoToPosition extends Command {
                                 pathConstraints.maxAngularAccelerationRadPerSecSq()));
         rotpid.enableContinuousInput(-Math.PI, Math.PI);
 
-        targetPose = getTargetPose(getTagIdOfPosition(position), sidewaysOffset, depthOffset);
-
         addRequirements(drive);
     }
 
     @Override
     public void initialize() {
+        if (position == Position.PROCESSOR) {
+            targetPose =
+                    getTargetPose(getTagIdOfPosition(position), sidewaysOffset, depthOffset, true);
+        } else {
+            targetPose =
+                    getTargetPose(getTagIdOfPosition(position), sidewaysOffset, depthOffset, false);
+        }
         xpid.reset(
                 drive.getSpecializedPose().getX(),
                 drive.getFieldRelativeChassisSpeeds().vxMetersPerSecond);
@@ -101,9 +107,12 @@ public class GoToPosition extends Command {
     public void execute() {
         drive.runVelocityFieldRelative(
                 new ChassisSpeeds(
-                        xpid.calculate(drive.getSpecializedPose().getX()),
-                        ypid.calculate(drive.getSpecializedPose().getY()),
-                        rotpid.calculate(drive.getRotation().getRadians())));
+                        xpid.calculate(drive.getSpecializedPose().getX())
+                                + xpid.getSetpoint().velocity,
+                        ypid.calculate(drive.getSpecializedPose().getY())
+                                + ypid.getSetpoint().velocity,
+                        rotpid.calculate(drive.getRotation().getRadians())
+                                + rotpid.getSetpoint().velocity));
 
         Logger.recordOutput("xpid setpoint", xpid.getSetpoint().position);
         Logger.recordOutput("ypid setpoint", ypid.getSetpoint().position);
@@ -118,21 +127,48 @@ public class GoToPosition extends Command {
     @Override
     public boolean isFinished() {
         if (!targetPose.isPresent()) return true;
-        if (Math.hypot(
-                                drive.getSpecializedPose().getX() - targetPose.get().getX(),
-                                drive.getSpecializedPose().getY() - targetPose.get().getY())
-                        <= AutoTeleopConstants.translationalTolerance
-                && Math.abs(
-                                drive.getRotation().getRadians()
-                                        - targetPose.get().getRotation().getRadians())
-                        <= AutoTeleopConstants.rotationalTolerance) {
-            return true;
+        if (position == Position.PROCESSOR) {
+            if (Math.hypot(
+                                    drive.getSpecializedPose().getX() - targetPose.get().getX(),
+                                    drive.getSpecializedPose().getY() - targetPose.get().getY())
+                            <= AutoTeleopConstants.processorTranslationalTolerance
+                    && Math.abs(
+                                    drive.getRotation().getRadians()
+                                            - targetPose.get().getRotation().getRadians())
+                            <= AutoTeleopConstants.processorRotationalTolerance) {
+                return true;
+            }
+            return false;
+        } else if (position == Position.LEFT_CORAL_STATION
+                || position == Position.RIGHT_CORAL_STATION) {
+            if (Math.hypot(
+                                    drive.getSpecializedPose().getX() - targetPose.get().getX(),
+                                    drive.getSpecializedPose().getY() - targetPose.get().getY())
+                            <= AutoTeleopConstants.coralStationTranslationalTolerance
+                    && Math.abs(
+                                    drive.getRotation().getRadians()
+                                            - targetPose.get().getRotation().getRadians())
+                            <= AutoTeleopConstants.coralStationRotationalTolerance) {
+                return true;
+            }
+            return false;
+        } else {
+            if (Math.hypot(
+                                    drive.getSpecializedPose().getX() - targetPose.get().getX(),
+                                    drive.getSpecializedPose().getY() - targetPose.get().getY())
+                            <= AutoTeleopConstants.translationalTolerance
+                    && Math.abs(
+                                    drive.getRotation().getRadians()
+                                            - targetPose.get().getRotation().getRadians())
+                            <= AutoTeleopConstants.rotationalTolerance) {
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 
     public static Optional<Pose2d> getTargetPose(
-            int tagId, double sidewaysOffset, double depthOffset) {
+            int tagId, double sidewaysOffset, double depthOffset, boolean flipRobot) {
         var optionalTagPose = TAG_LAYOUT.getTagPose(tagId);
         if (optionalTagPose.isPresent()) {
             var tagPose = optionalTagPose.get();
@@ -146,7 +182,11 @@ public class GoToPosition extends Command {
                                     + sidewaysOffset
                                             * Math.sin(tagPose.getRotation().getZ() - Math.PI / 2.0)
                                     + depthOffset * Math.sin(tagPose.getRotation().getZ()),
-                            new Rotation2d(tagPose.getRotation().getZ() - Math.PI / 2.0)));
+                            new Rotation2d(
+                                    MathUtil.angleModulus(
+                                            tagPose.getRotation().getZ()
+                                                    - Math.PI / 2.0
+                                                    + (flipRobot ? Math.PI : 0)))));
         }
         return Optional.empty();
     }

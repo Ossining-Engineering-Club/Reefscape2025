@@ -1,6 +1,5 @@
 package frc.robot.commands.gamepiecemanipulation;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.elevator.ElevatorGoToHeight;
@@ -10,12 +9,11 @@ import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotConstants;
 
-public class GoToNetAlgaePosition extends SequentialCommandGroup {
-    public GoToNetAlgaePosition(Pivot pivot, Elevator elevator) {
+public class GoToStoredPosition extends SequentialCommandGroup {
+    public GoToStoredPosition(Elevator elevator, Pivot pivot) {
         addCommands(
                 new ParallelCommandGroup(
-                        new ElevatorGoToHeight(elevator, ElevatorConstants.netHeight),
-                        new PivotGoToAngle(pivot, Units.degreesToRadians(-90))),
-                new PivotGoToAngle(pivot, PivotConstants.netAngle));
+                        new ElevatorGoToHeight(elevator, ElevatorConstants.storedHeight),
+                        new PivotGoToAngle(pivot, PivotConstants.storedAngle)));
     }
 }

@@ -82,4 +82,10 @@ public class Climber extends SubsystemBase {
                 .andThen(Commands.waitUntil(() -> getAngle() <= retractAngle))
                 .andThen(Commands.runOnce(() -> stop()));
     }
+
+    public Command store() {
+        return Commands.runOnce(() -> reverse())
+                .andThen(Commands.waitUntil(() -> getAngle() <= storeAngle))
+                .andThen(Commands.runOnce(() -> stop()));
+    }
 }

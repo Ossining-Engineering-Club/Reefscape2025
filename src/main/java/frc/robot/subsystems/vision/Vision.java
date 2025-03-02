@@ -40,6 +40,8 @@ public class Vision extends SubsystemBase {
             ios[i].updateInputs(inputs[i]);
             Logger.processInputs("Vision/Camera" + i, inputs[i]);
         }
+        Logger.recordOutput("focus tag", getFocusTag());
+        Logger.recordOutput("sees focus tag", seesFocusTag());
     }
 
     public PoseEstimate[] getEstimatedGlobalPoses(Pose2d robotPose) {

@@ -75,7 +75,7 @@ public class CoralVisualizer {
                             5.0 * ElevatorConstants.pidTolerance)
                     && withinTolerance(
                             pivotAngleRadians,
-                            PivotConstants.placeCoralAngle,
+                            PivotConstants.placeL4CoralAngle,
                             5.0 * PivotConstants.pidTolerance)) {
                 SimulatedArena.getInstance()
                         .addGamePieceProjectile(
@@ -104,7 +104,7 @@ public class CoralVisualizer {
                                                 loadedCoralPoseFieldRelative.getRotation().getZ()
                                                         + Math.PI),
                                         Meters.of(loadedCoralPoseRobotRelative.getZ()),
-                                        MetersPerSecond.of(2),
+                                        MetersPerSecond.of(4),
                                         Radians.of(
                                                 loadedCoralPoseRobotRelative
                                                         .getRotation()

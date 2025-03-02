@@ -15,7 +15,7 @@ import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
 import org.littletonrobotics.junction.Logger;
 
 public class AlgaeClaw extends SubsystemBase {
-    private static enum AlgaeClawState {
+    public static enum AlgaeClawState {
         FORWARD,
         STOPPED,
         REVERSE

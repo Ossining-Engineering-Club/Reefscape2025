@@ -1,37 +1,65 @@
 package frc.robot.commands.autoteleop;
 
+import static frc.robot.AutoTeleopConstants.getTagIdOfPosition;
+import static frc.robot.AutoTeleopConstants.reefCoralAlignmentConstraints;
+import static frc.robot.AutoTeleopConstants.switchingToSpecializedRotationalTolerance;
+import static frc.robot.AutoTeleopConstants.switchingToSpecializedTranslationalTolerance;
+
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FileVersionException;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.AutoTeleopConstants;
-import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.AutoTeleopConstants.Level;
+import frc.robot.AutoTeleopConstants.PositioningConfig;
 import frc.robot.commands.gamepiecemanipulation.GoToPlacingCoralPosition;
 import frc.robot.commands.pivot.PivotGoToAngle;
 import frc.robot.subsystems.coralholder.CoralHolder;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotConstants;
+import frc.robot.subsystems.vision.Vision;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
+import org.littletonrobotics.junction.Logger;
 
 public class AutoPlaceCoral extends SequentialCommandGroup {
     public AutoPlaceCoral(
-            AlignmentConfig config,
+            PositioningConfig config,
             Level level,
             Pivot pivot,
             Elevator elevator,
-            CoralHolder coralHolder)
+            CoralHolder coralHolder,
+            Drive drive,
+            Vision vision)
             throws FileVersionException, IOException, ParseException {
-        PathPlannerPath path = PathPlannerPath.fromPathFile(config.pathName());
-        Command pathFindingCommand =
-                AutoBuilder.pathfindThenFollowPath(
-                        path, AutoTeleopConstants.reefCoralAlignmentConstraints);
+
+        Pose2d targetPoseBlue =
+                GoToPositionSpecialized.getTargetPose(
+                                getTagIdOfPosition(config.position(), Alliance.Blue),
+                                config.sidewaysOffset(),
+                                config.depthOffset(),
+                                false)
+                        .get();
+        Pose2d targetPoseRed =
+                GoToPositionSpecialized.getTargetPose(
+                                getTagIdOfPosition(config.position(), Alliance.Red),
+                                config.sidewaysOffset(),
+                                config.depthOffset(),
+                                false)
+                        .get();
+        Command pathfindingCommandBlue =
+                AutoBuilder.pathfindToPose(targetPoseBlue, reefCoralAlignmentConstraints, 0.0);
+        Command pathfindingCommandRed =
+                AutoBuilder.pathfindToPose(targetPoseRed, reefCoralAlignmentConstraints, 0.0);
 
         double height =
                 switch (level) {
@@ -44,21 +72,182 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
 
         if (level == Level.L4) {
             addCommands(
-                    new ParallelCommandGroup(
-                            pathFindingCommand,
+                    Commands.runOnce(
+                            () -> vision.setFocusTag(getTagIdOfPosition(config.position()))),
+                    new ConditionalCommand(
                             new SequentialCommandGroup(
-                                    new WaitCommand(0.5),
-                                    new GoToPlacingCoralPosition(height, level, pivot, elevator))),
-                    coralHolder.release(),
-                    new PivotGoToAngle(pivot, PivotConstants.knockL4CoralAngle));
+                                    Commands.runOnce(
+                                            () ->
+                                                    Logger.recordOutput(
+                                                            "initial target pose", targetPoseBlue)),
+                                    new ParallelCommandGroup(
+                                            new SequentialCommandGroup(
+                                                    pathfindingCommandBlue.until(
+                                                            () ->
+                                                                    Math.hypot(
+                                                                                            drive.getPose()
+                                                                                                            .getX()
+                                                                                                    - targetPoseBlue
+                                                                                                            .getX(),
+                                                                                            drive.getPose()
+                                                                                                            .getY()
+                                                                                                    - targetPoseBlue
+                                                                                                            .getY())
+                                                                                    <= switchingToSpecializedTranslationalTolerance
+                                                                            && Math.abs(
+                                                                                            drive.getRotation()
+                                                                                                            .getRadians()
+                                                                                                    - targetPoseBlue
+                                                                                                            .getRotation()
+                                                                                                            .getRadians())
+                                                                                    <= switchingToSpecializedRotationalTolerance
+                                                                            && vision
+                                                                                    .seesFocusTag()),
+                                                    new GoToPositionSpecialized(
+                                                            drive,
+                                                            vision,
+                                                            config.position(),
+                                                            config.sidewaysOffset(),
+                                                            config.depthOffset(),
+                                                            reefCoralAlignmentConstraints)),
+                                            new SequentialCommandGroup(
+                                                    new WaitCommand(1.5),
+                                                    new GoToPlacingCoralPosition(
+                                                            height, level, pivot, elevator))),
+                                    coralHolder.release(),
+                                    new PivotGoToAngle(pivot, PivotConstants.knockL4CoralAngle)),
+                            new SequentialCommandGroup(
+                                    Commands.runOnce(
+                                            () ->
+                                                    Logger.recordOutput(
+                                                            "initial target pose", targetPoseRed)),
+                                    new ParallelCommandGroup(
+                                            new SequentialCommandGroup(
+                                                    pathfindingCommandRed.until(
+                                                            () ->
+                                                                    Math.hypot(
+                                                                                            drive.getPose()
+                                                                                                            .getX()
+                                                                                                    - targetPoseRed
+                                                                                                            .getX(),
+                                                                                            drive.getPose()
+                                                                                                            .getY()
+                                                                                                    - targetPoseRed
+                                                                                                            .getY())
+                                                                                    <= switchingToSpecializedTranslationalTolerance
+                                                                            && Math.abs(
+                                                                                            drive.getRotation()
+                                                                                                            .getRadians()
+                                                                                                    - targetPoseRed
+                                                                                                            .getRotation()
+                                                                                                            .getRadians())
+                                                                                    <= switchingToSpecializedRotationalTolerance
+                                                                            && vision
+                                                                                    .seesFocusTag()),
+                                                    new GoToPositionSpecialized(
+                                                            drive,
+                                                            vision,
+                                                            config.position(),
+                                                            config.sidewaysOffset(),
+                                                            config.depthOffset(),
+                                                            reefCoralAlignmentConstraints)),
+                                            new SequentialCommandGroup(
+                                                    new WaitCommand(1.5),
+                                                    new GoToPlacingCoralPosition(
+                                                            height, level, pivot, elevator))),
+                                    coralHolder.release(),
+                                    new PivotGoToAngle(pivot, PivotConstants.knockL4CoralAngle)),
+                            () ->
+                                    DriverStation.getAlliance().orElse(Alliance.Blue)
+                                            == Alliance.Blue));
         } else {
             addCommands(
-                    new ParallelCommandGroup(
-                            pathFindingCommand,
+                    Commands.runOnce(
+                            () -> vision.setFocusTag(getTagIdOfPosition(config.position()))),
+                    new ConditionalCommand(
                             new SequentialCommandGroup(
-                                    new WaitCommand(0.5),
-                                    new GoToPlacingCoralPosition(height, level, pivot, elevator))),
-                    coralHolder.release());
+                                    Commands.runOnce(
+                                            () ->
+                                                    Logger.recordOutput(
+                                                            "initial target pose", targetPoseBlue)),
+                                    new ParallelCommandGroup(
+                                            new SequentialCommandGroup(
+                                                    pathfindingCommandBlue.until(
+                                                            () ->
+                                                                    Math.hypot(
+                                                                                            drive.getPose()
+                                                                                                            .getX()
+                                                                                                    - targetPoseBlue
+                                                                                                            .getX(),
+                                                                                            drive.getPose()
+                                                                                                            .getY()
+                                                                                                    - targetPoseBlue
+                                                                                                            .getY())
+                                                                                    <= switchingToSpecializedTranslationalTolerance
+                                                                            && Math.abs(
+                                                                                            drive.getRotation()
+                                                                                                            .getRadians()
+                                                                                                    - targetPoseBlue
+                                                                                                            .getRotation()
+                                                                                                            .getRadians())
+                                                                                    <= switchingToSpecializedRotationalTolerance
+                                                                            && vision
+                                                                                    .seesFocusTag()),
+                                                    new GoToPositionSpecialized(
+                                                            drive,
+                                                            vision,
+                                                            config.position(),
+                                                            config.sidewaysOffset(),
+                                                            config.depthOffset(),
+                                                            reefCoralAlignmentConstraints)),
+                                            new SequentialCommandGroup(
+                                                    new WaitCommand(1.5),
+                                                    new GoToPlacingCoralPosition(
+                                                            height, level, pivot, elevator))),
+                                    coralHolder.release()),
+                            new SequentialCommandGroup(
+                                    Commands.runOnce(
+                                            () ->
+                                                    Logger.recordOutput(
+                                                            "initial target pose", targetPoseRed)),
+                                    new ParallelCommandGroup(
+                                            new SequentialCommandGroup(
+                                                    pathfindingCommandRed.until(
+                                                            () ->
+                                                                    Math.hypot(
+                                                                                            drive.getPose()
+                                                                                                            .getX()
+                                                                                                    - targetPoseRed
+                                                                                                            .getX(),
+                                                                                            drive.getPose()
+                                                                                                            .getY()
+                                                                                                    - targetPoseRed
+                                                                                                            .getY())
+                                                                                    <= switchingToSpecializedTranslationalTolerance
+                                                                            && Math.abs(
+                                                                                            drive.getRotation()
+                                                                                                            .getRadians()
+                                                                                                    - targetPoseRed
+                                                                                                            .getRotation()
+                                                                                                            .getRadians())
+                                                                                    <= switchingToSpecializedRotationalTolerance
+                                                                            && vision
+                                                                                    .seesFocusTag()),
+                                                    new GoToPositionSpecialized(
+                                                            drive,
+                                                            vision,
+                                                            config.position(),
+                                                            config.sidewaysOffset(),
+                                                            config.depthOffset(),
+                                                            reefCoralAlignmentConstraints)),
+                                            new SequentialCommandGroup(
+                                                    new WaitCommand(1.5),
+                                                    new GoToPlacingCoralPosition(
+                                                            height, level, pivot, elevator))),
+                                    coralHolder.release()),
+                            () ->
+                                    DriverStation.getAlliance().orElse(Alliance.Blue)
+                                            == Alliance.Blue));
         }
     }
 }

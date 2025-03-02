@@ -30,6 +30,7 @@ public class ClimberConstants {
 
     public static final double retractAngle = Units.degreesToRadians(43.0);
     public static final double extendAngle = Units.degreesToRadians(175.0);
+    public static final double storeAngle = Units.degreesToRadians(-18.0);
 
     /*
      * Note:
