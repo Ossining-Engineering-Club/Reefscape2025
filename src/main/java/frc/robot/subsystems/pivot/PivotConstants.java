@@ -30,7 +30,7 @@ public class PivotConstants {
     // angle setpoints
     public static final double startAngle = Units.degreesToRadians(49.0);
     public static final double maxAngle = Units.degreesToRadians(49.0);
-    public static final double minAngle = Units.degreesToRadians(-225.0);
+    public static final double minAngle = -3.922;
     public static final double storedAngle = Units.degreesToRadians(-90);
     public static final double intakeCoralAngle = 0.458;
     public static final double intakeCoralAutoAngle = 0.458;
@@ -40,7 +40,7 @@ public class PivotConstants {
     public static final double intakeReefAlgaeAngle = Units.degreesToRadians(-135.0);
     public static final double removeReefAlgaeAngle = Units.degreesToRadians(-125.0);
     public static final double processorAngle = Units.degreesToRadians(47.0);
-    public static final double netAngle = Units.degreesToRadians(-135.0);
+    public static final double netAngle = Units.degreesToRadians(-115.0);
     public static final double groundAlgaeAngle = -3.922;
 
     // sim settings
