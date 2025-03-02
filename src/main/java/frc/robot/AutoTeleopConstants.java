@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public final class AutoTeleopConstants {
     public static record PathAlignmentConfig(String pathName, int button) {}
-    ;
 
     public static record PositioningConfig(
             Position position,
@@ -17,7 +16,6 @@ public final class AutoTeleopConstants {
             Trigger trigger,
             double sidewaysOffset,
             double depthOffset) {}
-    ;
 
     public static enum Level {
         L1,
