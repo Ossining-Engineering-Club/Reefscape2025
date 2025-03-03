@@ -13,6 +13,7 @@ public class VisionIOReal implements VisionIO {
     private final PhotonCamera camera;
     private final PhotonPoseEstimator estimator;
     private final Transform3d robotToCam;
+    private final String cameraName;
     private int focusTag = 0;
 
     public VisionIOReal(CameraConfig config) {
@@ -24,10 +25,12 @@ public class VisionIOReal implements VisionIO {
                         config.robotToCam());
         estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         robotToCam = config.robotToCam();
+        cameraName = config.name();
     }
 
     @Override
     public void updateInputs(VisionIOInputs inputs) {
+        inputs.cameraName = cameraName;
         inputs.robotToCam = robotToCam;
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
         if (results.size() > 0) {

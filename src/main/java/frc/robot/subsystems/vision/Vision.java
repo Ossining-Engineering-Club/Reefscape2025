@@ -38,7 +38,7 @@ public class Vision extends SubsystemBase {
         for (int i = 0; i < ios.length; i++) {
             // updating vision io inputs
             ios[i].updateInputs(inputs[i]);
-            Logger.processInputs("Vision/Camera" + i, inputs[i]);
+            Logger.processInputs("Vision/" + inputs[i].cameraName, inputs[i]);
         }
         Logger.recordOutput("focus tag", getFocusTag());
         Logger.recordOutput("sees focus tag", seesFocusTag());
@@ -86,11 +86,13 @@ public class Vision extends SubsystemBase {
 
                 addedPose = true;
                 Logger.recordOutput(
-                        "/Camera" + i + "/Raw Vision", inputs[i].estimatedPose.toPose2d());
+                        "/Vision/" + inputs[i].cameraName + "/Raw Vision",
+                        inputs[i].estimatedPose.toPose2d());
                 Logger.recordOutput(
-                        "/Camera" + i + "/Vision Timestamp", inputs[i].timestampSeconds);
+                        "/Vision/" + inputs[i].cameraName + "/Vision Timestamp",
+                        inputs[i].timestampSeconds);
                 Logger.recordOutput(
-                        "/Camera" + i + "/Vision Std Dev",
+                        "/Vision/" + inputs[i].cameraName + "/Vision Std Dev",
                         new double[] {stddevs.get(0, 0), stddevs.get(1, 0), stddevs.get(2, 0)});
 
                 estimates.add(
@@ -100,7 +102,9 @@ public class Vision extends SubsystemBase {
                                 stddevs));
             }
             if (!addedPose) {
-                Logger.recordOutput("/" + i + "/Raw Vision", new Pose2d[] {});
+                Logger.recordOutput(
+                        "/Vision/" + inputs[i].cameraName + "/Raw Vision",
+                        new Pose2d(-1000, -1000, new Rotation2d()));
             }
         }
         // logging detected tags
