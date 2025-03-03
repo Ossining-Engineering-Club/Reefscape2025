@@ -379,9 +379,9 @@ public class RobotContainer {
         // mechanismController.leftTrigger(0.9).onFalse(Commands.runOnce(() -> climber.stop()));
         // mechanismController.rightTrigger(0.9).onFalse(Commands.runOnce(() -> climber.stop()));
 
-        // mechanismController.povCenter().onTrue(Commands.runOnce(() -> climber.stop(), climber));
-        // mechanismController.povUp().onTrue(Commands.runOnce(() -> climber.forward(), climber));
-        // mechanismController.povDown().onTrue(Commands.runOnce(() -> climber.reverse(), climber));
+        mechanismController.povCenter().onTrue(Commands.runOnce(() -> climber.stop(), climber));
+        mechanismController.povUp().onTrue(Commands.runOnce(() -> climber.forward(), climber));
+        mechanismController.povDown().onTrue(Commands.runOnce(() -> climber.reverse(), climber));
 
         // button box controls
         groundAlgaeButton.onTrue(new IntakeGroundAlgae(elevator, pivot, algaeClaw));
