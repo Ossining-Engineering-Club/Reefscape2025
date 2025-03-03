@@ -296,7 +296,7 @@ public class RobotContainer {
 
         controller
                 .rightBumper()
-                .onTrue(
+                .whileTrue(
                         DriveCommands.joystickDrive(
                                 drive,
                                 () -> -0.5 * controller.getLeftY(),
