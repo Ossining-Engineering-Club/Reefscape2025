@@ -276,9 +276,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
                 DriveCommands.joystickDrive(
                         drive,
-                        () -> -0.8 * controller.getLeftY(),
-                        () -> -0.8 * controller.getLeftX(),
-                        () -> -0.8 * controller.getRightX()));
+                        () -> -1.0 * controller.getLeftY(),
+                        () -> -1.0 * controller.getLeftX(),
+                        () -> -1.0 * controller.getRightX()));
 
         // Reset gyro to 0° when A button is pressed
         controller
