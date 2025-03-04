@@ -6,6 +6,7 @@ import static frc.robot.subsystems.coralholder.CoralHolderConstants.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.AutoTeleopConstants.Level;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer;
@@ -53,9 +54,17 @@ public class CoralHolder extends SubsystemBase {
     public void reverse() {
         state = CoralHolderState.REVERSE;
         if (Constants.currentMode == Mode.SIM) {
-            CoralVisualizer.shootCoral();
+            CoralVisualizer.shootCoral(false);
         }
         io.setVoltage(reverseVoltage);
+    }
+
+    public void reverseL1() {
+        state = CoralHolderState.REVERSE;
+        if (Constants.currentMode == Mode.SIM) {
+            CoralVisualizer.shootCoral(true);
+        }
+        io.setVoltage(reverseVoltageL1);
     }
 
     public boolean hasCoral() {
@@ -82,10 +91,19 @@ public class CoralHolder extends SubsystemBase {
                 () -> !hasCoral());
     }
 
-    public Command release() {
-        return Commands.runOnce(() -> this.reverse(), this)
-                .andThen(Commands.waitUntil(() -> !this.hasCoral()))
-                .andThen(Commands.waitTime(Seconds.of(CoralHolderConstants.releaseDelaySeconds)))
-                .andThen(Commands.runOnce(() -> this.stop(), this));
+    public Command release(Level level) {
+        if (level == Level.L1) {
+            return Commands.runOnce(() -> this.reverseL1(), this)
+                    .andThen(Commands.waitUntil(() -> !this.hasCoral()))
+                    .andThen(
+                            Commands.waitTime(Seconds.of(CoralHolderConstants.releaseDelaySeconds)))
+                    .andThen(Commands.runOnce(() -> this.stop(), this));
+        } else {
+            return Commands.runOnce(() -> this.reverse(), this)
+                    .andThen(Commands.waitUntil(() -> !this.hasCoral()))
+                    .andThen(
+                            Commands.waitTime(Seconds.of(CoralHolderConstants.releaseDelaySeconds)))
+                    .andThen(Commands.runOnce(() -> this.stop(), this));
+        }
     }
 }

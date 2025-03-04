@@ -67,9 +67,27 @@ public class CoralVisualizer {
         Logger.recordOutput("loadedCoralPoseFieldRelative", loadedCoralPoseFieldRelative);
     }
 
-    public static void shootCoral() {
+    public static void shootCoral(boolean isL1) {
         if (CoralVisualizer.coralState == CoralState.LOADED && Constants.currentMode == Mode.SIM) {
-            if (withinTolerance(
+            if (isL1) {
+                SimulatedArena.getInstance()
+                        .addGamePieceProjectile(
+                                new ReefscapeCoralOnFly(
+                                        robotPose.getTranslation(),
+                                        new Translation2d(
+                                                -loadedCoralPoseRobotRelative.getY(),
+                                                loadedCoralPoseRobotRelative.getX()),
+                                        chassisSpeeds,
+                                        new Rotation2d(
+                                                loadedCoralPoseFieldRelative.getRotation().getZ()
+                                                        + Math.PI),
+                                        Meters.of(loadedCoralPoseRobotRelative.getZ()),
+                                        MetersPerSecond.of(1.0),
+                                        Radians.of(
+                                                loadedCoralPoseRobotRelative
+                                                        .getRotation()
+                                                        .getY())));
+            } else if (withinTolerance(
                             elevatorHeight,
                             ElevatorConstants.l4Height,
                             5.0 * ElevatorConstants.pidTolerance)

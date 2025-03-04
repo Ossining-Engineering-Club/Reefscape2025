@@ -35,6 +35,7 @@ public class PivotConstants {
     public static final double intakeCoralAngle = 0.5453;
     public static final double intakeCoralAutoAngle = 0.458;
     public static final double placeCoralAngle = -0.539;
+    public static final double placeL1CoralAngle = 0.0;
     public static final double placeL4CoralAngle = -0.304;
     public static final double knockL4CoralAngle = 0.272;
     public static final double preIntakeReefAlgaeAngle = Units.degreesToRadians(-90);

@@ -28,7 +28,7 @@ public class FieldSimulationManager {
     private static final Rotation2d coralStationRightBlueRotation = Rotation2d.fromDegrees(-36);
     private static final Rotation2d coralStationLeftRedRotation = Rotation2d.fromDegrees(36);
     private static final Rotation2d coralStationRightRedRotation = Rotation2d.fromDegrees(144);
-    private static final Rotation2d coralStationRotationTolerance = Rotation2d.fromDegrees(5);
+    private static final Rotation2d coralStationRotationTolerance = Rotation2d.fromDegrees(20);
 
     private static final Translation2d[] coralStationLeftBlueDropArea =
             new Translation2d[] {
@@ -137,10 +137,14 @@ public class FieldSimulationManager {
                         elevator.getHeight(),
                         ElevatorConstants.intakeCoralHeight,
                         5 * ElevatorConstants.pidTolerance)
-                && withinTolerance(
-                        pivot.getAngle(),
-                        PivotConstants.intakeCoralAngle,
-                        5 * PivotConstants.pidTolerance)
+                && (withinTolerance(
+                                pivot.getAngle(),
+                                PivotConstants.intakeCoralAngle,
+                                5 * PivotConstants.pidTolerance)
+                        || withinTolerance(
+                                pivot.getAngle(),
+                                PivotConstants.intakeCoralAutoAngle,
+                                5 * PivotConstants.pidTolerance))
                 && coralHolder.getState() == CoralHolderState.FORWARD
                 && CoralVisualizer.coralState == CoralState.GONE) {
             // SimulatedArena.getInstance()

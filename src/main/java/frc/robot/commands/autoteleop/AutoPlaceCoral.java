@@ -13,8 +13,10 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.AutoTeleopConstants;
 import frc.robot.AutoTeleopConstants.Level;
 import frc.robot.AutoTeleopConstants.PositioningConfig;
+import frc.robot.Constants;
 import frc.robot.commands.gamepiecemanipulation.GoToPlacingCoralPosition;
 import frc.robot.commands.pivot.PivotGoToAngle;
 import frc.robot.subsystems.coralholder.CoralHolder;
@@ -40,18 +42,26 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
             Vision vision,
             LED led)
             throws FileVersionException, IOException, ParseException {
-
+        double sidewaysOffset;
+        if (level == Level.L1) {
+            sidewaysOffset =
+                    Math.signum(config.sidewaysOffset())
+                                    * AutoTeleopConstants.sidewaysReefCoralL1Offset
+                            - Constants.coralIntakeXOffset;
+        } else {
+            sidewaysOffset = config.sidewaysOffset();
+        }
         Pose2d targetPoseBlue =
                 GoToPositionSpecialized.getTargetPose(
                                 getTagIdOfPosition(config.position(), Alliance.Blue),
-                                config.sidewaysOffset(),
+                                sidewaysOffset,
                                 config.depthOffset(),
                                 false)
                         .get();
         Pose2d targetPoseRed =
                 GoToPositionSpecialized.getTargetPose(
                                 getTagIdOfPosition(config.position(), Alliance.Red),
-                                config.sidewaysOffset(),
+                                sidewaysOffset,
                                 config.depthOffset(),
                                 false)
                         .get();
@@ -109,14 +119,14 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             drive,
                                                             vision,
                                                             config.position(),
-                                                            config.sidewaysOffset(),
+                                                            sidewaysOffset,
                                                             config.depthOffset(),
                                                             reefCoralPIDAlignmentConstraints)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
                                                             height, level, pivot, elevator))),
-                                    coralHolder.release(),
+                                    coralHolder.release(level),
                                     new PivotGoToAngle(pivot, PivotConstants.knockL4CoralAngle)),
                             new SequentialCommandGroup(
                                     Commands.runOnce(
@@ -150,14 +160,14 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             drive,
                                                             vision,
                                                             config.position(),
-                                                            config.sidewaysOffset(),
+                                                            sidewaysOffset,
                                                             config.depthOffset(),
                                                             reefCoralPIDAlignmentConstraints)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
                                                             height, level, pivot, elevator))),
-                                    coralHolder.release(),
+                                    coralHolder.release(level),
                                     new PivotGoToAngle(pivot, PivotConstants.knockL4CoralAngle)),
                             () ->
                                     DriverStation.getAlliance().orElse(Alliance.Blue)
@@ -200,14 +210,14 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             drive,
                                                             vision,
                                                             config.position(),
-                                                            config.sidewaysOffset(),
+                                                            sidewaysOffset,
                                                             config.depthOffset(),
                                                             reefCoralPIDAlignmentConstraints)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
                                                             height, level, pivot, elevator))),
-                                    coralHolder.release()),
+                                    coralHolder.release(level)),
                             new SequentialCommandGroup(
                                     Commands.runOnce(
                                             () ->
@@ -240,14 +250,14 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             drive,
                                                             vision,
                                                             config.position(),
-                                                            config.sidewaysOffset(),
+                                                            sidewaysOffset,
                                                             config.depthOffset(),
                                                             reefCoralPIDAlignmentConstraints)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
                                                             height, level, pivot, elevator))),
-                                    coralHolder.release()),
+                                    coralHolder.release(level)),
                             () ->
                                     DriverStation.getAlliance().orElse(Alliance.Blue)
                                             == Alliance.Blue));

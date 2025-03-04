@@ -106,6 +106,7 @@ public final class AutoTeleopConstants {
             new PathConstraints(1.0, 1.0, Units.degreesToRadians(360), Units.degreesToRadians(360));
 
     public static final double sidewaysReefCoralOffset = Units.inchesToMeters(6.5);
+    public static final double sidewaysReefCoralL1Offset = Units.inchesToMeters(1.5);
     public static final double depthReefCoralOffset =
             Units.inchesToMeters(3.0) + Constants.robotWidth / 2.0;
 
