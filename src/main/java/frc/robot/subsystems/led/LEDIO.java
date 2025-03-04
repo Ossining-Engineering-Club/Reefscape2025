@@ -14,4 +14,6 @@ public interface LEDIO {
     public default void setData(AddressableLEDBuffer buffer) {}
 
     public default void setAll(int r, int g, int b) {}
+
+    public default void setRainbow(int offset) {}
 }

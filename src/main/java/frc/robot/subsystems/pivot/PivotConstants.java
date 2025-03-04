@@ -30,18 +30,19 @@ public class PivotConstants {
     // angle setpoints
     public static final double startAngle = Units.degreesToRadians(49.0);
     public static final double maxAngle = Units.degreesToRadians(49.0);
-    public static final double minAngle = -3.922;
+    public static final double minAngle = -3.9744;
     public static final double storedAngle = Units.degreesToRadians(-90);
-    public static final double intakeCoralAngle = 0.458;
+    public static final double intakeCoralAngle = 0.5453;
     public static final double intakeCoralAutoAngle = 0.458;
     public static final double placeCoralAngle = -0.539;
     public static final double placeL4CoralAngle = -0.304;
     public static final double knockL4CoralAngle = 0.272;
-    public static final double intakeReefAlgaeAngle = Units.degreesToRadians(-135.0);
-    public static final double removeReefAlgaeAngle = Units.degreesToRadians(-125.0);
+    public static final double preIntakeReefAlgaeAngle = Units.degreesToRadians(-90);
+    public static final double intakeReefAlgaeAngle = -2.9073;
+    public static final double removeReefAlgaeAngle = -2.82 + Units.degreesToRadians(5.0);
     public static final double processorAngle = Units.degreesToRadians(47.0);
     public static final double netAngle = Units.degreesToRadians(-115.0);
-    public static final double groundAlgaeAngle = -3.922;
+    public static final double groundAlgaeAngle = -3.9744;
 
     // sim settings
     public static final DCMotor gearbox = DCMotor.getFalcon500(1);

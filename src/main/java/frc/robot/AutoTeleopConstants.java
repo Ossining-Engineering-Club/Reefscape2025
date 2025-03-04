@@ -82,17 +82,25 @@ public final class AutoTeleopConstants {
     public static final Trigger storedButton = buttonBox2.button(10);
     public static final Trigger cancelButton = buttonBox1.button(8);
 
-    public static final PathConstraints reefCoralAlignmentConstraints =
+    public static final PathConstraints reefCoralPathfindingAlignmentConstraints =
+            new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
+    public static final PathConstraints reefCoralPIDAlignmentConstraints =
             new PathConstraints(3.0, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
-    public static final PathConstraints reefAlgaeAlignmentConstraints =
+    public static final PathConstraints reefAlgaePathfindingAlignmentConstraints =
+            new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
+    public static final PathConstraints reefAlgaePIDAlignmentConstraints =
+            new PathConstraints(3.0, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
+
+    public static final PathConstraints coralStationPathfindingAlignmentConstraints =
+            new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
+    public static final PathConstraints coralStationPIDAlignmentConstraints =
             new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
-    public static final PathConstraints coralStationAlignmentConstraints =
-            new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
-
-    public static final PathConstraints processorAlignmentConstraints =
-            new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
+    public static final PathConstraints processorPathfindingAlignmentConstraints =
+            new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
+    public static final PathConstraints processorPIDAlignmentConstraints =
+            new PathConstraints(3.0, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
     public static final PathConstraints netAlignmentConstraints =
             new PathConstraints(1.0, 1.0, Units.degreesToRadians(360), Units.degreesToRadians(360));
@@ -103,10 +111,10 @@ public final class AutoTeleopConstants {
 
     public static final double sidewaysReefAlgaeOffset = Units.inchesToMeters(0);
     public static final double depthReefAlgaeOffset =
-            Units.inchesToMeters(0.0) + Constants.robotWidth / 2.0;
+            Units.inchesToMeters(1.5) + Constants.robotWidth / 2.0;
 
     public static final double depthCoralStationOffset =
-            Units.inchesToMeters(3.0) + Constants.robotWidth / 2.0;
+            Units.inchesToMeters(1.0) + Constants.robotWidth / 2.0;
 
     public static final double depthProcessorOffset =
             Units.inchesToMeters(0.0) + Constants.robotWidth / 2.0;
@@ -114,11 +122,14 @@ public final class AutoTeleopConstants {
     public static final double translationalTolerance = 0.02;
     public static final double rotationalTolerance = Units.degreesToRadians(5);
 
-    public static final double coralStationTranslationalTolerance = 0.1;
-    public static final double coralStationRotationalTolerance = Units.degreesToRadians(10);
+    public static final double coralStationTranslationalTolerance = 0.2;
+    public static final double coralStationRotationalTolerance = Units.degreesToRadians(20);
 
     public static final double processorTranslationalTolerance = 0.1;
     public static final double processorRotationalTolerance = Units.degreesToRadians(10);
+
+    public static final double reefAlgaeTranslationalTolerance = 0.05;
+    public static final double reefAlgaeRotationalTolerance = Units.degreesToRadians(10);
 
     public static final double switchingToSpecializedTranslationalTolerance = 2.0;
     public static final double switchingToSpecializedRotationalTolerance =

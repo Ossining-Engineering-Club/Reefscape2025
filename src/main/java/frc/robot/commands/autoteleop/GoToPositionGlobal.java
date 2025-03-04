@@ -105,6 +105,9 @@ public class GoToPositionGlobal extends Command {
         Logger.recordOutput("xpid setpoint", xpid.getSetpoint().position);
         Logger.recordOutput("ypid setpoint", ypid.getSetpoint().position);
         Logger.recordOutput("rotpid setpoint", rotpid.getSetpoint().position);
+        Logger.recordOutput("xpid setpoint velocity", xpid.getSetpoint().position);
+        Logger.recordOutput("ypid setpoint velocity", ypid.getSetpoint().position);
+        Logger.recordOutput("rotpid setpoint velocity", rotpid.getSetpoint().position);
     }
 
     @Override

@@ -24,22 +24,22 @@ public class ElevatorConstants {
     public static final double simG = 0.0225 / 2.0;
     public static final double simMaxVelocity = 0.75; // m/s
     public static final double simMaxAcceleration = 1.5; // m/s^2
-    public static final double pidTolerance = 0.002; // meters
+    public static final double pidTolerance = 0.005; // meters
 
     // height setpoints
     public static final double startHeight = 0.0;
-    public static final double maxHeight = 1.223;
+    public static final double maxHeight = 1.215;
     public static final double minHeight = 0.0;
     public static final double storedHeight = 0.0;
     public static final double l1Height = Units.inchesToMeters(3.0);
-    public static final double l2Height = 0.34;
-    public static final double l3Height = 0.746;
-    public static final double l4Height = 1.163;
+    public static final double l2Height = 0.37;
+    public static final double l3Height = 0.76;
+    public static final double l4Height = 1.193;
     public static final double intakeCoralHeight = Units.inchesToMeters(0);
     public static final double intakeCoralAutoHeight = Units.inchesToMeters(0);
     public static final double lowerAlgaeHeight = Units.inchesToMeters(0);
-    public static final double upperAlgaeHeight = Units.inchesToMeters(14);
-    public static final double netHeight = 1.223;
+    public static final double upperAlgaeHeight = Units.inchesToMeters(15);
+    public static final double netHeight = 1.215;
     public static final double processorHeight = 0.0;
     public static final double groundAlgaeHeight = 0.0;
 

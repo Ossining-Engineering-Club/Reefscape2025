@@ -117,6 +117,9 @@ public class GoToPositionSpecialized extends Command {
         Logger.recordOutput("xpid setpoint", xpid.getSetpoint().position);
         Logger.recordOutput("ypid setpoint", ypid.getSetpoint().position);
         Logger.recordOutput("rotpid setpoint", rotpid.getSetpoint().position);
+        Logger.recordOutput("xpid setpoint velocity", xpid.getSetpoint().position);
+        Logger.recordOutput("ypid setpoint velocity", ypid.getSetpoint().position);
+        Logger.recordOutput("rotpid setpoint velocity", rotpid.getSetpoint().position);
     }
 
     @Override
@@ -149,6 +152,23 @@ public class GoToPositionSpecialized extends Command {
                                     drive.getRotation().getRadians()
                                             - targetPose.get().getRotation().getRadians())
                             <= AutoTeleopConstants.coralStationRotationalTolerance) {
+                return true;
+            }
+            return false;
+        } else if (position == Position.AB
+                || position == Position.CD
+                || position == Position.EF
+                || position == Position.GH
+                || position == Position.IJ
+                || position == Position.KL) {
+            if (Math.hypot(
+                                    drive.getSpecializedPose().getX() - targetPose.get().getX(),
+                                    drive.getSpecializedPose().getY() - targetPose.get().getY())
+                            <= AutoTeleopConstants.reefAlgaeTranslationalTolerance
+                    && Math.abs(
+                                    drive.getRotation().getRadians()
+                                            - targetPose.get().getRotation().getRadians())
+                            <= AutoTeleopConstants.reefAlgaeRotationalTolerance) {
                 return true;
             }
             return false;

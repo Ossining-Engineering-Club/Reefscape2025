@@ -24,8 +24,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,7 +43,6 @@ import frc.robot.commands.climber.RetractClimber;
 import frc.robot.commands.climber.StoreClimber;
 import frc.robot.commands.drive.DriveCommands;
 import frc.robot.commands.gamepiecemanipulation.GoToNetAlgaePosition;
-import frc.robot.commands.gamepiecemanipulation.GoToProcessingPosition;
 import frc.robot.commands.gamepiecemanipulation.GoToStoredPosition;
 import frc.robot.commands.gamepiecemanipulation.IntakeCoral;
 import frc.robot.commands.gamepiecemanipulation.IntakeGroundAlgae;
@@ -327,7 +328,7 @@ public class RobotContainer {
         mechanismController
                 .leftTrigger(0.9)
                 .onTrue(
-                        Commands.runOnce(() -> algaeClaw.startMotor(), algaeClaw)
+                        Commands.runOnce(() -> algaeClaw.startMotorReef(), algaeClaw)
                                 .andThen(Commands.waitUntil(() -> algaeClaw.hasAlgae()))
                                 .andThen(
                                         Commands.waitTime(
@@ -390,7 +391,7 @@ public class RobotContainer {
         storedButton.onTrue(new GoToStoredPosition(elevator, pivot));
         cancelButton.onTrue(cancel());
         netButton.onTrue(new GoToNetAlgaePosition(pivot, elevator));
-        processorButton.onTrue(new GoToProcessingPosition(pivot, elevator));
+        // processorButton.onTrue(new GoToProcessingPosition(pivot, elevator));
 
         // Pathfinding
         configurePathfindingCommands();
@@ -402,58 +403,150 @@ public class RobotContainer {
             NamedCommands.registerCommand(
                     config.namedCommandName() + "_L1",
                     new AutoPlaceCoral(
-                            config, Level.L1, pivot, elevator, coralHolder, drive, vision));
+                                    config,
+                                    Level.L1,
+                                    pivot,
+                                    elevator,
+                                    coralHolder,
+                                    drive,
+                                    vision,
+                                    led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
             NamedCommands.registerCommand(
                     config.namedCommandName() + "_L2",
                     new AutoPlaceCoral(
-                            config, Level.L2, pivot, elevator, coralHolder, drive, vision));
+                                    config,
+                                    Level.L2,
+                                    pivot,
+                                    elevator,
+                                    coralHolder,
+                                    drive,
+                                    vision,
+                                    led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
             NamedCommands.registerCommand(
                     config.namedCommandName() + "_L3",
                     new AutoPlaceCoral(
-                            config, Level.L3, pivot, elevator, coralHolder, drive, vision));
+                                    config,
+                                    Level.L3,
+                                    pivot,
+                                    elevator,
+                                    coralHolder,
+                                    drive,
+                                    vision,
+                                    led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
             NamedCommands.registerCommand(
                     config.namedCommandName() + "_L4",
                     new AutoPlaceCoral(
-                            config, Level.L4, pivot, elevator, coralHolder, drive, vision));
+                                    config,
+                                    Level.L4,
+                                    pivot,
+                                    elevator,
+                                    coralHolder,
+                                    drive,
+                                    vision,
+                                    led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
             config.trigger()
                     .and(l1Button)
                     .onTrue(
                             new AutoPlaceCoral(
-                                    config, Level.L1, pivot, elevator, coralHolder, drive, vision));
+                                            config,
+                                            Level.L1,
+                                            pivot,
+                                            elevator,
+                                            coralHolder,
+                                            drive,
+                                            vision,
+                                            led)
+                                    .finallyDo(() -> led.setIsPathfinding(false)));
             config.trigger()
                     .and(l2Button)
                     .onTrue(
                             new AutoPlaceCoral(
-                                    config, Level.L2, pivot, elevator, coralHolder, drive, vision));
+                                            config,
+                                            Level.L2,
+                                            pivot,
+                                            elevator,
+                                            coralHolder,
+                                            drive,
+                                            vision,
+                                            led)
+                                    .finallyDo(() -> led.setIsPathfinding(false)));
             config.trigger()
                     .and(l3Button)
                     .onTrue(
                             new AutoPlaceCoral(
-                                    config, Level.L3, pivot, elevator, coralHolder, drive, vision));
+                                            config,
+                                            Level.L3,
+                                            pivot,
+                                            elevator,
+                                            coralHolder,
+                                            drive,
+                                            vision,
+                                            led)
+                                    .finallyDo(() -> led.setIsPathfinding(false)));
             config.trigger()
                     .and(l4Button)
                     .onTrue(
                             new AutoPlaceCoral(
-                                    config, Level.L4, pivot, elevator, coralHolder, drive, vision));
+                                            config,
+                                            Level.L4,
+                                            pivot,
+                                            elevator,
+                                            coralHolder,
+                                            drive,
+                                            vision,
+                                            led)
+                                    .finallyDo(() -> led.setIsPathfinding(false)));
         }
         for (PositioningConfig config : reefAlgaePositioningConfigs) {
             NamedCommands.registerCommand(
                     config.namedCommandName(),
-                    new AutoGetReefAlgae(config, pivot, elevator, algaeClaw, drive, vision));
+                    new AutoGetReefAlgae(config, pivot, elevator, algaeClaw, drive, vision, led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
             config.trigger()
                     .onTrue(
                             new AutoGetReefAlgae(
-                                    config, pivot, elevator, algaeClaw, drive, vision));
+                                            config, pivot, elevator, algaeClaw, drive, vision, led)
+                                    .finallyDo(() -> led.setIsPathfinding(false)));
         }
         for (PositioningConfig config : coralStationPositioningConfigs) {
             NamedCommands.registerCommand(
                     config.namedCommandName(),
-                    new AutoGetCoral(config, pivot, elevator, coralHolder, drive, vision));
+                    new AutoGetCoral(config, pivot, elevator, coralHolder, drive, vision, led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
         }
         NamedCommands.registerCommand(
                 processorPositioningConfig.namedCommandName(),
                 new AutoProcessAlgae(
-                        processorPositioningConfig, pivot, elevator, algaeClaw, drive));
+                                processorPositioningConfig, pivot, elevator, algaeClaw, drive, led)
+                        .finallyDo(() -> led.setIsPathfinding(false)));
+        processorPositioningConfig
+                .trigger()
+                .onTrue(
+                        new AutoProcessAlgae(
+                                        processorPositioningConfig,
+                                        pivot,
+                                        elevator,
+                                        algaeClaw,
+                                        drive,
+                                        led)
+                                .finallyDo(() -> led.setIsPathfinding(false)));
+
+        NamedCommands.registerCommand(
+                "move back slightly",
+                Commands.race(
+                        Commands.run(
+                                () ->
+                                        drive.runVelocityFieldRelative(
+                                                (DriverStation.getAlliance().orElse(Alliance.Blue)
+                                                                == Alliance.Blue)
+                                                        ? new ChassisSpeeds(1, 0, 0)
+                                                        : new ChassisSpeeds(-1, 0, 0)),
+                                drive),
+                        Commands.waitSeconds(0.5)));
     }
 
     /**
@@ -488,6 +581,7 @@ public class RobotContainer {
         drive.stop();
         elevator.stop();
         pivot.stop();
+        led.setIsPathfinding(false);
     }
 
     // defines the poses for each component of the robot model in Advantage Scope

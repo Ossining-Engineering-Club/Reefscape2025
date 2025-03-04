@@ -1,9 +1,6 @@
 package frc.robot.commands.autoteleop;
 
-import static frc.robot.AutoTeleopConstants.getTagIdOfPosition;
-import static frc.robot.AutoTeleopConstants.reefAlgaeAlignmentConstraints;
-import static frc.robot.AutoTeleopConstants.switchingToSpecializedRotationalTolerance;
-import static frc.robot.AutoTeleopConstants.switchingToSpecializedTranslationalTolerance;
+import static frc.robot.AutoTeleopConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.FileVersionException;
@@ -21,10 +18,12 @@ import frc.robot.Constants.Mode;
 import frc.robot.FieldSimulationManager;
 import frc.robot.FieldSimulationManager.Objective;
 import frc.robot.commands.gamepiecemanipulation.IntakeReefAlgae;
+import frc.robot.commands.gamepiecemanipulation.IntakeReefAlgaePrep;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
+import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.vision.Vision;
 import java.io.IOException;
@@ -38,7 +37,8 @@ public class AutoGetReefAlgae extends SequentialCommandGroup {
             Elevator elevator,
             AlgaeClaw algaeClaw,
             Drive drive,
-            Vision vision)
+            Vision vision,
+            LED led)
             throws FileVersionException, IOException, ParseException {
         Pose2d targetPoseBlue =
                 GoToPositionSpecialized.getTargetPose(
@@ -55,9 +55,11 @@ public class AutoGetReefAlgae extends SequentialCommandGroup {
                                 false)
                         .get();
         Command pathfindingCommandBlue =
-                AutoBuilder.pathfindToPose(targetPoseBlue, reefAlgaeAlignmentConstraints, 0.0);
+                AutoBuilder.pathfindToPose(
+                        targetPoseBlue, reefAlgaePathfindingAlignmentConstraints, 0.0);
         Command pathfindingCommandRed =
-                AutoBuilder.pathfindToPose(targetPoseRed, reefAlgaeAlignmentConstraints, 0.0);
+                AutoBuilder.pathfindToPose(
+                        targetPoseRed, reefAlgaePathfindingAlignmentConstraints, 0.0);
 
         double height =
                 switch (config.position()) {
@@ -67,116 +69,123 @@ public class AutoGetReefAlgae extends SequentialCommandGroup {
                 };
 
         addCommands(
+                Commands.runOnce(() -> led.setIsPathfinding(true)),
                 new ConditionalCommand(
-                        new ParallelCommandGroup(
-                                new SequentialCommandGroup(
-                                        Commands.runOnce(
-                                                () ->
-                                                        Logger.recordOutput(
-                                                                "initial target pose",
-                                                                targetPoseBlue)),
-                                        pathfindingCommandBlue.until(
-                                                () ->
-                                                        Math.hypot(
-                                                                                drive.getPose()
-                                                                                                .getX()
-                                                                                        - targetPoseBlue
-                                                                                                .getX(),
-                                                                                drive.getPose()
-                                                                                                .getY()
-                                                                                        - targetPoseBlue
-                                                                                                .getY())
-                                                                        <= switchingToSpecializedTranslationalTolerance
-                                                                && Math.abs(
-                                                                                drive.getRotation()
-                                                                                                .getRadians()
-                                                                                        - targetPoseBlue
-                                                                                                .getRotation()
-                                                                                                .getRadians())
-                                                                        <= switchingToSpecializedRotationalTolerance
-                                                                && vision.seesFocusTag()),
-                                        new GoToPositionSpecialized(
-                                                drive,
-                                                vision,
-                                                config.position(),
-                                                config.sidewaysOffset(),
-                                                config.depthOffset(),
-                                                reefAlgaeAlignmentConstraints),
-                                        new ConditionalCommand(
-                                                new ConditionalCommand(
-                                                        Commands.runOnce(
-                                                                () ->
-                                                                        FieldSimulationManager
-                                                                                .setCurrentObjective(
-                                                                                        Objective
-                                                                                                .UPPER_REEF_ALGAE)),
-                                                        Commands.runOnce(
-                                                                () ->
-                                                                        FieldSimulationManager
-                                                                                .setCurrentObjective(
-                                                                                        Objective
-                                                                                                .LOWER_REEF_ALGAE)),
+                        new SequentialCommandGroup(
+                                new ParallelCommandGroup(
+                                        new SequentialCommandGroup(
+                                                Commands.runOnce(
                                                         () ->
-                                                                height
-                                                                        == ElevatorConstants
-                                                                                .upperAlgaeHeight),
-                                                Commands.runOnce(() -> {}),
-                                                () -> Constants.currentMode == Mode.SIM)),
+                                                                Logger.recordOutput(
+                                                                        "initial target pose",
+                                                                        targetPoseBlue)),
+                                                pathfindingCommandBlue.until(
+                                                        () ->
+                                                                Math.hypot(
+                                                                                        drive.getPose()
+                                                                                                        .getX()
+                                                                                                - targetPoseBlue
+                                                                                                        .getX(),
+                                                                                        drive.getPose()
+                                                                                                        .getY()
+                                                                                                - targetPoseBlue
+                                                                                                        .getY())
+                                                                                <= switchingToSpecializedTranslationalTolerance
+                                                                        && Math.abs(
+                                                                                        drive.getRotation()
+                                                                                                        .getRadians()
+                                                                                                - targetPoseBlue
+                                                                                                        .getRotation()
+                                                                                                        .getRadians())
+                                                                                <= switchingToSpecializedRotationalTolerance
+                                                                        && vision.seesFocusTag()),
+                                                new GoToPositionSpecialized(
+                                                        drive,
+                                                        vision,
+                                                        config.position(),
+                                                        config.sidewaysOffset(),
+                                                        config.depthOffset(),
+                                                        reefAlgaePIDAlignmentConstraints),
+                                                new ConditionalCommand(
+                                                        new ConditionalCommand(
+                                                                Commands.runOnce(
+                                                                        () ->
+                                                                                FieldSimulationManager
+                                                                                        .setCurrentObjective(
+                                                                                                Objective
+                                                                                                        .UPPER_REEF_ALGAE)),
+                                                                Commands.runOnce(
+                                                                        () ->
+                                                                                FieldSimulationManager
+                                                                                        .setCurrentObjective(
+                                                                                                Objective
+                                                                                                        .LOWER_REEF_ALGAE)),
+                                                                () ->
+                                                                        height
+                                                                                == ElevatorConstants
+                                                                                        .upperAlgaeHeight),
+                                                        Commands.runOnce(() -> {}),
+                                                        () -> Constants.currentMode == Mode.SIM)),
+                                        new IntakeReefAlgaePrep(
+                                                height, pivot, elevator, algaeClaw)),
                                 new IntakeReefAlgae(height, pivot, elevator, algaeClaw)),
-                        new ParallelCommandGroup(
-                                new SequentialCommandGroup(
-                                        Commands.runOnce(
-                                                () ->
-                                                        Logger.recordOutput(
-                                                                "initial target pose",
-                                                                targetPoseRed)),
-                                        pathfindingCommandRed.until(
-                                                () ->
-                                                        Math.hypot(
-                                                                                drive.getPose()
-                                                                                                .getX()
-                                                                                        - targetPoseRed
-                                                                                                .getX(),
-                                                                                drive.getPose()
-                                                                                                .getY()
-                                                                                        - targetPoseRed
-                                                                                                .getY())
-                                                                        <= switchingToSpecializedTranslationalTolerance
-                                                                && Math.abs(
-                                                                                drive.getRotation()
-                                                                                                .getRadians()
-                                                                                        - targetPoseRed
-                                                                                                .getRotation()
-                                                                                                .getRadians())
-                                                                        <= switchingToSpecializedRotationalTolerance
-                                                                && vision.seesFocusTag()),
-                                        new GoToPositionSpecialized(
-                                                drive,
-                                                vision,
-                                                config.position(),
-                                                config.sidewaysOffset(),
-                                                config.depthOffset(),
-                                                reefAlgaeAlignmentConstraints),
-                                        new ConditionalCommand(
-                                                new ConditionalCommand(
-                                                        Commands.runOnce(
-                                                                () ->
-                                                                        FieldSimulationManager
-                                                                                .setCurrentObjective(
-                                                                                        Objective
-                                                                                                .UPPER_REEF_ALGAE)),
-                                                        Commands.runOnce(
-                                                                () ->
-                                                                        FieldSimulationManager
-                                                                                .setCurrentObjective(
-                                                                                        Objective
-                                                                                                .LOWER_REEF_ALGAE)),
+                        new SequentialCommandGroup(
+                                new ParallelCommandGroup(
+                                        new SequentialCommandGroup(
+                                                Commands.runOnce(
                                                         () ->
-                                                                height
-                                                                        == ElevatorConstants
-                                                                                .upperAlgaeHeight),
-                                                Commands.runOnce(() -> {}),
-                                                () -> Constants.currentMode == Mode.SIM)),
+                                                                Logger.recordOutput(
+                                                                        "initial target pose",
+                                                                        targetPoseRed)),
+                                                pathfindingCommandRed.until(
+                                                        () ->
+                                                                Math.hypot(
+                                                                                        drive.getPose()
+                                                                                                        .getX()
+                                                                                                - targetPoseRed
+                                                                                                        .getX(),
+                                                                                        drive.getPose()
+                                                                                                        .getY()
+                                                                                                - targetPoseRed
+                                                                                                        .getY())
+                                                                                <= switchingToSpecializedTranslationalTolerance
+                                                                        && Math.abs(
+                                                                                        drive.getRotation()
+                                                                                                        .getRadians()
+                                                                                                - targetPoseRed
+                                                                                                        .getRotation()
+                                                                                                        .getRadians())
+                                                                                <= switchingToSpecializedRotationalTolerance
+                                                                        && vision.seesFocusTag()),
+                                                new GoToPositionSpecialized(
+                                                        drive,
+                                                        vision,
+                                                        config.position(),
+                                                        config.sidewaysOffset(),
+                                                        config.depthOffset(),
+                                                        reefAlgaePIDAlignmentConstraints),
+                                                new ConditionalCommand(
+                                                        new ConditionalCommand(
+                                                                Commands.runOnce(
+                                                                        () ->
+                                                                                FieldSimulationManager
+                                                                                        .setCurrentObjective(
+                                                                                                Objective
+                                                                                                        .UPPER_REEF_ALGAE)),
+                                                                Commands.runOnce(
+                                                                        () ->
+                                                                                FieldSimulationManager
+                                                                                        .setCurrentObjective(
+                                                                                                Objective
+                                                                                                        .LOWER_REEF_ALGAE)),
+                                                                () ->
+                                                                        height
+                                                                                == ElevatorConstants
+                                                                                        .upperAlgaeHeight),
+                                                        Commands.runOnce(() -> {}),
+                                                        () -> Constants.currentMode == Mode.SIM)),
+                                        new IntakeReefAlgaePrep(
+                                                height, pivot, elevator, algaeClaw)),
                                 new IntakeReefAlgae(height, pivot, elevator, algaeClaw)),
                         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue),
                 new ConditionalCommand(

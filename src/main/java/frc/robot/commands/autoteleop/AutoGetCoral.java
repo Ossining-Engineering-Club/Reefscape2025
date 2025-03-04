@@ -1,9 +1,6 @@
 package frc.robot.commands.autoteleop;
 
-import static frc.robot.AutoTeleopConstants.coralStationAlignmentConstraints;
-import static frc.robot.AutoTeleopConstants.getTagIdOfPosition;
-import static frc.robot.AutoTeleopConstants.switchingToSpecializedRotationalTolerance;
-import static frc.robot.AutoTeleopConstants.switchingToSpecializedTranslationalTolerance;
+import static frc.robot.AutoTeleopConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -19,6 +16,7 @@ import frc.robot.commands.gamepiecemanipulation.IntakeCoralAuto;
 import frc.robot.subsystems.coralholder.CoralHolder;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.vision.Vision;
 import org.littletonrobotics.junction.Logger;
@@ -31,7 +29,8 @@ public class AutoGetCoral extends SequentialCommandGroup {
             Elevator elevator,
             CoralHolder coralHolder,
             Drive drive,
-            Vision vision) {
+            Vision vision,
+            LED led) {
         Pose2d targetPoseBlue =
                 GoToPositionSpecialized.getTargetPose(
                                 getTagIdOfPosition(config.position(), Alliance.Blue),
@@ -47,11 +46,14 @@ public class AutoGetCoral extends SequentialCommandGroup {
                                 false)
                         .get();
         Command pathfindingCommandBlue =
-                AutoBuilder.pathfindToPose(targetPoseBlue, coralStationAlignmentConstraints, 0.0);
+                AutoBuilder.pathfindToPose(
+                        targetPoseBlue, coralStationPathfindingAlignmentConstraints, 0.0);
         Command pathfindingCommandRed =
-                AutoBuilder.pathfindToPose(targetPoseRed, coralStationAlignmentConstraints, 0.0);
+                AutoBuilder.pathfindToPose(
+                        targetPoseRed, coralStationPathfindingAlignmentConstraints, 0.0);
 
         addCommands(
+                Commands.runOnce(() -> led.setIsPathfinding(true)),
                 Commands.runOnce(() -> vision.setFocusTag(getTagIdOfPosition(config.position()))),
                 new ConditionalCommand(
                         new ParallelCommandGroup(
@@ -87,7 +89,7 @@ public class AutoGetCoral extends SequentialCommandGroup {
                                                 config.position(),
                                                 config.sidewaysOffset(),
                                                 config.depthOffset(),
-                                                coralStationAlignmentConstraints)),
+                                                coralStationPIDAlignmentConstraints)),
                                 new IntakeCoralAuto(pivot, elevator, coralHolder)),
                         new ParallelCommandGroup(
                                 new SequentialCommandGroup(
@@ -122,7 +124,7 @@ public class AutoGetCoral extends SequentialCommandGroup {
                                                 config.position(),
                                                 config.sidewaysOffset(),
                                                 config.depthOffset(),
-                                                coralStationAlignmentConstraints)),
+                                                coralStationPIDAlignmentConstraints)),
                                 new IntakeCoralAuto(pivot, elevator, coralHolder)),
                         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue));
     }

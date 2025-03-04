@@ -16,11 +16,16 @@ public class LED extends SubsystemBase {
     private final CoralHolder coral;
 
     private LEDState state;
+    private int tick = 0;
+
+    private boolean isPathfinding = false;
 
     private static enum LEDState {
         RED,
         GREEN,
-        BLUE
+        BLUE,
+        DARK_BLUE,
+        RAINBOW
     }
 
     public LED(LEDIO io, AlgaeClaw algae, CoralHolder coral) {
@@ -45,8 +50,21 @@ public class LED extends SubsystemBase {
         io.setAll(0, 255, 0);
     }
 
+    public void setDarkBlue() {
+        io.setAll(0, 0, 128);
+    }
+
+    public void setRainbow() {
+        io.setRainbow(tick / ticksPerRainbowStep);
+    }
+
     private void updateState() {
-        if (coral.hasCoral()) {
+        /*if (DriverStation.isDisabled()) {
+            state = LEDState.RAINBOW;
+        } else */
+        if (isPathfinding) {
+            state = LEDState.DARK_BLUE;
+        } else if (coral.hasCoral()) {
             state = LEDState.GREEN;
         } else if (algae.hasAlgae()) {
             state = LEDState.GREEN;
@@ -55,10 +73,16 @@ public class LED extends SubsystemBase {
         }
     }
 
+    public void setIsPathfinding(boolean isPathfinding) {
+        this.isPathfinding = isPathfinding;
+    }
+
     private void updateBuffer() {
+        if (state == LEDState.RAINBOW) setRainbow();
         if (state == LEDState.GREEN) setGreen();
         if (state == LEDState.RED) setRed();
         if (state == LEDState.BLUE) setBlue();
+        if (state == LEDState.DARK_BLUE) setDarkBlue();
     }
 
     @Override
@@ -67,5 +91,7 @@ public class LED extends SubsystemBase {
 
         updateState();
         updateBuffer();
+
+        tick++;
     }
 }

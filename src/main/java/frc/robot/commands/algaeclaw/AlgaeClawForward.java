@@ -14,7 +14,7 @@ public class AlgaeClawForward extends Command {
 
     @Override
     public void execute() {
-        algaeClaw.startMotor();
+        // algaeClaw.startMotor();
     }
 
     @Override

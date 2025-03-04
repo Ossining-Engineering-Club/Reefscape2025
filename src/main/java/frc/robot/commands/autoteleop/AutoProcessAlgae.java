@@ -1,9 +1,6 @@
 package frc.robot.commands.autoteleop;
 
-import static frc.robot.AutoTeleopConstants.getTagIdOfPosition;
-import static frc.robot.AutoTeleopConstants.processorAlignmentConstraints;
-import static frc.robot.AutoTeleopConstants.switchingToSpecializedRotationalTolerance;
-import static frc.robot.AutoTeleopConstants.switchingToSpecializedTranslationalTolerance;
+import static frc.robot.AutoTeleopConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.FileVersionException;
@@ -20,6 +17,7 @@ import frc.robot.commands.gamepiecemanipulation.GoToProcessingPosition;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.pivot.Pivot;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
@@ -31,7 +29,8 @@ public class AutoProcessAlgae extends SequentialCommandGroup {
             Pivot pivot,
             Elevator elevator,
             AlgaeClaw algaeClaw,
-            Drive drive)
+            Drive drive,
+            LED led)
             throws FileVersionException, IOException, ParseException {
         Pose2d targetPoseBlue =
                 GoToPositionSpecialized.getTargetPose(
@@ -48,11 +47,14 @@ public class AutoProcessAlgae extends SequentialCommandGroup {
                                 true)
                         .get();
         Command pathfindingCommandBlue =
-                AutoBuilder.pathfindToPose(targetPoseBlue, processorAlignmentConstraints, 0.0);
+                AutoBuilder.pathfindToPose(
+                        targetPoseBlue, processorPathfindingAlignmentConstraints, 0.0);
         Command pathfindingCommandRed =
-                AutoBuilder.pathfindToPose(targetPoseRed, processorAlignmentConstraints, 0.0);
+                AutoBuilder.pathfindToPose(
+                        targetPoseRed, processorPathfindingAlignmentConstraints, 0.0);
 
         addCommands(
+                Commands.runOnce(() -> led.setIsPathfinding(true)),
                 new ConditionalCommand(
                         new SequentialCommandGroup(
                                 Commands.runOnce(
@@ -86,7 +88,7 @@ public class AutoProcessAlgae extends SequentialCommandGroup {
                                                         config.position(),
                                                         config.sidewaysOffset(),
                                                         config.depthOffset(),
-                                                        processorAlignmentConstraints))),
+                                                        processorPIDAlignmentConstraints))),
                                 algaeClaw.release()),
                         new SequentialCommandGroup(
                                 Commands.runOnce(
@@ -120,7 +122,7 @@ public class AutoProcessAlgae extends SequentialCommandGroup {
                                                         config.position(),
                                                         config.sidewaysOffset(),
                                                         config.depthOffset(),
-                                                        processorAlignmentConstraints))),
+                                                        processorPIDAlignmentConstraints))),
                                 algaeClaw.release()),
                         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue));
     }

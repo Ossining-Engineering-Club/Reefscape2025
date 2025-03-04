@@ -6,7 +6,8 @@ public class AlgaeClawConstants {
     public static int clawCANID = 18;
 
     // Constant Voltages
-    public static double clawVoltage = 4.0;
+    public static double reefClawVoltage = 4.0;
+    public static double groundClawVoltage = 8.0;
     public static double reverseVoltage = -4.0;
     public static double holdingVoltage = 0.36;
 
