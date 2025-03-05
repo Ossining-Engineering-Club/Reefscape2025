@@ -304,9 +304,9 @@ public class RobotContainer {
                                 () -> -0.5 * controller.getLeftX(),
                                 () -> -0.5 * controller.getRightX()));
 
-        controller.povUp().onTrue(new ExtendClimber(climber, pivot));
-        controller.povDown().onTrue(new RetractClimber(climber, pivot));
-        controller.leftTrigger(0.9).onTrue(new StoreClimber(climber, pivot));
+        controller.povUp().onTrue(new ExtendClimber(climber, pivot, elevator));
+        controller.povDown().onTrue(new RetractClimber(climber, pivot, elevator));
+        controller.leftTrigger(0.9).onTrue(new StoreClimber(climber, pivot, elevator));
 
         // manual mechanism control
         mechanismController
@@ -400,18 +400,18 @@ public class RobotContainer {
     private void configurePathfindingCommands()
             throws FileVersionException, IOException, ParseException {
         for (PositioningConfig config : reefCoralPositioningConfigs) {
-            NamedCommands.registerCommand(
-                    config.namedCommandName() + "_L1",
-                    new AutoPlaceCoral(
-                                    config,
-                                    Level.L1,
-                                    pivot,
-                                    elevator,
-                                    coralHolder,
-                                    drive,
-                                    vision,
-                                    led)
-                            .finallyDo(() -> led.setIsPathfinding(false)));
+            // NamedCommands.registerCommand(
+            //         config.namedCommandName() + "_L1",
+            //         new AutoPlaceCoral(
+            //                         config,
+            //                         Level.L1,
+            //                         pivot,
+            //                         elevator,
+            //                         coralHolder,
+            //                         drive,
+            //                         vision,
+            //                         led)
+            //                 .finallyDo(() -> led.setIsPathfinding(false)));
             NamedCommands.registerCommand(
                     config.namedCommandName() + "_L2",
                     new AutoPlaceCoral(
@@ -448,19 +448,19 @@ public class RobotContainer {
                                     vision,
                                     led)
                             .finallyDo(() -> led.setIsPathfinding(false)));
-            config.trigger()
-                    .and(l1Button)
-                    .onTrue(
-                            new AutoPlaceCoral(
-                                            config,
-                                            Level.L1,
-                                            pivot,
-                                            elevator,
-                                            coralHolder,
-                                            drive,
-                                            vision,
-                                            led)
-                                    .finallyDo(() -> led.setIsPathfinding(false)));
+            // config.trigger()
+            //         .and(l1Button)
+            //         .onTrue(
+            //                 new AutoPlaceCoral(
+            //                                 config,
+            //                                 Level.L1,
+            //                                 pivot,
+            //                                 elevator,
+            //                                 coralHolder,
+            //                                 drive,
+            //                                 vision,
+            //                                 led)
+            //                         .finallyDo(() -> led.setIsPathfinding(false)));
             config.trigger()
                     .and(l2Button)
                     .onTrue(

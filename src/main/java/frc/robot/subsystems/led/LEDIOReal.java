@@ -4,6 +4,7 @@ import static frc.robot.subsystems.led.LEDConstants.*;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.LEDPattern;
 
 public class LEDIOReal implements LEDIO {
     private final AddressableLED leds;
@@ -41,5 +42,15 @@ public class LEDIOReal implements LEDIO {
                     rainbow[(i + offset) % rainbow.length].blue());
             leds.setData(buffer);
         }
+    }
+
+    @Override
+    public void setPattern(LEDPattern pattern) {
+        pattern.applyTo(buffer);
+    }
+
+    @Override
+    public void periodic() {
+        leds.setData(buffer);
     }
 }

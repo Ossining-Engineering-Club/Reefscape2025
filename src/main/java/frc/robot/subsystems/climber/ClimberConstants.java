@@ -26,7 +26,7 @@ public class ClimberConstants {
     public static final double winchMotorReverseVoltage = -12.0 * 0.8;
 
     public static final double minAngle = Units.degreesToRadians(-19.0);
-    public static final double maxAngle = Units.degreesToRadians(180.0);
+    public static final double maxAngle = Units.degreesToRadians(175.0);
 
     public static final double retractAngle = Units.degreesToRadians(43.0);
     public static final double extendAngle = Units.degreesToRadians(175.0);
