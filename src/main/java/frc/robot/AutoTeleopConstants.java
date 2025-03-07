@@ -115,13 +115,13 @@ public final class AutoTeleopConstants {
             Units.inchesToMeters(1.5) + Constants.robotWidth / 2.0;
 
     public static final double depthCoralStationOffset =
-            Units.inchesToMeters(1.0) + Constants.robotWidth / 2.0;
+            Units.inchesToMeters(-1.0) + Constants.robotWidth / 2.0;
 
     public static final double depthProcessorOffset =
             Units.inchesToMeters(0.0) + Constants.robotWidth / 2.0;
 
     public static final double translationalTolerance = 0.02;
-    public static final double rotationalTolerance = Units.degreesToRadians(5);
+    public static final double rotationalTolerance = Units.degreesToRadians(3);
 
     public static final double coralStationTranslationalTolerance = 0.2;
     public static final double coralStationRotationalTolerance = Units.degreesToRadians(20);
