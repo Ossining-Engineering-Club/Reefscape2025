@@ -351,7 +351,7 @@ public class RobotContainer {
                 Commands.runOnce(
                         () ->
                                 elevator.setVoltage(
-                                        0.2
+                                        1.0
                                                 * 12.0
                                                 * MathUtil.applyDeadband(
                                                         -mechanismController.getRightY(), 0.2)),
@@ -383,6 +383,8 @@ public class RobotContainer {
         mechanismController.povCenter().onTrue(Commands.runOnce(() -> climber.stop(), climber));
         mechanismController.povUp().onTrue(Commands.runOnce(() -> climber.forward(), climber));
         mechanismController.povDown().onTrue(Commands.runOnce(() -> climber.reverse(), climber));
+
+        // mechanismController.a().onTrue(new ElevatorGoToHeight(elevator, 0))
 
         // button box controls
         groundAlgaeButton.onTrue(new IntakeGroundAlgae(elevator, pivot, algaeClaw));
