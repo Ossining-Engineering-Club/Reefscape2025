@@ -12,15 +12,15 @@ import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotConstants;
 
-public class IntakeCoral extends SequentialCommandGroup {
-    public IntakeCoral(Pivot pivot, Elevator elevator, CoralHolder coralHolder) {
+public class IntakeCoralAuto extends SequentialCommandGroup {
+    public IntakeCoralAuto(Pivot pivot, Elevator elevator, CoralHolder coralHolder) {
         addCommands(
                 new ConditionalCommand(
                         new ParallelDeadlineGroup(
                                 coralHolder.intake(),
                                 new ElevatorGoToHeight(
-                                        elevator, ElevatorConstants.intakeCoralHeight),
-                                new PivotGoToAngle(pivot, PivotConstants.intakeCoralAngle)),
+                                        elevator, ElevatorConstants.intakeCoralAutoHeight),
+                                new PivotGoToAngle(pivot, PivotConstants.intakeCoralAutoAngle)),
                         Commands.runOnce(() -> {}),
                         () -> !coralHolder.hasCoral()));
     }

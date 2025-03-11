@@ -84,8 +84,12 @@ public class Pivot extends SubsystemBase {
         }
 
         // if (Constants.currentMode == Mode.SIM && !usingPID) {
-        //   io.setVoltage(feedforward.calculate(getAngle(), 0));
+        //   setVoltage(feedforward.calculate(getAngle(), 0));
         // }
+
+        // soft limits
+        if (getAngle() <= minAngle && inputs.appliedVolts < 0) setVoltage(0);
+        if (getAngle() >= maxAngle && inputs.appliedVolts > 0) setVoltage(0);
     }
 
     public double getAngle() {
@@ -96,7 +100,7 @@ public class Pivot extends SubsystemBase {
         if (angleGoal > maxAngle) angleGoal = maxAngle;
         if (angleGoal < minAngle) angleGoal = minAngle;
 
-        io.setVoltage(
+        setVoltage(
                 pid.calculate(
                         getAngle(), angleGoal) /* + feedforward.calculate(angleSetpoint, 0)*/);
 
@@ -108,10 +112,14 @@ public class Pivot extends SubsystemBase {
     }
 
     public void stop() {
-        io.setVoltage(0);
+        setVoltage(0);
     }
 
     public void setVoltage(double voltage) {
+        // soft limits
+        if (getAngle() <= minAngle) voltage = Math.max(0, voltage);
+        if (getAngle() >= maxAngle) voltage = Math.min(0, voltage);
+
         io.setVoltage(voltage);
     }
 

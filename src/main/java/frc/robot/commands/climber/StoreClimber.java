@@ -8,11 +8,11 @@ import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.pivot.Pivot;
 
-public class ExtendClimber extends SequentialCommandGroup {
-    public ExtendClimber(Climber climber, Pivot pivot, Elevator elevator) {
+public class StoreClimber extends SequentialCommandGroup {
+    public StoreClimber(Climber climber, Pivot pivot, Elevator elevator) {
         addCommands(
                 new ParallelCommandGroup(
                         new PivotGoToAngle(pivot, 0), new ElevatorGoToHeight(elevator, 0)),
-                climber.extend());
+                climber.store());
     }
 }

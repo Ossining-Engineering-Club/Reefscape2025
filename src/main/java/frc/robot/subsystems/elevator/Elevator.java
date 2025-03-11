@@ -86,8 +86,12 @@ public class Elevator extends SubsystemBase {
         }
 
         if (Constants.currentMode == Mode.SIM && !usingPID) {
-            io.setVoltage(feedforward.calculate(getHeight()));
+            setVoltage(feedforward.calculate(getHeight()));
         }
+
+        // soft limits
+        if (getHeight() <= minHeight && inputs.appliedVolts < 0) setVoltage(0);
+        if (getHeight() >= maxHeight && inputs.appliedVolts > 0) setVoltage(0);
     }
 
     public double getHeight() {
@@ -98,7 +102,7 @@ public class Elevator extends SubsystemBase {
         if (heightGoal > maxHeight) heightGoal = maxHeight;
         if (heightGoal < minHeight) heightGoal = minHeight;
 
-        io.setVoltage(pid.calculate(getHeight(), heightGoal) + feedforward.calculate(heightGoal));
+        setVoltage(pid.calculate(getHeight(), heightGoal) + feedforward.calculate(heightGoal));
 
         ticksSinceLastPID = 0;
     }
@@ -108,10 +112,14 @@ public class Elevator extends SubsystemBase {
     }
 
     public void stop() {
-        io.setVoltage(0);
+        setVoltage(0);
     }
 
     public void setVoltage(double voltage) {
+        // soft limits
+        if (getHeight() <= minHeight) voltage = Math.max(0, voltage);
+        if (getHeight() >= maxHeight) voltage = Math.min(0, voltage);
+
         io.setVoltage(voltage);
     }
 

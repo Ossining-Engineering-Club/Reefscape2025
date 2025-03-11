@@ -24,28 +24,28 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.AutoTeleopConstants.AlignmentConfig;
 import frc.robot.AutoTeleopConstants.Level;
-import frc.robot.AutoTeleopConstants.ReefAlgaeAlignmentConfig;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.autoteleop.AutoGetCoral;
-import frc.robot.commands.autoteleop.AutoGetCoralV2;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
-import frc.robot.commands.autoteleop.AutoNetAlgae;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
-import frc.robot.commands.autoteleop.AutoPlaceCoralV2;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
 import frc.robot.commands.climber.ExtendClimber;
 import frc.robot.commands.climber.RetractClimber;
+import frc.robot.commands.climber.StoreClimber;
 import frc.robot.commands.drive.DriveCommands;
-import frc.robot.commands.pivot.PivotGoToAngle;
+import frc.robot.commands.gamepiecemanipulation.GoToNetAlgaePosition;
+import frc.robot.commands.gamepiecemanipulation.GoToStoredPosition;
+import frc.robot.commands.gamepiecemanipulation.IntakeCoral;
+import frc.robot.commands.gamepiecemanipulation.IntakeGroundAlgae;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.algaeclaw.AlgaeClawConstants;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIO;
@@ -68,7 +68,7 @@ import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
-import frc.robot.subsystems.elevator.ElevatorIOReal;
+import frc.robot.subsystems.elevator.ElevatorIORealTalonFX;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.gamepiecevisualizers.AlgaeVisualizer;
 import frc.robot.subsystems.gamepiecevisualizers.AlgaeVisualizer.AlgaeState;
@@ -114,11 +114,6 @@ public class RobotContainer {
     private final Climber climber;
     private final LED led;
 
-    // Controller
-    private final CommandXboxController controller = new CommandXboxController(0);
-    private final CommandXboxController mechanismController = new CommandXboxController(1);
-    private final CommandXboxController buttonBox = new CommandXboxController(2);
-
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -143,7 +138,7 @@ public class RobotContainer {
                                 vision,
                                 (robotPose) -> {});
                 pivot = new Pivot(new PivotIOTalonFX());
-                elevator = new Elevator(new ElevatorIOReal());
+                elevator = new Elevator(new ElevatorIORealTalonFX());
                 coralHolder =
                         new CoralHolder(
                                 new CoralHolderIOReal(),
@@ -281,22 +276,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
                 DriveCommands.joystickDrive(
                         drive,
-                        () -> -0.5 * controller.getLeftY(),
-                        () -> -0.5 * controller.getLeftX(),
-                        () -> -0.5 * controller.getRightX()));
-
-        // Lock to 0° when A button is held
-        // controller
-        //     .a()
-        //     .whileTrue(
-        //         DriveCommands.joystickDriveAtAngle(
-        //             drive,
-        //             () -> -controller.getLeftY(),
-        //             () -> -controller.getLeftX(),
-        //             () -> new Rotation2d()));
-
-        // Switch to X pattern when X button is pressed
-        // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+                        () -> -1.0 * controller.getLeftY(),
+                        () -> -1.0 * controller.getLeftX(),
+                        () -> -1.0 * controller.getRightX()));
 
         // Reset gyro to 0° when A button is pressed
         controller
@@ -311,92 +293,20 @@ public class RobotContainer {
                                         drive)
                                 .ignoringDisable(true));
 
+        controller.b().onTrue(cancel());
+
         controller
-                .b()
-                .onTrue(
-                        Commands.runOnce(
-                                () -> stopEverything(),
+                .rightBumper()
+                .whileTrue(
+                        DriveCommands.joystickDrive(
                                 drive,
-                                pivot,
-                                elevator,
-                                coralHolder,
-                                algaeClaw,
-                                climber));
+                                () -> -0.5 * controller.getLeftY(),
+                                () -> -0.5 * controller.getLeftX(),
+                                () -> -0.5 * controller.getRightX()));
 
-        controller.povUp().onTrue(new ExtendClimber(climber, pivot));
-        controller.povDown().onTrue(new RetractClimber(climber, pivot));
-
-        // controller
-        //         .x()
-        //         .onTrue(
-        //                 new GoToPosition(
-        //                         drive,
-        //                         vision,
-        //                         Position.K,
-        //                         AutoTeleopConstants.sidewaysReefCoralOffset,
-        //                         AutoTeleopConstants.depthReefCoralOffset,
-        //                         reefCoralAlignmentConstraints));
-
-        // controller
-        //         .x()
-        //         .onTrue(
-        //                 new AutoGetCoralV2(
-        //                         coralStationPositioningConfigs[0],
-        //                         pivot,
-        //                         elevator,
-        //                         coralHolder,
-        //                         drive,
-        //                         vision));
-        // controller
-        //         .y()
-        //         .onTrue(
-        //                 new AutoPlaceCoralV2(
-        //                         reefCoralPositioningConfigs[10],
-        //                         Level.L3,
-        //                         pivot,
-        //                         elevator,
-        //                         coralHolder,
-        //                         drive,
-        //                         vision));
-
-        // controller.x().onTrue(new IntakeCoral(pivot, elevator, coralHolder));
-        // controller
-        //     .y()
-        //     .onTrue(new GoToPlacingCoralPosition(ElevatorConstants.l4Height, pivot, elevator));
-        // controller.b().onTrue(new ReleaseCoral(coralHolder));
-
-        // controller
-        //     .x()
-        //     .onTrue(
-        //         Commands.runOnce(
-        //             () -> (new AutoNetAlgae(pivot, elevator, algaeClaw,
-        // drive.getPose())).schedule()));
-
-        // controller
-        //         .x()
-        //         .onTrue(
-        //                 new AutoGetCoral(
-        //                         coralStationAlignmentConfigs[0], pivot, elevator, coralHolder));
-        // controller
-        //         .y()
-        //         .onTrue(
-        //                 new AutoPlaceCoral(
-        //                         new AlignmentConfig("L", 0),
-        //                         Level.L2,
-        //                         pivot,
-        //                         elevator,
-        //                         coralHolder));
-        // controller
-        //         .b()
-        //         .onTrue(
-        //                 new AutoPlaceCoral(
-        //                         new AlignmentConfig("K", 0),
-        //                         Level.L2,
-        //                         pivot,
-        //                         elevator,
-        //                         coralHolder));
-        // controller.y().onTrue(coralHolder.release());
-        // controller.y().onTrue(algaeClaw.release());
+        controller.povUp().onTrue(new ExtendClimber(climber, pivot, elevator));
+        controller.povDown().onTrue(new RetractClimber(climber, pivot, elevator));
+        controller.leftTrigger(0.9).onTrue(new StoreClimber(climber, pivot, elevator));
 
         // manual mechanism control
         mechanismController
@@ -418,7 +328,7 @@ public class RobotContainer {
         mechanismController
                 .leftTrigger(0.9)
                 .onTrue(
-                        Commands.runOnce(() -> algaeClaw.startMotor(), algaeClaw)
+                        Commands.runOnce(() -> algaeClaw.startMotorReef(), algaeClaw)
                                 .andThen(Commands.waitUntil(() -> algaeClaw.hasAlgae()))
                                 .andThen(
                                         Commands.waitTime(
@@ -434,18 +344,14 @@ public class RobotContainer {
                 .rightTrigger(0.9)
                 .onFalse(Commands.runOnce(() -> algaeClaw.stopMotor(), algaeClaw));
 
-        // mechanismController.a().onTrue(Commands.runOnce(() -> elevator.setVoltage(0.25)));
-        // mechanismController.a().onFalse(Commands.runOnce(() -> elevator.setVoltage(0.0)));
-        // mechanismController.a().onTrue(new ElevatorGoToHeight(elevator, 0.6));
-        // mechanismController.b().onTrue(new ElevatorGoToHeight(elevator, 0.1));
-        mechanismController.a().onTrue(new PivotGoToAngle(pivot, -3.922));
-        mechanismController.b().onTrue(new PivotGoToAngle(pivot, Units.degreesToRadians(49.0)));
+        // mechanismController.a().onTrue(new PivotGoToAngle(pivot, -3.922));
+        // mechanismController.b().onTrue(new PivotGoToAngle(pivot, Units.degreesToRadians(49.0)));
 
         elevator.setDefaultCommand(
                 Commands.runOnce(
                         () ->
                                 elevator.setVoltage(
-                                        0.2
+                                        1.0
                                                 * 12.0
                                                 * MathUtil.applyDeadband(
                                                         -mechanismController.getRightY(), 0.2)),
@@ -474,141 +380,175 @@ public class RobotContainer {
         // mechanismController.leftTrigger(0.9).onFalse(Commands.runOnce(() -> climber.stop()));
         // mechanismController.rightTrigger(0.9).onFalse(Commands.runOnce(() -> climber.stop()));
 
-        // mechanismController.povCenter().onTrue(Commands.runOnce(() -> climber.stop(), climber));
-        // mechanismController.povUp().onTrue(Commands.runOnce(() -> climber.forward(), climber));
-        // mechanismController.povDown().onTrue(Commands.runOnce(() -> climber.reverse(), climber));
+        mechanismController.povCenter().onTrue(Commands.runOnce(() -> climber.stop(), climber));
+        mechanismController.povUp().onTrue(Commands.runOnce(() -> climber.forward(), climber));
+        mechanismController.povDown().onTrue(Commands.runOnce(() -> climber.reverse(), climber));
+
+        // mechanismController.a().onTrue(new ElevatorGoToHeight(elevator, 0))
+
+        // button box controls
+        groundAlgaeButton.onTrue(new IntakeGroundAlgae(elevator, pivot, algaeClaw));
+        coralStationLeftButton.onTrue(new IntakeCoral(pivot, elevator, coralHolder));
+        coralStationRightButton.onTrue(algaeClaw.release());
+        storedButton.onTrue(new GoToStoredPosition(elevator, pivot));
+        cancelButton.onTrue(cancel());
+        netButton.onTrue(new GoToNetAlgaePosition(pivot, elevator));
+        // processorButton.onTrue(new GoToProcessingPosition(pivot, elevator));
 
         // Pathfinding
-        configurePathfindingCommandsV2();
+        configurePathfindingCommands();
     }
 
-    private void configurePathfindingCommandsV1()
-            throws FileVersionException, IOException, ParseException {
-        for (AlignmentConfig config : reefCoralAlignmentConfigs) {
-            NamedCommands.registerCommand(
-                    config.pathName() + "_L1",
-                    new AutoPlaceCoral(config, Level.L1, pivot, elevator, coralHolder));
-            NamedCommands.registerCommand(
-                    config.pathName() + "_L2",
-                    new AutoPlaceCoral(config, Level.L2, pivot, elevator, coralHolder));
-            NamedCommands.registerCommand(
-                    config.pathName() + "_L3",
-                    new AutoPlaceCoral(config, Level.L3, pivot, elevator, coralHolder));
-            NamedCommands.registerCommand(
-                    config.pathName() + "_L4",
-                    new AutoPlaceCoral(config, Level.L4, pivot, elevator, coralHolder));
-            buttonBox
-                    .button(config.button())
-                    .and(buttonBox.button(l1Button))
-                    .onTrue(new AutoPlaceCoral(config, Level.L1, pivot, elevator, coralHolder));
-            buttonBox
-                    .button(config.button())
-                    .and(buttonBox.button(l2Button))
-                    .onTrue(new AutoPlaceCoral(config, Level.L2, pivot, elevator, coralHolder));
-            buttonBox
-                    .button(config.button())
-                    .and(buttonBox.button(l3Button))
-                    .onTrue(new AutoPlaceCoral(config, Level.L3, pivot, elevator, coralHolder));
-            buttonBox
-                    .button(config.button())
-                    .and(buttonBox.button(l4Button))
-                    .onTrue(new AutoPlaceCoral(config, Level.L4, pivot, elevator, coralHolder));
-        }
-        for (ReefAlgaeAlignmentConfig config : reefAlgaeAlignmentConfigs) {
-            NamedCommands.registerCommand(
-                    config.pathName() + "_Algae",
-                    new AutoGetReefAlgae(config, pivot, elevator, algaeClaw));
-            buttonBox
-                    .button(config.button1())
-                    .and(buttonBox.button(config.button2()))
-                    .onTrue(new AutoGetReefAlgae(config, pivot, elevator, algaeClaw));
-        }
-        for (AlignmentConfig config : coralStationAlignmentConfigs) {
-            NamedCommands.registerCommand(
-                    config.pathName(), new AutoGetCoral(config, pivot, elevator, coralHolder));
-            buttonBox
-                    .button(config.button())
-                    .onTrue(new AutoGetCoral(config, pivot, elevator, coralHolder));
-        }
-        NamedCommands.registerCommand(
-                "Process Algae",
-                new AutoProcessAlgae(processorAlignmentConfig, pivot, elevator, algaeClaw));
-        buttonBox
-                .button(processorAlignmentConfig.button())
-                .onTrue(new AutoProcessAlgae(processorAlignmentConfig, pivot, elevator, algaeClaw));
-        NamedCommands.registerCommand(
-                "Net Algae",
-                Commands.runOnce(
-                        () ->
-                                (new AutoNetAlgae(pivot, elevator, algaeClaw, drive.getPose()))
-                                        .schedule()));
-        buttonBox
-                .button(netButton)
-                .onTrue(
-                        Commands.runOnce(
-                                () ->
-                                        (new AutoNetAlgae(
-                                                        pivot,
-                                                        elevator,
-                                                        algaeClaw,
-                                                        drive.getPose()))
-                                                .schedule()));
-    }
-
-    private void configurePathfindingCommandsV2()
+    private void configurePathfindingCommands()
             throws FileVersionException, IOException, ParseException {
         for (PositioningConfig config : reefCoralPositioningConfigs) {
-            NamedCommands.registerCommand(
-                    config.namedCommandName() + "_L1",
-                    new AutoPlaceCoralV2(
-                            config, Level.L1, pivot, elevator, coralHolder, drive, vision));
+            // NamedCommands.registerCommand(
+            //         config.namedCommandName() + "_L1",
+            //         new AutoPlaceCoral(
+            //                         config,
+            //                         Level.L1,
+            //                         pivot,
+            //                         elevator,
+            //                         coralHolder,
+            //                         drive,
+            //                         vision,
+            //                         led)
+            //                 .finallyDo(() -> led.setIsPathfinding(false)));
             NamedCommands.registerCommand(
                     config.namedCommandName() + "_L2",
-                    new AutoPlaceCoralV2(
-                            config, Level.L2, pivot, elevator, coralHolder, drive, vision));
+                    new AutoPlaceCoral(
+                                    config,
+                                    Level.L2,
+                                    pivot,
+                                    elevator,
+                                    coralHolder,
+                                    drive,
+                                    vision,
+                                    led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
             NamedCommands.registerCommand(
                     config.namedCommandName() + "_L3",
-                    new AutoPlaceCoralV2(
-                            config, Level.L3, pivot, elevator, coralHolder, drive, vision));
+                    new AutoPlaceCoral(
+                                    config,
+                                    Level.L3,
+                                    pivot,
+                                    elevator,
+                                    coralHolder,
+                                    drive,
+                                    vision,
+                                    led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
             NamedCommands.registerCommand(
                     config.namedCommandName() + "_L4",
-                    new AutoPlaceCoralV2(
-                            config, Level.L4, pivot, elevator, coralHolder, drive, vision));
-            buttonBox
-                    .button(config.button())
-                    .and(buttonBox.button(l1Button))
+                    new AutoPlaceCoral(
+                                    config,
+                                    Level.L4,
+                                    pivot,
+                                    elevator,
+                                    coralHolder,
+                                    drive,
+                                    vision,
+                                    led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
+            // config.trigger()
+            //         .and(l1Button)
+            //         .onTrue(
+            //                 new AutoPlaceCoral(
+            //                                 config,
+            //                                 Level.L1,
+            //                                 pivot,
+            //                                 elevator,
+            //                                 coralHolder,
+            //                                 drive,
+            //                                 vision,
+            //                                 led)
+            //                         .finallyDo(() -> led.setIsPathfinding(false)));
+            config.trigger()
+                    .and(l2Button)
                     .onTrue(
-                            new AutoPlaceCoralV2(
-                                    config, Level.L1, pivot, elevator, coralHolder, drive, vision));
-            buttonBox
-                    .button(config.button())
-                    .and(buttonBox.button(l2Button))
+                            new AutoPlaceCoral(
+                                            config,
+                                            Level.L2,
+                                            pivot,
+                                            elevator,
+                                            coralHolder,
+                                            drive,
+                                            vision,
+                                            led)
+                                    .finallyDo(() -> led.setIsPathfinding(false)));
+            config.trigger()
+                    .and(l3Button)
                     .onTrue(
-                            new AutoPlaceCoralV2(
-                                    config, Level.L2, pivot, elevator, coralHolder, drive, vision));
-            buttonBox
-                    .button(config.button())
-                    .and(buttonBox.button(l3Button))
+                            new AutoPlaceCoral(
+                                            config,
+                                            Level.L3,
+                                            pivot,
+                                            elevator,
+                                            coralHolder,
+                                            drive,
+                                            vision,
+                                            led)
+                                    .finallyDo(() -> led.setIsPathfinding(false)));
+            config.trigger()
+                    .and(l4Button)
                     .onTrue(
-                            new AutoPlaceCoralV2(
-                                    config, Level.L3, pivot, elevator, coralHolder, drive, vision));
-            buttonBox
-                    .button(config.button())
-                    .and(buttonBox.button(l4Button))
+                            new AutoPlaceCoral(
+                                            config,
+                                            Level.L4,
+                                            pivot,
+                                            elevator,
+                                            coralHolder,
+                                            drive,
+                                            vision,
+                                            led)
+                                    .finallyDo(() -> led.setIsPathfinding(false)));
+        }
+        for (PositioningConfig config : reefAlgaePositioningConfigs) {
+            NamedCommands.registerCommand(
+                    config.namedCommandName(),
+                    new AutoGetReefAlgae(config, pivot, elevator, algaeClaw, drive, vision, led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
+            config.trigger()
                     .onTrue(
-                            new AutoPlaceCoralV2(
-                                    config, Level.L4, pivot, elevator, coralHolder, drive, vision));
+                            new AutoGetReefAlgae(
+                                            config, pivot, elevator, algaeClaw, drive, vision, led)
+                                    .finallyDo(() -> led.setIsPathfinding(false)));
         }
         for (PositioningConfig config : coralStationPositioningConfigs) {
             NamedCommands.registerCommand(
                     config.namedCommandName(),
-                    new AutoGetCoralV2(config, pivot, elevator, coralHolder, drive, vision));
-            buttonBox
-                    .button(config.button())
-                    .onTrue(
-                            new AutoGetCoralV2(
-                                    config, pivot, elevator, coralHolder, drive, vision));
+                    new AutoGetCoral(config, pivot, elevator, coralHolder, drive, vision, led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
         }
+        NamedCommands.registerCommand(
+                processorPositioningConfig.namedCommandName(),
+                new AutoProcessAlgae(
+                                processorPositioningConfig, pivot, elevator, algaeClaw, drive, led)
+                        .finallyDo(() -> led.setIsPathfinding(false)));
+        processorPositioningConfig
+                .trigger()
+                .onTrue(
+                        new AutoProcessAlgae(
+                                        processorPositioningConfig,
+                                        pivot,
+                                        elevator,
+                                        algaeClaw,
+                                        drive,
+                                        led)
+                                .finallyDo(() -> led.setIsPathfinding(false)));
+
+        NamedCommands.registerCommand(
+                "move back slightly",
+                Commands.race(
+                        Commands.run(
+                                () ->
+                                        drive.runVelocityFieldRelative(
+                                                (DriverStation.getAlliance().orElse(Alliance.Blue)
+                                                                == Alliance.Blue)
+                                                        ? new ChassisSpeeds(1, 0, 0)
+                                                        : new ChassisSpeeds(-1, 0, 0)),
+                                drive),
+                        Commands.waitSeconds(0.5)));
     }
 
     /**
@@ -621,6 +561,11 @@ public class RobotContainer {
             resetSimState();
         }
         return autoChooser.get();
+    }
+
+    public Command cancel() {
+        return Commands.runOnce(
+                () -> stopEverything(), drive, pivot, elevator, coralHolder, algaeClaw, climber);
     }
 
     public void resetSimState() {
@@ -638,6 +583,7 @@ public class RobotContainer {
         drive.stop();
         elevator.stop();
         pivot.stop();
+        led.setIsPathfinding(false);
     }
 
     // defines the poses for each component of the robot model in Advantage Scope
@@ -704,7 +650,8 @@ public class RobotContainer {
                             driveSimulation.getSimulatedDriveTrainPose(),
                             elevator,
                             pivot,
-                            coralHolder);
+                            coralHolder,
+                            algaeClaw);
                 }
                 break;
             case REPLAY:

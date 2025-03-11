@@ -1,6 +1,7 @@
 package frc.robot.subsystems.led;
 
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.LEDPattern;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface LEDIO {
@@ -14,4 +15,10 @@ public interface LEDIO {
     public default void setData(AddressableLEDBuffer buffer) {}
 
     public default void setAll(int r, int g, int b) {}
+
+    public default void setRainbow(int offset) {}
+
+    public default void setPattern(LEDPattern pattern) {}
+
+    public default void periodic() {}
 }

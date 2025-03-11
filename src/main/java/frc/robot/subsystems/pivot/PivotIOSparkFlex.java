@@ -9,7 +9,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.MathUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -21,7 +21,7 @@ public class PivotIOSparkFlex implements PivotIO {
         sparkFlex = new SparkFlex(canId, MotorType.kBrushless);
         encoder = sparkFlex.getEncoder();
 
-        var config = new SparkMaxConfig();
+        var config = new SparkFlexConfig();
         config.inverted(isInverted).idleMode(IdleMode.kBrake);
         config.encoder
                 .positionConversionFactor(1.0 / motorReduction * encoderPositionFactor)

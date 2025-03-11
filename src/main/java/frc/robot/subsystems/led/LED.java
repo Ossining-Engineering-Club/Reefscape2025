@@ -2,6 +2,8 @@ package frc.robot.subsystems.led;
 
 import static frc.robot.subsystems.led.LEDConstants.*;
 
+import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.coralholder.CoralHolder;
@@ -16,11 +18,17 @@ public class LED extends SubsystemBase {
     private final CoralHolder coral;
 
     private LEDState state;
+    private int tick = 0;
+
+    private boolean isPathfinding = false;
 
     private static enum LEDState {
         RED,
         GREEN,
-        BLUE
+        BLUE,
+        DARK_BLUE,
+        PURPLE,
+        RAINBOW
     }
 
     public LED(LEDIO io, AlgaeClaw algae, CoralHolder coral) {
@@ -34,19 +42,41 @@ public class LED extends SubsystemBase {
     }
 
     public void setRed() {
-        io.setAll(255, 0, 0);
+        // io.setAll(255, 0, 0);
+        io.setPattern(LEDPattern.solid(new Color(255, 0, 0)));
     }
 
     public void setBlue() {
-        io.setAll(0, 0, 255);
+        // io.setAll(0, 0, 255);
+        io.setPattern(LEDPattern.solid(new Color(0, 0, 255)));
     }
 
     public void setGreen() {
-        io.setAll(0, 255, 0);
+        // io.setAll(0, 255, 0);
+        io.setPattern(LEDPattern.solid(new Color(0, 255, 0)));
+    }
+
+    public void setDarkBlue() {
+        // io.setAll(0, 0, 128);
+        io.setPattern(LEDPattern.solid(new Color(0, 0, 128)));
+    }
+
+    public void setPurple() {
+        // io.setAll(0, 0, 128);
+        io.setPattern(LEDPattern.solid(new Color(128, 0, 128)));
+    }
+
+    public void setRainbow() {
+        // io.setRainbow(tick / ticksPerRainbowStep);
+        io.setPattern(LEDPattern.rainbow(255, 255));
     }
 
     private void updateState() {
-        if (coral.hasCoral()) {
+        /*if (DriverStation.isDisabled()) {
+            state = LEDState.PURPLE;
+        } else */ if (isPathfinding) {
+            state = LEDState.DARK_BLUE;
+        } else if (coral.hasCoral()) {
             state = LEDState.GREEN;
         } else if (algae.hasAlgae()) {
             state = LEDState.GREEN;
@@ -55,10 +85,17 @@ public class LED extends SubsystemBase {
         }
     }
 
+    public void setIsPathfinding(boolean isPathfinding) {
+        this.isPathfinding = isPathfinding;
+    }
+
     private void updateBuffer() {
+        if (state == LEDState.RAINBOW) setRainbow();
         if (state == LEDState.GREEN) setGreen();
         if (state == LEDState.RED) setRed();
         if (state == LEDState.BLUE) setBlue();
+        if (state == LEDState.DARK_BLUE) setDarkBlue();
+        if (state == LEDState.PURPLE) setPurple();
     }
 
     @Override
@@ -67,5 +104,8 @@ public class LED extends SubsystemBase {
 
         updateState();
         updateBuffer();
+        io.periodic();
+
+        tick++;
     }
 }

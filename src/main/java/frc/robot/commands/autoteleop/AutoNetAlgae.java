@@ -14,6 +14,7 @@ import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.pivot.Pivot;
 
+// DO NOT USE
 public class AutoNetAlgae extends SequentialCommandGroup {
     public AutoNetAlgae(Pivot pivot, Elevator elevator, AlgaeClaw algaeClaw, Pose2d robotPose) {
         Pose2d targetPose;
@@ -34,13 +35,12 @@ public class AutoNetAlgae extends SequentialCommandGroup {
                         && robotPose.getX() < 9.73)) {
             addCommands(
                     pathFindingCommand,
-                    new GoToNetAlgaePosition(pivot, elevator, algaeClaw),
+                    new GoToNetAlgaePosition(pivot, elevator),
                     algaeClaw.release());
         } else {
             addCommands(
                     new ParallelCommandGroup(
-                            pathFindingCommand,
-                            new GoToNetAlgaePosition(pivot, elevator, algaeClaw)),
+                            pathFindingCommand, new GoToNetAlgaePosition(pivot, elevator)),
                     algaeClaw.release());
         }
     }

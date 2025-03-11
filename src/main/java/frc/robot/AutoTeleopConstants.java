@@ -1,26 +1,21 @@
 package frc.robot;
 
-import static frc.robot.AutoTeleopConstants.sidewaysReefCoralOffset;
-
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public final class AutoTeleopConstants {
-    public static record AlignmentConfig(String pathName, int button) {}
-    ;
-
-    public static record ReefAlgaeAlignmentConfig(String pathName, int button1, int button2) {}
-    ;
+    public static record PathAlignmentConfig(String pathName, int button) {}
 
     public static record PositioningConfig(
             Position position,
             String namedCommandName,
-            int button,
+            Trigger trigger,
             double sidewaysOffset,
             double depthOffset) {}
-    ;
 
     public static enum Level {
         L1,
@@ -44,91 +39,98 @@ public final class AutoTeleopConstants {
         J,
         K,
         L,
+        AB,
+        CD,
+        EF,
+        GH,
+        IJ,
+        KL,
         LEFT_CORAL_STATION,
         RIGHT_CORAL_STATION,
         PROCESSOR
     }
 
-    public static final int aButton = 11;
-    public static final int bButton = 8;
-    public static final int cButton = 0;
-    public static final int dButton = 0;
-    public static final int eButton = 0;
-    public static final int fButton = 0;
-    public static final int gButton = 0;
-    public static final int hButton = 0;
-    public static final int iButton = 0;
-    public static final int jButton = 0;
-    public static final int kButton = 5;
-    public static final int lButton = 7;
+    // Controller
+    public static final CommandXboxController controller = new CommandXboxController(0);
+    public static final CommandXboxController mechanismController = new CommandXboxController(1);
+    public static final CommandXboxController buttonBox1 = new CommandXboxController(2);
+    public static final CommandXboxController buttonBox2 = new CommandXboxController(3);
 
-    public static final int l1Button = 2;
-    public static final int l2Button = 1;
-    public static final int l3Button = 3;
-    public static final int l4Button = 4;
+    public static final Trigger aButton = buttonBox2.button(9);
+    public static final Trigger bButton = buttonBox2.button(11);
+    public static final Trigger cButton = buttonBox1.button(2);
+    public static final Trigger dButton = buttonBox1.button(3);
+    public static final Trigger eButton = buttonBox1.button(4);
+    public static final Trigger fButton = buttonBox1.button(5);
+    public static final Trigger gButton = buttonBox1.button(7);
+    public static final Trigger hButton = buttonBox1.button(9);
+    public static final Trigger iButton = buttonBox1.button(11);
+    public static final Trigger jButton = buttonBox1.button(12);
+    public static final Trigger kButton = buttonBox2.button(4);
+    public static final Trigger lButton = buttonBox2.button(6);
 
-    public static final int processorButton = 0;
-    public static final int netButton = 0;
+    public static final Trigger l1Button = buttonBox2.button(5);
+    public static final Trigger l2Button = buttonBox2.button(3);
+    public static final Trigger l3Button = buttonBox2.button(2);
+    public static final Trigger l4Button = buttonBox2.button(1);
 
-    public static final AlignmentConfig[] reefCoralAlignmentConfigs =
-            new AlignmentConfig[] {
-                new AlignmentConfig("A", aButton),
-                new AlignmentConfig("B", bButton),
-                new AlignmentConfig("C", cButton),
-                new AlignmentConfig("D", dButton),
-                new AlignmentConfig("E", eButton),
-                new AlignmentConfig("F", fButton),
-                new AlignmentConfig("G", gButton),
-                new AlignmentConfig("H", hButton),
-                new AlignmentConfig("I", iButton),
-                new AlignmentConfig("J", jButton),
-                new AlignmentConfig("K", kButton),
-                new AlignmentConfig("L", lButton),
-            };
+    public static final Trigger processorButton = buttonBox1.button(6);
+    public static final Trigger netButton = buttonBox1.button(10);
+    public static final Trigger coralStationLeftButton = buttonBox2.button(8);
+    public static final Trigger coralStationRightButton = buttonBox1.button(1);
+    public static final Trigger groundAlgaeButton = buttonBox2.button(7);
+    public static final Trigger storedButton = buttonBox2.button(10);
+    public static final Trigger cancelButton = buttonBox1.button(8);
 
-    public static final ReefAlgaeAlignmentConfig[] reefAlgaeAlignmentConfigs =
-            new ReefAlgaeAlignmentConfig[] {
-                new ReefAlgaeAlignmentConfig("AB", aButton, bButton),
-                new ReefAlgaeAlignmentConfig("CD", cButton, dButton),
-                new ReefAlgaeAlignmentConfig("EF", eButton, fButton),
-                new ReefAlgaeAlignmentConfig("GH", gButton, hButton),
-                new ReefAlgaeAlignmentConfig("IJ", iButton, jButton),
-                new ReefAlgaeAlignmentConfig("KL", kButton, lButton)
-            };
-
-    public static final AlignmentConfig[] coralStationAlignmentConfigs =
-            new AlignmentConfig[] {
-                new AlignmentConfig("Coral Station Left", 6),
-                new AlignmentConfig("Coral Station Right", 0)
-            };
-
-    public static final AlignmentConfig processorAlignmentConfig =
-            new AlignmentConfig("Processor", processorButton);
-
-    public static final PathConstraints reefCoralAlignmentConstraints =
+    public static final PathConstraints reefCoralPathfindingAlignmentConstraints =
+            new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
+    public static final PathConstraints reefCoralPIDAlignmentConstraints =
             new PathConstraints(3.0, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
-    public static final PathConstraints reefAlgaeAlignmentConstraints =
+    public static final PathConstraints reefAlgaePathfindingAlignmentConstraints =
+            new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
+    public static final PathConstraints reefAlgaePIDAlignmentConstraints =
+            new PathConstraints(3.0, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
+
+    public static final PathConstraints coralStationPathfindingAlignmentConstraints =
+            new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
+    public static final PathConstraints coralStationPIDAlignmentConstraints =
             new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
-    public static final PathConstraints coralStationAlignmentConstraints =
-            new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
-
-    public static final PathConstraints processorAlignmentConstraints =
-            new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
+    public static final PathConstraints processorPathfindingAlignmentConstraints =
+            new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
+    public static final PathConstraints processorPIDAlignmentConstraints =
+            new PathConstraints(3.0, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
     public static final PathConstraints netAlignmentConstraints =
             new PathConstraints(1.0, 1.0, Units.degreesToRadians(360), Units.degreesToRadians(360));
 
     public static final double sidewaysReefCoralOffset = Units.inchesToMeters(6.5);
+    public static final double sidewaysReefCoralL1Offset = Units.inchesToMeters(1.5);
     public static final double depthReefCoralOffset =
             Units.inchesToMeters(3.0) + Constants.robotWidth / 2.0;
 
+    public static final double sidewaysReefAlgaeOffset = Units.inchesToMeters(0);
+    public static final double depthReefAlgaeOffset =
+            Units.inchesToMeters(1.5) + Constants.robotWidth / 2.0;
+
     public static final double depthCoralStationOffset =
-            Units.inchesToMeters(3.0) + Constants.robotWidth / 2.0;
+            Units.inchesToMeters(-1.0) + Constants.robotWidth / 2.0;
+
+    public static final double depthProcessorOffset =
+            Units.inchesToMeters(0.0) + Constants.robotWidth / 2.0;
 
     public static final double translationalTolerance = 0.02;
-    public static final double rotationalTolerance = Units.degreesToRadians(5);
+    public static final double rotationalTolerance = Units.degreesToRadians(3);
+
+    public static final double coralStationTranslationalTolerance = 0.2;
+    public static final double coralStationRotationalTolerance = Units.degreesToRadians(20);
+
+    public static final double processorTranslationalTolerance = 0.1;
+    public static final double processorRotationalTolerance = Units.degreesToRadians(10);
+
+    public static final double reefAlgaeTranslationalTolerance = 0.05;
+    public static final double reefAlgaeRotationalTolerance = Units.degreesToRadians(10);
 
     public static final double switchingToSpecializedTranslationalTolerance = 2.0;
     public static final double switchingToSpecializedRotationalTolerance =
@@ -210,46 +212,110 @@ public final class AutoTeleopConstants {
                         depthReefCoralOffset),
             };
 
+    public static final PositioningConfig[] reefAlgaePositioningConfigs =
+            new PositioningConfig[] {
+                new PositioningConfig(
+                        Position.AB,
+                        "AB",
+                        aButton.and(bButton),
+                        sidewaysReefAlgaeOffset - Constants.algaeIntakeXOffset,
+                        depthReefAlgaeOffset),
+                new PositioningConfig(
+                        Position.CD,
+                        "CD",
+                        cButton.and(dButton),
+                        sidewaysReefAlgaeOffset - Constants.algaeIntakeXOffset,
+                        depthReefAlgaeOffset),
+                new PositioningConfig(
+                        Position.EF,
+                        "EF",
+                        eButton.and(fButton),
+                        sidewaysReefAlgaeOffset - Constants.algaeIntakeXOffset,
+                        depthReefAlgaeOffset),
+                new PositioningConfig(
+                        Position.GH,
+                        "GH",
+                        gButton.and(hButton),
+                        sidewaysReefAlgaeOffset - Constants.algaeIntakeXOffset,
+                        depthReefAlgaeOffset),
+                new PositioningConfig(
+                        Position.IJ,
+                        "IJ",
+                        iButton.and(jButton),
+                        sidewaysReefAlgaeOffset - Constants.algaeIntakeXOffset,
+                        depthReefAlgaeOffset),
+                new PositioningConfig(
+                        Position.KL,
+                        "KL",
+                        kButton.and(lButton),
+                        sidewaysReefAlgaeOffset - Constants.algaeIntakeXOffset,
+                        depthReefAlgaeOffset),
+            };
+
     public static final PositioningConfig[] coralStationPositioningConfigs =
             new PositioningConfig[] {
                 new PositioningConfig(
                         Position.LEFT_CORAL_STATION,
                         "Coral Station Left",
-                        6,
+                        coralStationLeftButton,
                         -Constants.coralIntakeXOffset,
                         depthCoralStationOffset),
                 new PositioningConfig(
                         Position.RIGHT_CORAL_STATION,
                         "Coral Station Right",
-                        0,
+                        coralStationRightButton,
                         -Constants.coralIntakeXOffset,
                         depthCoralStationOffset),
             };
 
+    public static final PositioningConfig processorPositioningConfig =
+            new PositioningConfig(
+                    Position.PROCESSOR,
+                    "Process Algae",
+                    processorButton,
+                    Constants.algaeIntakeXOffset,
+                    depthProcessorOffset);
+
     public static int getTagIdOfPosition(Position position) {
-        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+        return getTagIdOfPosition(position, DriverStation.getAlliance().orElse(Alliance.Blue));
+    }
+
+    public static int getTagIdOfPosition(Position position, Alliance alliance) {
+        if (alliance == Alliance.Red) {
             switch (position) {
                 case A:
+                    return 7;
+                case AB:
                     return 7;
                 case B:
                     return 7;
                 case C:
                     return 8;
+                case CD:
+                    return 8;
                 case D:
                     return 8;
                 case E:
+                    return 9;
+                case EF:
                     return 9;
                 case F:
                     return 9;
                 case G:
                     return 10;
+                case GH:
+                    return 10;
                 case H:
                     return 10;
                 case I:
                     return 11;
+                case IJ:
+                    return 11;
                 case J:
                     return 11;
                 case K:
+                    return 6;
+                case KL:
                     return 6;
                 case L:
                     return 6;
@@ -266,25 +332,37 @@ public final class AutoTeleopConstants {
             switch (position) {
                 case A:
                     return 18;
+                case AB:
+                    return 18;
                 case B:
                     return 18;
                 case C:
+                    return 17;
+                case CD:
                     return 17;
                 case D:
                     return 17;
                 case E:
                     return 22;
+                case EF:
+                    return 22;
                 case F:
                     return 22;
                 case G:
+                    return 21;
+                case GH:
                     return 21;
                 case H:
                     return 21;
                 case I:
                     return 20;
+                case IJ:
+                    return 20;
                 case J:
                     return 20;
                 case K:
+                    return 19;
+                case KL:
                     return 19;
                 case L:
                     return 19;

@@ -19,17 +19,18 @@ public class ClimberConstants {
     public static final int winchMotorStallCurrentLimit = 38;
     public static final int winchMotorFreeCurrentLimit = 38;
 
-    public static final double chainMotorForwardVoltage = 1.5 * 0.8;
-    public static final double winchMotorForwardVoltage = 12.0 * 0.8;
+    public static final double chainMotorForwardVoltage = 2.74;
+    public static final double winchMotorForwardVoltage = 12.0;
 
-    public static final double chainMotorReverseVoltage = -1.5 * 0.8;
-    public static final double winchMotorReverseVoltage = -12.0 * 0.8;
+    public static final double chainMotorReverseVoltage = -2.74;
+    public static final double winchMotorReverseVoltage = -12.0;
 
     public static final double minAngle = Units.degreesToRadians(-19.0);
-    public static final double maxAngle = Units.degreesToRadians(180.0);
+    public static final double maxAngle = Units.degreesToRadians(175.0);
 
     public static final double retractAngle = Units.degreesToRadians(43.0);
     public static final double extendAngle = Units.degreesToRadians(175.0);
+    public static final double storeAngle = Units.degreesToRadians(-18.0);
 
     /*
      * Note:

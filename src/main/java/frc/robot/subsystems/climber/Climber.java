@@ -19,36 +19,46 @@ public class Climber extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Climber", inputs);
+        if (inputs.angleRadians >= maxAngle && inputs.chainMotorAppliedVolts > 0) stop();
+        if (inputs.angleRadians <= minAngle && inputs.chainMotorAppliedVolts < 0) stop();
     }
 
     public void forward() {
-        // if (inputs.angleRadians < maxAngle) {
-        io.setChainMotorVoltage(chainMotorForwardVoltage);
-        io.setWinchMotorVoltage(winchMotorForwardVoltage);
-        // } else stop();
+        if (inputs.angleRadians < maxAngle) {
+            io.setChainMotorVoltage(chainMotorForwardVoltage);
+            io.setWinchMotorVoltage(winchMotorForwardVoltage);
+        } else stop();
     }
 
     public void reverse() {
-        // if (inputs.angleRadians > minAngle) {
-        io.setChainMotorVoltage(chainMotorReverseVoltage);
-        io.setWinchMotorVoltage(winchMotorReverseVoltage);
-        // } else stop();
+        if (inputs.angleRadians > minAngle) {
+            io.setChainMotorVoltage(chainMotorReverseVoltage);
+            io.setWinchMotorVoltage(winchMotorReverseVoltage);
+        } else stop();
     }
 
     public void forwardWinch() {
-        io.setWinchMotorVoltage(winchMotorForwardVoltage);
+        if (inputs.angleRadians < maxAngle) {
+            io.setWinchMotorVoltage(winchMotorForwardVoltage);
+        } else stop();
     }
 
     public void reverseWinch() {
-        io.setWinchMotorVoltage(winchMotorReverseVoltage);
+        if (inputs.angleRadians > minAngle) {
+            io.setWinchMotorVoltage(winchMotorReverseVoltage);
+        } else stop();
     }
 
     public void forwardChain() {
-        io.setChainMotorVoltage(chainMotorForwardVoltage);
+        if (inputs.angleRadians < maxAngle) {
+            io.setChainMotorVoltage(chainMotorForwardVoltage);
+        } else stop();
     }
 
     public void reverseChain() {
-        io.setChainMotorVoltage(chainMotorReverseVoltage);
+        if (inputs.angleRadians > minAngle) {
+            io.setChainMotorVoltage(chainMotorReverseVoltage);
+        } else stop();
     }
 
     public void stop() {
@@ -80,6 +90,12 @@ public class Climber extends SubsystemBase {
     public Command retract() {
         return Commands.runOnce(() -> reverse())
                 .andThen(Commands.waitUntil(() -> getAngle() <= retractAngle))
+                .andThen(Commands.runOnce(() -> stop()));
+    }
+
+    public Command store() {
+        return Commands.runOnce(() -> reverse())
+                .andThen(Commands.waitUntil(() -> getAngle() <= storeAngle))
                 .andThen(Commands.runOnce(() -> stop()));
     }
 }

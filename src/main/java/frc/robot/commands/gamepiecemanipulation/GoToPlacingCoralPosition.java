@@ -17,7 +17,9 @@ public class GoToPlacingCoralPosition extends SequentialCommandGroup {
                                 pivot,
                                 (level == Level.L4)
                                         ? PivotConstants.placeL4CoralAngle
-                                        : PivotConstants.placeCoralAngle),
+                                        : ((level == Level.L1)
+                                                ? PivotConstants.placeL1CoralAngle
+                                                : PivotConstants.placeCoralAngle)),
                         new ElevatorGoToHeight(elevator, height)));
     }
 }

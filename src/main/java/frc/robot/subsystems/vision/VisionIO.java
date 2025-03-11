@@ -21,11 +21,12 @@ public interface VisionIO {
         public boolean seesFocusTag = false;
         public int focusTag = 0;
         public Transform3d robotToCam;
+
+        public String cameraName = "";
     }
 
     /** Updates the set of loggable inputs. */
     public default void updateInputs(VisionIOInputs inputs) {}
 
     public default void setFocusTag(int tag) {}
-    ;
 }

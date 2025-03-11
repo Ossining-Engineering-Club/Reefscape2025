@@ -13,11 +13,11 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import org.littletonrobotics.junction.Logger;
 
-public class ElevatorIOReal implements ElevatorIO {
+public class ElevatorIORealSparkFlex implements ElevatorIO {
     private final SparkFlex sparkFlex;
     private final RelativeEncoder encoder;
 
-    public ElevatorIOReal() {
+    public ElevatorIORealSparkFlex() {
         sparkFlex = new SparkFlex(canId, MotorType.kBrushless);
         encoder = sparkFlex.getEncoder();
 

@@ -15,7 +15,7 @@ import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
 import org.littletonrobotics.junction.Logger;
 
 public class AlgaeClaw extends SubsystemBase {
-    private static enum AlgaeClawState {
+    public static enum AlgaeClawState {
         FORWARD,
         STOPPED,
         REVERSE
@@ -50,9 +50,15 @@ public class AlgaeClaw extends SubsystemBase {
     }
 
     /** Sets motor voltage to predefined voltage */
-    public void startMotor() {
+    public void startMotorReef() {
         state = AlgaeClawState.FORWARD;
-        io.setVoltage(AlgaeClawConstants.clawVoltage);
+        io.setVoltage(AlgaeClawConstants.reefClawVoltage);
+    }
+
+    /** Sets motor voltage to predefined voltage */
+    public void startMotorGround() {
+        state = AlgaeClawState.FORWARD;
+        io.setVoltage(AlgaeClawConstants.groundClawVoltage);
     }
 
     /** Reverses algae claw motor */
@@ -84,9 +90,21 @@ public class AlgaeClaw extends SubsystemBase {
         this.state = state;
     }
 
-    public Command intake() {
+    public Command intakeReef() {
         return Commands.either(
-                Commands.runOnce(() -> this.startMotor(), this)
+                Commands.runOnce(() -> this.startMotorReef(), this)
+                        .andThen(Commands.waitUntil(() -> this.hasAlgae()))
+                        .andThen(
+                                Commands.waitTime(
+                                        Seconds.of(AlgaeClawConstants.intakeDelaySeconds)))
+                        .andThen(Commands.runOnce(() -> this.stopMotor(), this)),
+                Commands.runOnce(() -> {}),
+                () -> !hasAlgae());
+    }
+
+    public Command intakeGround() {
+        return Commands.either(
+                Commands.runOnce(() -> this.startMotorGround(), this)
                         .andThen(Commands.waitUntil(() -> this.hasAlgae()))
                         .andThen(
                                 Commands.waitTime(

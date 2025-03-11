@@ -24,6 +24,7 @@ public class VisionIOSim implements VisionIO {
     private final PhotonPoseEstimator estimator;
     private final Supplier<Pose2d> robotPoseSupplier;
     private final Transform3d robotToCam;
+    private final String cameraName;
     public int focusTag = 0;
 
     public VisionIOSim(CameraConfig config, Supplier<Pose2d> robotPoseSupplier) {
@@ -52,10 +53,12 @@ public class VisionIOSim implements VisionIO {
         visionSim.addCamera(cameraSim, config.robotToCam());
 
         robotToCam = config.robotToCam();
+        cameraName = config.name();
     }
 
     @Override
     public void updateInputs(VisionIOInputs inputs) {
+        inputs.cameraName = cameraName;
         inputs.robotToCam = robotToCam;
 
         visionSim.update(robotPoseSupplier.get());
