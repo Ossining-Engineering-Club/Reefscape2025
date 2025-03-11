@@ -68,7 +68,7 @@ import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
-import frc.robot.subsystems.elevator.ElevatorIOReal;
+import frc.robot.subsystems.elevator.ElevatorIORealTalonFX;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.gamepiecevisualizers.AlgaeVisualizer;
 import frc.robot.subsystems.gamepiecevisualizers.AlgaeVisualizer.AlgaeState;
@@ -138,7 +138,7 @@ public class RobotContainer {
                                 vision,
                                 (robotPose) -> {});
                 pivot = new Pivot(new PivotIOTalonFX());
-                elevator = new Elevator(new ElevatorIOReal());
+                elevator = new Elevator(new ElevatorIORealTalonFX());
                 coralHolder =
                         new CoralHolder(
                                 new CoralHolderIOReal(),
