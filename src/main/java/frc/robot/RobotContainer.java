@@ -77,6 +77,7 @@ import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer.CoralState;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.led.LEDIO;
 import frc.robot.subsystems.led.LEDIOReal;
+import frc.robot.subsystems.led.LEDIORealBlinkin;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOSim;
@@ -151,7 +152,7 @@ public class RobotContainer {
                                         AlgaeClawConstants.algaeClawPEChannel));
                 climber = new Climber(new ClimberIOReal());
 
-                led = new LED(new LEDIOReal(), algaeClaw, coralHolder);
+                led = new LED(new LEDIORealBlinkin(), algaeClaw, coralHolder);
 
                 // pivot = new Pivot(new PivotIO() {});
                 // elevator = new Elevator(new ElevatorIO() {});

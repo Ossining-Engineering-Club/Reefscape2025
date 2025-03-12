@@ -20,5 +20,7 @@ public interface LEDIO {
 
     public default void setPattern(LEDPattern pattern) {}
 
+    public default void set(double value) {}
+
     public default void periodic() {}
 }

@@ -43,32 +43,38 @@ public class LED extends SubsystemBase {
 
     public void setRed() {
         // io.setAll(255, 0, 0);
-        io.setPattern(LEDPattern.solid(new Color(255, 0, 0)));
+        // io.setPattern(LEDPattern.solid(new Color(255, 0, 0)));
+        io.set(0.61);
     }
 
     public void setBlue() {
         // io.setAll(0, 0, 255);
-        io.setPattern(LEDPattern.solid(new Color(0, 0, 255)));
+        // io.setPattern(LEDPattern.solid(new Color(0, 0, 255)));
+        io.set(0.87);
     }
 
     public void setGreen() {
         // io.setAll(0, 255, 0);
-        io.setPattern(LEDPattern.solid(new Color(0, 255, 0)));
+        // io.setPattern(LEDPattern.solid(new Color(0, 255, 0)));
+        io.set(0.77);
     }
 
     public void setDarkBlue() {
         // io.setAll(0, 0, 128);
-        io.setPattern(LEDPattern.solid(new Color(0, 0, 128)));
+        // io.setPattern(LEDPattern.solid(new Color(0, 0, 128)));
+        io.set(0.85);
     }
 
     public void setPurple() {
         // io.setAll(0, 0, 128);
-        io.setPattern(LEDPattern.solid(new Color(128, 0, 128)));
+        // io.setPattern(LEDPattern.solid(new Color(128, 0, 128)));
+        io.set(0.91);
     }
 
     public void setRainbow() {
         // io.setRainbow(tick / ticksPerRainbowStep);
-        io.setPattern(LEDPattern.rainbow(255, 255));
+        // io.setPattern(LEDPattern.rainbow(255, 255));
+        io.set(-0.99);
     }
 
     private void updateState() {
