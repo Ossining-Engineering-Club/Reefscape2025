@@ -152,7 +152,7 @@ public class RobotContainer {
                                         AlgaeClawConstants.algaeClawPEChannel));
                 climber = new Climber(new ClimberIOReal());
 
-                led = new LED(new LEDIORealBlinkin(), algaeClaw, coralHolder);
+                led = new LED(new LEDIOReal(), algaeClaw, coralHolder);
 
                 // pivot = new Pivot(new PivotIO() {});
                 // elevator = new Elevator(new ElevatorIO() {});

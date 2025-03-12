@@ -7,21 +7,23 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
 
 public class LEDIOReal implements LEDIO {
-    private final AddressableLED leds;
-
+    private final AddressableLED leds1;
+    private final AddressableLED leds2;
     private AddressableLEDBuffer buffer;
 
     public LEDIOReal() {
-        leds = new AddressableLED(pwmPort);
+        leds1 = new AddressableLED(pwmPort1);
+        leds2 = new AddressableLED(pwmPort2);
         buffer = new AddressableLEDBuffer(length);
 
-        leds.setLength(buffer.getLength());
+        leds1.setLength(buffer.getLength());
         setAll(255, 0, 0);
     }
 
     @Override
     public void start() {
-        leds.start();
+        leds1.start();
+        leds2.start();
     }
 
     @Override
@@ -29,7 +31,8 @@ public class LEDIOReal implements LEDIO {
         for (int i = 0; i < length; i++) {
             buffer.setRGB(i, r, g, b);
         }
-        leds.setData(buffer);
+        leds1.setData(buffer);
+        leds2.setData(buffer);
     }
 
     @Override
@@ -40,7 +43,8 @@ public class LEDIOReal implements LEDIO {
                     rainbow[(i + offset) % rainbow.length].red(),
                     rainbow[(i + offset) % rainbow.length].green(),
                     rainbow[(i + offset) % rainbow.length].blue());
-            leds.setData(buffer);
+            leds1.setData(buffer);
+            leds2.setData(buffer);
         }
     }
 
@@ -51,6 +55,7 @@ public class LEDIOReal implements LEDIO {
 
     @Override
     public void periodic() {
-        leds.setData(buffer);
+        leds1.setData(buffer);
+        leds2.setData(buffer);
     }
 }
