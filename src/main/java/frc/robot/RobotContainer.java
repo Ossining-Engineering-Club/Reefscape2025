@@ -77,7 +77,6 @@ import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer.CoralState;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.led.LEDIO;
 import frc.robot.subsystems.led.LEDIOReal;
-import frc.robot.subsystems.led.LEDIORealBlinkin;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOSim;
@@ -234,8 +233,6 @@ public class RobotContainer {
 
         // Configure the button bindings
         configureButtonBindings();
-
-        // vision.setFocusTag(19);
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

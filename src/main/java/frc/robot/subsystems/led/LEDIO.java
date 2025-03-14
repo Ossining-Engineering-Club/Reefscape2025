@@ -16,8 +16,6 @@ public interface LEDIO {
 
     public default void setAll(int r, int g, int b) {}
 
-    public default void setRainbow(int offset) {}
-
     public default void setPattern(LEDPattern pattern) {}
 
     public default void set(double value) {}
