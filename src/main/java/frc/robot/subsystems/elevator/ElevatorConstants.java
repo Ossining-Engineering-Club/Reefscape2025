@@ -6,7 +6,7 @@ import edu.wpi.first.math.util.Units;
 public class ElevatorConstants {
     // motor constants
     public static final int canId = 16;
-    public static final double motorReduction = 25.0 / 1.0;
+    public static final double motorReduction = 20.0 / 1.0;
     public static final boolean isInverted = false;
     public static final int stallCurrentLimit = 38;
     public static final int freeCurrentLimit = 38;
