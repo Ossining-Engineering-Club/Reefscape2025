@@ -39,6 +39,6 @@ public final class Constants {
     // physical robot constants
     public static final double robotWidth = 0.859; // including bumpers
     public static final double robotLength = 0.991; // including bumpers
-    public static final double coralIntakeXOffset = -0.023;
-    public static final double algaeIntakeXOffset = 0.085;
+    public static final double coralIntakeXOffset = -0.023 - 0.02;
+    public static final double algaeIntakeXOffset = 0.085 - 0.02;
 }
