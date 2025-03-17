@@ -272,7 +272,10 @@ public class Drive extends SubsystemBase {
 
     /** Stops the drive. */
     public void stop() {
-        runVelocity(new ChassisSpeeds());
+        //runVelocity(new ChassisSpeeds());
+        for (int i = 0; i < 4; i++) {
+            modules[i].stop();
+        }
     }
 
     /**

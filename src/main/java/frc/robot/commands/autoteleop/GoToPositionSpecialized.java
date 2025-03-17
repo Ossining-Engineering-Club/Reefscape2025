@@ -124,7 +124,7 @@ public class GoToPositionSpecialized extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        drive.runVelocity(new ChassisSpeeds());
+        drive.stop();
     }
 
     @Override
