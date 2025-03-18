@@ -18,6 +18,8 @@ public interface LEDIO {
 
     public default void setPattern(LEDPattern pattern) {}
 
+    public default void setSplitPatterns(LEDPattern left, LEDPattern right) {}
+
     public default void set(double value) {}
 
     public default void periodic() {}

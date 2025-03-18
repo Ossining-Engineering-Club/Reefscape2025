@@ -42,6 +42,7 @@ import frc.robot.commands.climber.ExtendClimber;
 import frc.robot.commands.climber.RetractClimber;
 import frc.robot.commands.climber.StoreClimber;
 import frc.robot.commands.drive.DriveCommands;
+import frc.robot.commands.elevator.ElevatorGoToHeight;
 import frc.robot.commands.gamepiecemanipulation.GoToNetAlgaePosition;
 import frc.robot.commands.gamepiecemanipulation.GoToStoredPosition;
 import frc.robot.commands.gamepiecemanipulation.IntakeCoral;
@@ -382,7 +383,8 @@ public class RobotContainer {
         mechanismController.povUp().onTrue(Commands.runOnce(() -> climber.forward(), climber));
         mechanismController.povDown().onTrue(Commands.runOnce(() -> climber.reverse(), climber));
 
-        // mechanismController.a().onTrue(new ElevatorGoToHeight(elevator, 0))
+        mechanismController.a().onTrue(new ElevatorGoToHeight(elevator, 0));
+        mechanismController.b().onTrue(new ElevatorGoToHeight(elevator, 0.7));
 
         // button box controls
         groundAlgaeButton.onTrue(new IntakeGroundAlgae(elevator, pivot, algaeClaw));

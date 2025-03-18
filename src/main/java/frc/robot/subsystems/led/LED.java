@@ -65,9 +65,16 @@ public class LED extends SubsystemBase {
     }
 
     public void setRainbow() {
-        io.setPattern(
-                LEDPattern.rainbow(255, 255)
-                        .scrollAtAbsoluteSpeed(MetersPerSecond.of(0.75), ledSpacing));
+        // io.setPattern(
+        //         LEDPattern.rainbow(255, 255)
+        //                 .scrollAtAbsoluteSpeed(MetersPerSecond.of(0.75), ledSpacing));
+        io.setSplitPatterns(
+                LEDPattern.rainbow(255, 128)
+                        .scrollAtAbsoluteSpeed(MetersPerSecond.of(0.75), ledSpacing),
+                LEDPattern.rainbow(255, 128)
+                        .scrollAtAbsoluteSpeed(MetersPerSecond.of(0.75 * 69.0 / 81.0), ledSpacing));
+        // io.setSplitPatterns(
+        //         LEDPattern.solid(new Color(255, 0, 0)), LEDPattern.solid(new Color(0, 255, 0)));
     }
 
     private void updateState() {

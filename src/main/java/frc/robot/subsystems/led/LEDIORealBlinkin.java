@@ -8,7 +8,7 @@ public class LEDIORealBlinkin implements LEDIO {
     private final Spark leds;
 
     public LEDIORealBlinkin() {
-        leds = new Spark(pwmPort1);
+        leds = new Spark(pwmPort);
     }
 
     @Override

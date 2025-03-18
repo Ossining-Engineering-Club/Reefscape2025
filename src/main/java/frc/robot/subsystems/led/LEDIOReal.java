@@ -4,28 +4,31 @@ import static frc.robot.subsystems.led.LEDConstants.*;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 
 public class LEDIOReal implements LEDIO {
-    private final AddressableLED leds1;
-    // private final AddressableLED leds2;
-    private AddressableLEDBuffer buffer;
+    private final AddressableLED leds;
+    private final AddressableLEDBuffer buffer;
+    private final AddressableLEDBufferView leftData;
+    private final AddressableLEDBufferView rightData;
 
     public LEDIOReal() {
-        leds1 = new AddressableLED(pwmPort1);
-        // leds2 = new AddressableLED(pwmPort2);
+        leds = new AddressableLED(pwmPort);
         buffer = new AddressableLEDBuffer(length);
 
-        leds1.setLength(buffer.getLength());
+        leftData = buffer.createView(0, 80);
+        rightData = buffer.createView(81, 149).reversed();
+
+        leds.setLength(buffer.getLength());
         // setAll(255, 0, 0);
         setPattern(LEDPattern.solid(new Color(255, 0, 0)));
     }
 
     @Override
     public void start() {
-        leds1.start();
-        // leds2.start();
+        leds.start();
     }
 
     @Override
@@ -33,8 +36,7 @@ public class LEDIOReal implements LEDIO {
         for (int i = 0; i < length; i++) {
             buffer.setRGB(i, r, g, b);
         }
-        leds1.setData(buffer);
-        // leds2.setData(buffer);
+        leds.setData(buffer);
     }
 
     @Override
@@ -43,8 +45,13 @@ public class LEDIOReal implements LEDIO {
     }
 
     @Override
+    public void setSplitPatterns(LEDPattern left, LEDPattern right) {
+        left.applyTo(leftData);
+        right.applyTo(rightData);
+    }
+
+    @Override
     public void periodic() {
-        leds1.setData(buffer);
-        // leds2.setData(buffer);
+        leds.setData(buffer);
     }
 }

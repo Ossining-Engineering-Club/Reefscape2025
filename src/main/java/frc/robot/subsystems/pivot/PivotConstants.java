@@ -19,8 +19,8 @@ public class PivotConstants {
     // control system
     public static final double kP = 50.0;
     public static final double kD = 0.0;
-    public static final double maxVelocity = Units.degreesToRadians(180.0);
-    public static final double maxAcceleration = Units.degreesToRadians(360.0);
+    public static final double maxVelocity = Units.degreesToRadians(360.0);
+    public static final double maxAcceleration = Units.degreesToRadians(540.0);
     public static final double simP = 50.0;
     public static final double simD = 1.25;
     public static final double simMaxVelocity = Units.degreesToRadians(720.0);
