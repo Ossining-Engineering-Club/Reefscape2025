@@ -18,7 +18,7 @@ public class ClimberConstants {
     public static final double winchMotorForwardVoltage = 12.0;
     public static final double winchMotorReverseVoltage = -12.0;
 
-    public static final double minPosition = 0.0;
+    public static final double minPosition = -10.0;
     public static final double maxPosition = 2.677;
 
     public static final double retractPosition = 0.0;
