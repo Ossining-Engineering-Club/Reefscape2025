@@ -67,6 +67,14 @@ public class CoralHolder extends SubsystemBase {
         io.setVoltage(reverseVoltageL1);
     }
 
+    public void reverseL23() {
+        state = CoralHolderState.REVERSE;
+        if (Constants.currentMode == Mode.SIM) {
+            CoralVisualizer.shootCoral(false);
+        }
+        io.setVoltage(reverseVoltageL23);
+    }
+
     public boolean hasCoral() {
         return photoelectricSensor.isTripped();
     }
@@ -94,6 +102,12 @@ public class CoralHolder extends SubsystemBase {
     public Command release(Level level) {
         if (level == Level.L1) {
             return Commands.runOnce(() -> this.reverseL1(), this)
+                    .andThen(Commands.waitUntil(() -> !this.hasCoral()))
+                    .andThen(
+                            Commands.waitTime(Seconds.of(CoralHolderConstants.releaseDelaySeconds)))
+                    .andThen(Commands.runOnce(() -> this.stop(), this));
+        } else if (level == Level.L2 || level == Level.L3) {
+            return Commands.runOnce(() -> this.reverseL23(), this)
                     .andThen(Commands.waitUntil(() -> !this.hasCoral()))
                     .andThen(
                             Commands.waitTime(Seconds.of(CoralHolderConstants.releaseDelaySeconds)))

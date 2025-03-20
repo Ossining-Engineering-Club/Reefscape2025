@@ -217,6 +217,7 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
                                                             height, level, pivot, elevator))),
+                                    new WaitCommand(0.75),
                                     coralHolder.release(level)),
                             new SequentialCommandGroup(
                                     Commands.runOnce(
@@ -257,6 +258,7 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
                                                             height, level, pivot, elevator))),
+                                    new WaitCommand(0.75),
                                     coralHolder.release(level)),
                             () ->
                                     DriverStation.getAlliance().orElse(Alliance.Blue)
