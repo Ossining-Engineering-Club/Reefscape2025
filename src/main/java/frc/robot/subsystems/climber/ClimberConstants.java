@@ -1,36 +1,29 @@
 package frc.robot.subsystems.climber;
 
-import edu.wpi.first.math.util.Units;
-
 public class ClimberConstants {
-    public static final int chainMotorCanId = 14;
     public static final int winchMotorCanId = 15;
 
-    public static final double startAngle = Units.degreesToRadians(-19.0);
+    public static final double startPosition = 0;
     public static final boolean isInverted = false;
 
-    public static final double chainMotorReduction = 36.0 / 15.0 * 64.0 / 1.0;
     public static final double winchMotorReduction = 64.0 / 1.0;
-    public static final double encoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
-    public static final double encoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
+    public static final double encoderPositionFactor = 1.0; // Rotations -> Rotations
+    public static final double encoderVelocityFactor = 1.0 / 60.0; // RPM -> Rot/Sec
 
     public static final int chainMotorStallCurrentLimit = 38;
     public static final int chainMotorFreeCurrentLimit = 38;
     public static final int winchMotorStallCurrentLimit = 38;
     public static final int winchMotorFreeCurrentLimit = 38;
 
-    public static final double chainMotorForwardVoltage = 2.74;
     public static final double winchMotorForwardVoltage = 12.0;
-
-    public static final double chainMotorReverseVoltage = -2.74;
     public static final double winchMotorReverseVoltage = -12.0;
 
-    public static final double minAngle = Units.degreesToRadians(-19.0);
-    public static final double maxAngle = Units.degreesToRadians(175.0);
+    public static final double minPosition = 0.0;
+    public static final double maxPosition = 2.677;
 
-    public static final double retractAngle = Units.degreesToRadians(43.0);
-    public static final double extendAngle = Units.degreesToRadians(175.0);
-    public static final double storeAngle = Units.degreesToRadians(-18.0);
+    public static final double retractPosition = 0.0;
+    public static final double extendPosition = 2.677;
+    public static final double storePosition = 0.0;
 
     /*
      * Note:

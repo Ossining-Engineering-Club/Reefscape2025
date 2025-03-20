@@ -19,55 +19,40 @@ public class Climber extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Climber", inputs);
-        if (inputs.angleRadians >= maxAngle && inputs.chainMotorAppliedVolts > 0) stop();
-        if (inputs.angleRadians <= minAngle && inputs.chainMotorAppliedVolts < 0) stop();
+        if (inputs.winchPosition >= maxPosition && inputs.winchMotorAppliedVolts > 0) stop();
+        if (inputs.winchPosition <= minPosition && inputs.winchMotorAppliedVolts < 0) stop();
     }
 
     public void forward() {
-        if (inputs.angleRadians < maxAngle) {
-            io.setChainMotorVoltage(chainMotorForwardVoltage);
+        if (inputs.winchPosition < maxPosition) {
             io.setWinchMotorVoltage(winchMotorForwardVoltage);
         } else stop();
     }
 
     public void reverse() {
-        if (inputs.angleRadians > minAngle) {
-            io.setChainMotorVoltage(chainMotorReverseVoltage);
+        if (inputs.winchPosition > minPosition) {
             io.setWinchMotorVoltage(winchMotorReverseVoltage);
         } else stop();
     }
 
     public void forwardWinch() {
-        if (inputs.angleRadians < maxAngle) {
+        if (inputs.winchPosition < maxPosition) {
             io.setWinchMotorVoltage(winchMotorForwardVoltage);
         } else stop();
     }
 
     public void reverseWinch() {
-        if (inputs.angleRadians > minAngle) {
+        if (inputs.winchPosition > minPosition) {
             io.setWinchMotorVoltage(winchMotorReverseVoltage);
         } else stop();
     }
 
-    public void forwardChain() {
-        if (inputs.angleRadians < maxAngle) {
-            io.setChainMotorVoltage(chainMotorForwardVoltage);
-        } else stop();
-    }
-
-    public void reverseChain() {
-        if (inputs.angleRadians > minAngle) {
-            io.setChainMotorVoltage(chainMotorReverseVoltage);
-        } else stop();
-    }
-
     public void stop() {
-        io.setChainMotorVoltage(0.0);
         io.setWinchMotorVoltage(0.0);
     }
 
-    public double getAngle() {
-        return inputs.angleRadians;
+    public double getPosition() {
+        return inputs.winchPosition;
     }
 
     // public double calculateWinchVoltage(double angle) {
@@ -82,20 +67,21 @@ public class Climber extends SubsystemBase {
     // }
 
     public Command extend() {
-        return Commands.runOnce(() -> forward())
-                .andThen(Commands.waitUntil(() -> getAngle() >= extendAngle))
-                .andThen(Commands.runOnce(() -> stop()));
+        return Commands.runOnce(() -> forward(), this)
+                .andThen(Commands.waitUntil(() -> getPosition() >= extendPosition))
+                .andThen(Commands.runOnce(() -> stop(), this));
     }
 
     public Command retract() {
-        return Commands.runOnce(() -> reverse())
-                .andThen(Commands.waitUntil(() -> getAngle() <= retractAngle))
-                .andThen(Commands.runOnce(() -> stop()));
+        // return Commands.runOnce(() -> reverse(), this)
+        //         .andThen(Commands.waitUntil(() -> getPosition() <= retractPosition))
+        //         .andThen(Commands.runOnce(() -> stop(), this));
+        return Commands.runOnce(() -> {});
     }
 
     public Command store() {
-        return Commands.runOnce(() -> reverse())
-                .andThen(Commands.waitUntil(() -> getAngle() <= storeAngle))
-                .andThen(Commands.runOnce(() -> stop()));
+        return Commands.runOnce(() -> reverse(), this)
+                .andThen(Commands.waitUntil(() -> getPosition() <= storePosition))
+                .andThen(Commands.runOnce(() -> stop(), this));
     }
 }
