@@ -43,26 +43,32 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
             LED led)
             throws FileVersionException, IOException, ParseException {
         double sidewaysOffset;
+        double depthOffset;
         if (level == Level.L1) {
             sidewaysOffset =
                     Math.signum(config.sidewaysOffset())
                                     * AutoTeleopConstants.sidewaysReefCoralL1Offset
                             - Constants.coralIntakeXOffset;
+            depthOffset = config.depthOffset();
+        } else if (level == Level.L2 || level == Level.L3) {
+            sidewaysOffset = config.sidewaysOffset();
+            depthOffset = AutoTeleopConstants.depthReefCoralL23Offset;
         } else {
             sidewaysOffset = config.sidewaysOffset();
+            depthOffset = config.depthOffset();
         }
         Pose2d targetPoseBlue =
                 GoToPositionSpecialized.getTargetPose(
                                 getTagIdOfPosition(config.position(), Alliance.Blue),
                                 sidewaysOffset,
-                                config.depthOffset(),
+                                depthOffset,
                                 false)
                         .get();
         Pose2d targetPoseRed =
                 GoToPositionSpecialized.getTargetPose(
                                 getTagIdOfPosition(config.position(), Alliance.Red),
                                 sidewaysOffset,
-                                config.depthOffset(),
+                                depthOffset,
                                 false)
                         .get();
         Command pathfindingCommandBlue =
