@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision;
 
+import static frc.robot.subsystems.vision.VisionConstants.CAMERA_NAMES;
 import static frc.robot.subsystems.vision.VisionConstants.TAG_LAYOUT;
 
 import edu.wpi.first.math.Matrix;
@@ -38,7 +39,7 @@ public class Vision extends SubsystemBase {
         for (int i = 0; i < ios.length; i++) {
             // updating vision io inputs
             ios[i].updateInputs(inputs[i]);
-            Logger.processInputs("Vision/" + inputs[i].cameraName, inputs[i]);
+            Logger.processInputs("Vision/" + CAMERA_NAMES[i], inputs[i]);
         }
         Logger.recordOutput("focus tag", getFocusTag());
         Logger.recordOutput("sees focus tag", seesFocusTag());
@@ -86,13 +87,13 @@ public class Vision extends SubsystemBase {
 
                 addedPose = true;
                 Logger.recordOutput(
-                        "/Vision/" + inputs[i].cameraName + "/Raw Vision",
+                        "/Vision/" + CAMERA_NAMES[i] + "/Raw Vision",
                         inputs[i].estimatedPose.toPose2d());
                 Logger.recordOutput(
-                        "/Vision/" + inputs[i].cameraName + "/Vision Timestamp",
+                        "/Vision/" + CAMERA_NAMES[i] + "/Vision Timestamp",
                         inputs[i].timestampSeconds);
                 Logger.recordOutput(
-                        "/Vision/" + inputs[i].cameraName + "/Vision Std Dev",
+                        "/Vision/" + CAMERA_NAMES[i] + "/Vision Std Dev",
                         new double[] {stddevs.get(0, 0), stddevs.get(1, 0), stddevs.get(2, 0)});
 
                 estimates.add(
@@ -103,7 +104,7 @@ public class Vision extends SubsystemBase {
             }
             if (!addedPose) {
                 Logger.recordOutput(
-                        "/Vision/" + inputs[i].cameraName + "/Raw Vision",
+                        "/Vision/" + CAMERA_NAMES[i] + "/Raw Vision",
                         new Pose2d(-1000, -1000, new Rotation2d()));
             }
         }
