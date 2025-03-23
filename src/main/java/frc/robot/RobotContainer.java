@@ -646,7 +646,12 @@ public class RobotContainer {
                         drive.getPose(),
                         elevator.getHeight(),
                         pivot.getAngle(),
-                        driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative());
+                        drive.getChassisSpeeds());
+                AlgaeVisualizer.update(
+                        drive.getPose(),
+                        elevator.getHeight(),
+                        pivot.getAngle(),
+                        drive.getChassisSpeeds());
                 break;
             default:
                 break;
