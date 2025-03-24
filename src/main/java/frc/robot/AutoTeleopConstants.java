@@ -105,12 +105,12 @@ public final class AutoTeleopConstants {
     public static final PathConstraints netAlignmentConstraints =
             new PathConstraints(1.0, 1.0, Units.degreesToRadians(360), Units.degreesToRadians(360));
 
-    public static final double sidewaysReefCoralOffset = Units.inchesToMeters(6.5);
+    public static final double sidewaysReefCoralOffset = Units.inchesToMeters(6.47);
     public static final double sidewaysReefCoralL1Offset = Units.inchesToMeters(1.5);
     public static final double depthReefCoralOffset =
             Units.inchesToMeters(3.0) + Constants.robotWidth / 2.0;
     public static final double depthReefCoralL23Offset =
-            Units.inchesToMeters(1.0) + Constants.robotWidth / 2.0;
+            Units.inchesToMeters(2.0) + Constants.robotWidth / 2.0;
 
     public static final double sidewaysReefAlgaeOffset = Units.inchesToMeters(0);
     public static final double depthReefAlgaeOffset =
@@ -124,6 +124,8 @@ public final class AutoTeleopConstants {
 
     public static final double translationalTolerance = 0.02;
     public static final double rotationalTolerance = Units.degreesToRadians(3);
+    public static final double translationalVelocityTolerance = 0.1;
+    public static final double rotationalVelocityTolerance = Units.degreesToRadians(10);
 
     public static final double coralStationTranslationalTolerance = 0.2;
     public static final double coralStationRotationalTolerance = Units.degreesToRadians(20);

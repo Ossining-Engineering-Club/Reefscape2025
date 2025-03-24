@@ -6,6 +6,7 @@ import static frc.robot.subsystems.vision.VisionConstants.TAG_LAYOUT;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -30,6 +31,10 @@ public class GoToPositionSpecialized extends Command {
     private final ProfiledPIDController ypid;
     private final ProfiledPIDController rotpid;
 
+    private final LinearFilter xfilter = LinearFilter.singlePoleIIR(0.1, 0.02);
+    private final LinearFilter yfilter = LinearFilter.singlePoleIIR(0.1, 0.02);
+    private final LinearFilter rotfilter = LinearFilter.singlePoleIIR(0.1, 0.02);
+
     private Optional<Pose2d> targetPose;
 
     public GoToPositionSpecialized(
@@ -50,7 +55,7 @@ public class GoToPositionSpecialized extends Command {
                 new ProfiledPIDController(
                         7.0,
                         0,
-                        0,
+                        1.0,
                         new TrapezoidProfile.Constraints(
                                 pathConstraints.maxVelocityMPS(),
                                 pathConstraints.maxAccelerationMPSSq()));
@@ -58,15 +63,15 @@ public class GoToPositionSpecialized extends Command {
                 new ProfiledPIDController(
                         7.0,
                         0,
-                        0,
+                        1.0,
                         new TrapezoidProfile.Constraints(
                                 pathConstraints.maxVelocityMPS(),
                                 pathConstraints.maxAccelerationMPSSq()));
         rotpid =
                 new ProfiledPIDController(
-                        2.0,
+                        1.5,
                         0,
-                        0,
+                        0.2,
                         new TrapezoidProfile.Constraints(
                                 pathConstraints.maxAngularVelocityRadPerSec(),
                                 pathConstraints.maxAngularAccelerationRadPerSecSq()));
@@ -98,6 +103,16 @@ public class GoToPositionSpecialized extends Command {
         ypid.setGoal(targetPose.get().getY());
         rotpid.setGoal(targetPose.get().getRotation().getRadians());
 
+        xfilter.reset();
+        yfilter.reset();
+        rotfilter.reset();
+
+        for (int i = 0; i < 100; i++) {
+            xfilter.calculate(drive.getSpecializedPose().getX());
+            yfilter.calculate(drive.getSpecializedPose().getY());
+            rotfilter.calculate(drive.getSpecializedPose().getRotation().getRadians());
+        }
+
         Logger.recordOutput("target pose", targetPose.get());
 
         vision.setFocusTag(getTagIdOfPosition(position));
@@ -105,14 +120,15 @@ public class GoToPositionSpecialized extends Command {
 
     @Override
     public void execute() {
+        double filteredX = xfilter.calculate(drive.getSpecializedPose().getX());
+        double filteredY = yfilter.calculate(drive.getSpecializedPose().getY());
+        double filteredRot = rotfilter.calculate(drive.getRotation().getRadians());
+
         drive.runVelocityFieldRelative(
                 new ChassisSpeeds(
-                        xpid.calculate(drive.getSpecializedPose().getX())
-                                + xpid.getSetpoint().velocity,
-                        ypid.calculate(drive.getSpecializedPose().getY())
-                                + ypid.getSetpoint().velocity,
-                        rotpid.calculate(drive.getRotation().getRadians())
-                                + rotpid.getSetpoint().velocity));
+                        xpid.calculate(filteredX) + xpid.getSetpoint().velocity,
+                        ypid.calculate(filteredY) + ypid.getSetpoint().velocity,
+                        rotpid.calculate(filteredRot) + rotpid.getSetpoint().velocity));
 
         Logger.recordOutput("xpid setpoint", xpid.getSetpoint().position);
         Logger.recordOutput("ypid setpoint", ypid.getSetpoint().position);
@@ -120,6 +136,9 @@ public class GoToPositionSpecialized extends Command {
         Logger.recordOutput("xpid setpoint velocity", xpid.getSetpoint().velocity);
         Logger.recordOutput("ypid setpoint velocity", ypid.getSetpoint().velocity);
         Logger.recordOutput("rotpid setpoint velocity", rotpid.getSetpoint().velocity);
+        Logger.recordOutput("filteredX", filteredX);
+        Logger.recordOutput("filteredY", filteredY);
+        Logger.recordOutput("filteredRot", filteredRot);
     }
 
     @Override
@@ -138,7 +157,13 @@ public class GoToPositionSpecialized extends Command {
                     && Math.abs(
                                     drive.getRotation().getRadians()
                                             - targetPose.get().getRotation().getRadians())
-                            <= AutoTeleopConstants.processorRotationalTolerance) {
+                            <= AutoTeleopConstants.processorRotationalTolerance
+                    && Math.hypot(
+                                    drive.getFieldRelativeChassisSpeeds().vxMetersPerSecond,
+                                    drive.getFieldRelativeChassisSpeeds().vyMetersPerSecond)
+                            <= AutoTeleopConstants.translationalVelocityTolerance
+                    && Math.abs(drive.getFieldRelativeChassisSpeeds().omegaRadiansPerSecond)
+                            <= AutoTeleopConstants.rotationalVelocityTolerance) {
                 return true;
             }
             return false;
@@ -151,7 +176,13 @@ public class GoToPositionSpecialized extends Command {
                     && Math.abs(
                                     drive.getRotation().getRadians()
                                             - targetPose.get().getRotation().getRadians())
-                            <= AutoTeleopConstants.coralStationRotationalTolerance) {
+                            <= AutoTeleopConstants.coralStationRotationalTolerance
+                    && Math.hypot(
+                                    drive.getFieldRelativeChassisSpeeds().vxMetersPerSecond,
+                                    drive.getFieldRelativeChassisSpeeds().vyMetersPerSecond)
+                            <= AutoTeleopConstants.translationalVelocityTolerance
+                    && Math.abs(drive.getFieldRelativeChassisSpeeds().omegaRadiansPerSecond)
+                            <= AutoTeleopConstants.rotationalVelocityTolerance) {
                 return true;
             }
             return false;
@@ -168,7 +199,13 @@ public class GoToPositionSpecialized extends Command {
                     && Math.abs(
                                     drive.getRotation().getRadians()
                                             - targetPose.get().getRotation().getRadians())
-                            <= AutoTeleopConstants.reefAlgaeRotationalTolerance) {
+                            <= AutoTeleopConstants.reefAlgaeRotationalTolerance
+                    && Math.hypot(
+                                    drive.getFieldRelativeChassisSpeeds().vxMetersPerSecond,
+                                    drive.getFieldRelativeChassisSpeeds().vyMetersPerSecond)
+                            <= AutoTeleopConstants.translationalVelocityTolerance
+                    && Math.abs(drive.getFieldRelativeChassisSpeeds().omegaRadiansPerSecond)
+                            <= AutoTeleopConstants.rotationalVelocityTolerance) {
                 return true;
             }
             return false;
@@ -180,7 +217,13 @@ public class GoToPositionSpecialized extends Command {
                     && Math.abs(
                                     drive.getRotation().getRadians()
                                             - targetPose.get().getRotation().getRadians())
-                            <= AutoTeleopConstants.rotationalTolerance) {
+                            <= AutoTeleopConstants.rotationalTolerance
+                    && Math.hypot(
+                                    drive.getFieldRelativeChassisSpeeds().vxMetersPerSecond,
+                                    drive.getFieldRelativeChassisSpeeds().vyMetersPerSecond)
+                            <= AutoTeleopConstants.translationalVelocityTolerance
+                    && Math.abs(drive.getFieldRelativeChassisSpeeds().omegaRadiansPerSecond)
+                            <= AutoTeleopConstants.rotationalVelocityTolerance) {
                 return true;
             }
             return false;
