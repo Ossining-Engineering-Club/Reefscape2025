@@ -95,7 +95,7 @@ public class GoToPositionSpecialized extends Command {
                 drive.getSpecializedPose().getY(),
                 drive.getFieldRelativeChassisSpeeds().vyMetersPerSecond);
         rotpid.reset(
-                drive.getSpecializedPose().getRotation().getRadians(),
+                drive.getRotation().getRadians(),
                 drive.getFieldRelativeChassisSpeeds().omegaRadiansPerSecond);
 
         xpid.setGoal(targetPose.get().getX());
