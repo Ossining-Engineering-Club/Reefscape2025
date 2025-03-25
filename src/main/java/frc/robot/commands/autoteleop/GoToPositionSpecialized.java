@@ -33,7 +33,6 @@ public class GoToPositionSpecialized extends Command {
 
     private final LinearFilter xfilter = LinearFilter.singlePoleIIR(0.1, 0.02);
     private final LinearFilter yfilter = LinearFilter.singlePoleIIR(0.1, 0.02);
-    private final LinearFilter rotfilter = LinearFilter.singlePoleIIR(0.1, 0.02);
 
     private Optional<Pose2d> targetPose;
 
@@ -105,12 +104,10 @@ public class GoToPositionSpecialized extends Command {
 
         xfilter.reset();
         yfilter.reset();
-        rotfilter.reset();
 
         for (int i = 0; i < 100; i++) {
             xfilter.calculate(drive.getSpecializedPose().getX());
             yfilter.calculate(drive.getSpecializedPose().getY());
-            rotfilter.calculate(drive.getSpecializedPose().getRotation().getRadians());
         }
 
         Logger.recordOutput("target pose", targetPose.get());
@@ -122,13 +119,12 @@ public class GoToPositionSpecialized extends Command {
     public void execute() {
         double filteredX = xfilter.calculate(drive.getSpecializedPose().getX());
         double filteredY = yfilter.calculate(drive.getSpecializedPose().getY());
-        double filteredRot = rotfilter.calculate(drive.getRotation().getRadians());
 
         drive.runVelocityFieldRelative(
                 new ChassisSpeeds(
                         xpid.calculate(filteredX) + xpid.getSetpoint().velocity,
                         ypid.calculate(filteredY) + ypid.getSetpoint().velocity,
-                        rotpid.calculate(filteredRot) + rotpid.getSetpoint().velocity));
+                        rotpid.calculate(drive.getRotation().getRadians()) + rotpid.getSetpoint().velocity));
 
         Logger.recordOutput("xpid setpoint", xpid.getSetpoint().position);
         Logger.recordOutput("ypid setpoint", ypid.getSetpoint().position);
@@ -138,7 +134,6 @@ public class GoToPositionSpecialized extends Command {
         Logger.recordOutput("rotpid setpoint velocity", rotpid.getSetpoint().velocity);
         Logger.recordOutput("filteredX", filteredX);
         Logger.recordOutput("filteredY", filteredY);
-        Logger.recordOutput("filteredRot", filteredRot);
     }
 
     @Override
