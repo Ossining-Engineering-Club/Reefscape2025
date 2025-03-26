@@ -34,6 +34,9 @@ public class GoToPositionSpecialized extends Command {
     private final LinearFilter xfilter = LinearFilter.singlePoleIIR(0.1, 0.02);
     private final LinearFilter yfilter = LinearFilter.singlePoleIIR(0.1, 0.02);
 
+    private double filteredX = 0;
+    private double filteredY = 0;
+
     private Optional<Pose2d> targetPose;
 
     public GoToPositionSpecialized(
@@ -52,17 +55,17 @@ public class GoToPositionSpecialized extends Command {
 
         xpid =
                 new ProfiledPIDController(
-                        7.0,
+                        5.0,
                         0,
-                        1.0,
+                        0.8,
                         new TrapezoidProfile.Constraints(
                                 pathConstraints.maxVelocityMPS(),
                                 pathConstraints.maxAccelerationMPSSq()));
         ypid =
                 new ProfiledPIDController(
-                        7.0,
+                        5.0,
                         0,
-                        1.0,
+                        0.8,
                         new TrapezoidProfile.Constraints(
                                 pathConstraints.maxVelocityMPS(),
                                 pathConstraints.maxAccelerationMPSSq()));
@@ -70,7 +73,7 @@ public class GoToPositionSpecialized extends Command {
                 new ProfiledPIDController(
                         1.5,
                         0,
-                        0.2,
+                        0.1,
                         new TrapezoidProfile.Constraints(
                                 pathConstraints.maxAngularVelocityRadPerSec(),
                                 pathConstraints.maxAngularAccelerationRadPerSecSq()));
@@ -89,13 +92,14 @@ public class GoToPositionSpecialized extends Command {
                     getTargetPose(getTagIdOfPosition(position), sidewaysOffset, depthOffset, false);
         }
         xpid.reset(
-                drive.getSpecializedPose().getX(),
+                (drive.getSpecializedPose().getX() + targetPose.get().getX()) / 2.0,
                 drive.getFieldRelativeChassisSpeeds().vxMetersPerSecond);
         ypid.reset(
-                drive.getSpecializedPose().getY(),
+                (drive.getSpecializedPose().getY() + targetPose.get().getY()) / 2.0,
                 drive.getFieldRelativeChassisSpeeds().vyMetersPerSecond);
         rotpid.reset(
-                drive.getRotation().getRadians(),
+                (drive.getRotation().getRadians() + targetPose.get().getRotation().getRadians())
+                        / 2.0,
                 drive.getFieldRelativeChassisSpeeds().omegaRadiansPerSecond);
 
         xpid.setGoal(targetPose.get().getX());
@@ -117,14 +121,15 @@ public class GoToPositionSpecialized extends Command {
 
     @Override
     public void execute() {
-        double filteredX = xfilter.calculate(drive.getSpecializedPose().getX());
-        double filteredY = yfilter.calculate(drive.getSpecializedPose().getY());
+        filteredX = xfilter.calculate(drive.getSpecializedPose().getX());
+        filteredY = yfilter.calculate(drive.getSpecializedPose().getY());
 
         drive.runVelocityFieldRelative(
                 new ChassisSpeeds(
-                        xpid.calculate(filteredX) + xpid.getSetpoint().velocity,
-                        ypid.calculate(filteredY) + ypid.getSetpoint().velocity,
-                        rotpid.calculate(drive.getRotation().getRadians()) + rotpid.getSetpoint().velocity));
+                        xpid.calculate(filteredX), // + xpid.getSetpoint().velocity * 0.8,
+                        ypid.calculate(filteredY), // + ypid.getSetpoint().velocity * 0.8,
+                        rotpid.calculate(drive.getRotation().getRadians())
+                        /*+ rotpid.getSetpoint().velocity*/ ));
 
         Logger.recordOutput("xpid setpoint", xpid.getSetpoint().position);
         Logger.recordOutput("ypid setpoint", ypid.getSetpoint().position);
@@ -145,9 +150,7 @@ public class GoToPositionSpecialized extends Command {
     public boolean isFinished() {
         if (!targetPose.isPresent()) return true;
         if (position == Position.PROCESSOR) {
-            if (Math.hypot(
-                                    drive.getSpecializedPose().getX() - targetPose.get().getX(),
-                                    drive.getSpecializedPose().getY() - targetPose.get().getY())
+            if (Math.hypot(filteredX - targetPose.get().getX(), filteredY - targetPose.get().getY())
                             <= AutoTeleopConstants.processorTranslationalTolerance
                     && Math.abs(
                                     drive.getRotation().getRadians()
@@ -164,9 +167,7 @@ public class GoToPositionSpecialized extends Command {
             return false;
         } else if (position == Position.LEFT_CORAL_STATION
                 || position == Position.RIGHT_CORAL_STATION) {
-            if (Math.hypot(
-                                    drive.getSpecializedPose().getX() - targetPose.get().getX(),
-                                    drive.getSpecializedPose().getY() - targetPose.get().getY())
+            if (Math.hypot(filteredX - targetPose.get().getX(), filteredY - targetPose.get().getY())
                             <= AutoTeleopConstants.coralStationTranslationalTolerance
                     && Math.abs(
                                     drive.getRotation().getRadians()
@@ -187,9 +188,7 @@ public class GoToPositionSpecialized extends Command {
                 || position == Position.GH
                 || position == Position.IJ
                 || position == Position.KL) {
-            if (Math.hypot(
-                                    drive.getSpecializedPose().getX() - targetPose.get().getX(),
-                                    drive.getSpecializedPose().getY() - targetPose.get().getY())
+            if (Math.hypot(filteredX - targetPose.get().getX(), filteredY - targetPose.get().getY())
                             <= AutoTeleopConstants.reefAlgaeTranslationalTolerance
                     && Math.abs(
                                     drive.getRotation().getRadians()
@@ -205,9 +204,7 @@ public class GoToPositionSpecialized extends Command {
             }
             return false;
         } else {
-            if (Math.hypot(
-                                    drive.getSpecializedPose().getX() - targetPose.get().getX(),
-                                    drive.getSpecializedPose().getY() - targetPose.get().getY())
+            if (Math.hypot(filteredX - targetPose.get().getX(), filteredY - targetPose.get().getY())
                             <= AutoTeleopConstants.translationalTolerance
                     && Math.abs(
                                     drive.getRotation().getRadians()

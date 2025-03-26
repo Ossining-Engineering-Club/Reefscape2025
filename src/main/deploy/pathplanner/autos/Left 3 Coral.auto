@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Left Start"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "J_L4"
@@ -43,7 +37,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

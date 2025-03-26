@@ -129,7 +129,7 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             depthOffset,
                                                             reefCoralPIDAlignmentConstraints)),
                                             new SequentialCommandGroup(
-                                                    new WaitCommand(0.5),
+                                                    new WaitCommand(0.2),
                                                     new GoToPlacingCoralPosition(
                                                             height, level, pivot, elevator))),
                                     coralHolder.release(level),
@@ -170,7 +170,7 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             depthOffset,
                                                             reefCoralPIDAlignmentConstraints)),
                                             new SequentialCommandGroup(
-                                                    new WaitCommand(0.5),
+                                                    new WaitCommand(0.2),
                                                     new GoToPlacingCoralPosition(
                                                             height, level, pivot, elevator))),
                                     coralHolder.release(level),
@@ -220,7 +220,7 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             depthOffset,
                                                             reefCoralPIDAlignmentConstraints)),
                                             new SequentialCommandGroup(
-                                                    new WaitCommand(0.5),
+                                                    new WaitCommand(0.2),
                                                     new GoToPlacingCoralPosition(
                                                             height, level, pivot, elevator))),
                                     new WaitCommand(0.25),
@@ -261,7 +261,7 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             depthOffset,
                                                             reefCoralPIDAlignmentConstraints)),
                                             new SequentialCommandGroup(
-                                                    new WaitCommand(0.5),
+                                                    new WaitCommand(0.2),
                                                     new GoToPlacingCoralPosition(
                                                             height, level, pivot, elevator))),
                                     new WaitCommand(0.25),

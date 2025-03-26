@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.AutoTeleopConstants.Level;
+import frc.robot.AutoTeleopConstants.PositioningConfig;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
@@ -31,6 +32,7 @@ import frc.robot.commands.climber.StoreClimber;
 import frc.robot.commands.drive.DriveCommands;
 import frc.robot.commands.elevator.ElevatorGoToHeight;
 import frc.robot.commands.gamepiecemanipulation.GoToNetAlgaePosition;
+import frc.robot.commands.gamepiecemanipulation.GoToPlacingCoralPosition;
 import frc.robot.commands.gamepiecemanipulation.GoToStoredPosition;
 import frc.robot.commands.gamepiecemanipulation.IntakeCoral;
 import frc.robot.commands.gamepiecemanipulation.IntakeGroundAlgae;
@@ -55,6 +57,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIORealTalonFX;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
@@ -381,6 +384,11 @@ public class RobotContainer {
         cancelButton.onTrue(cancel());
         netButton.onTrue(new GoToNetAlgaePosition(pivot, elevator));
         // processorButton.onTrue(new GoToProcessingPosition(pivot, elevator));
+
+        NamedCommands.registerCommand(
+                "GoToPlacingL4Position",
+                new GoToPlacingCoralPosition(
+                        ElevatorConstants.l4Height, Level.L4, pivot, elevator));
 
         // Pathfinding
         configurePathfindingCommands();
