@@ -110,7 +110,7 @@ public final class AutoTeleopConstants {
     public static final double depthReefCoralOffset =
             Units.inchesToMeters(3.0) + Constants.robotWidth / 2.0;
     public static final double depthReefCoralL23Offset =
-            Units.inchesToMeters(2.0) + Constants.robotWidth / 2.0;
+            Units.inchesToMeters(0.5) + Constants.robotWidth / 2.0;
 
     public static final double sidewaysReefAlgaeOffset = Units.inchesToMeters(0);
     public static final double depthReefAlgaeOffset =
