@@ -126,7 +126,7 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             vision,
                                                             config.position(),
                                                             sidewaysOffset,
-                                                            config.depthOffset(),
+                                                            depthOffset,
                                                             reefCoralPIDAlignmentConstraints)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
@@ -167,7 +167,7 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             vision,
                                                             config.position(),
                                                             sidewaysOffset,
-                                                            config.depthOffset(),
+                                                            depthOffset,
                                                             reefCoralPIDAlignmentConstraints)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
@@ -217,7 +217,7 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             vision,
                                                             config.position(),
                                                             sidewaysOffset,
-                                                            config.depthOffset(),
+                                                            depthOffset,
                                                             reefCoralPIDAlignmentConstraints)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
@@ -258,7 +258,7 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             vision,
                                                             config.position(),
                                                             sidewaysOffset,
-                                                            config.depthOffset(),
+                                                            depthOffset,
                                                             reefCoralPIDAlignmentConstraints)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
