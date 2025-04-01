@@ -132,8 +132,8 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
                                                             height, level, pivot, elevator))),
-                                    coralHolder.release(level),
-                                    new PivotGoToAngle(pivot, PivotConstants.knockL4CoralAngle)),
+                                    coralHolder.release(level)
+                                    /*new PivotGoToAngle(pivot, PivotConstants.knockL4CoralAngle)*/),
                             new SequentialCommandGroup(
                                     Commands.runOnce(
                                             () ->
@@ -173,8 +173,8 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
                                                             height, level, pivot, elevator))),
-                                    coralHolder.release(level),
-                                    new PivotGoToAngle(pivot, PivotConstants.knockL4CoralAngle)),
+                                    coralHolder.release(level)
+                                    /*new PivotGoToAngle(pivot, PivotConstants.knockL4CoralAngle)*/),
                             () ->
                                     DriverStation.getAlliance().orElse(Alliance.Blue)
                                             == Alliance.Blue));
