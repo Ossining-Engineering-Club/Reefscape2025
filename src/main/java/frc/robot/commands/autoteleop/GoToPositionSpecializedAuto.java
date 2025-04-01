@@ -18,7 +18,7 @@ import frc.robot.subsystems.vision.Vision;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
-public class GoToPositionSpecialized extends Command {
+public class GoToPositionSpecializedAuto extends Command {
     private final Drive drive;
     private final Vision vision;
     private final Position position;
@@ -32,7 +32,7 @@ public class GoToPositionSpecialized extends Command {
 
     private Optional<Pose2d> targetPose;
 
-    public GoToPositionSpecialized(
+    public GoToPositionSpecializedAuto(
             Drive drive,
             Vision vision,
             Position position,

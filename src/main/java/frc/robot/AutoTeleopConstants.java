@@ -87,6 +87,11 @@ public final class AutoTeleopConstants {
     public static final PathConstraints reefCoralPIDAlignmentConstraints =
             new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
+    public static final PathConstraints reefCoralAutoPathfindingAlignmentConstraints =
+            new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
+    public static final PathConstraints reefCoralAutoPIDAlignmentConstraints =
+            new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
+
     public static final PathConstraints reefAlgaePathfindingAlignmentConstraints =
             new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
     public static final PathConstraints reefAlgaePIDAlignmentConstraints =

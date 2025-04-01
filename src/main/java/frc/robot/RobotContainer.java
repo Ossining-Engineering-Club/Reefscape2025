@@ -24,6 +24,7 @@ import frc.robot.Constants.Mode;
 import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
+import frc.robot.commands.autoteleop.AutoPlaceCoralAuto;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
 import frc.robot.commands.climber.ExtendClimber;
 import frc.robot.commands.climber.RetractClimber;
@@ -403,7 +404,7 @@ public class RobotContainer {
             //                 .finallyDo(() -> led.setIsPathfinding(false)));
             NamedCommands.registerCommand(
                     config.namedCommandName() + "_L2",
-                    new AutoPlaceCoral(
+                    new AutoPlaceCoralAuto(
                                     config,
                                     Level.L2,
                                     pivot,
@@ -415,7 +416,7 @@ public class RobotContainer {
                             .finallyDo(() -> led.setIsPathfinding(false)));
             NamedCommands.registerCommand(
                     config.namedCommandName() + "_L3",
-                    new AutoPlaceCoral(
+                    new AutoPlaceCoralAuto(
                                     config,
                                     Level.L3,
                                     pivot,
@@ -427,7 +428,7 @@ public class RobotContainer {
                             .finallyDo(() -> led.setIsPathfinding(false)));
             NamedCommands.registerCommand(
                     config.namedCommandName() + "_L4",
-                    new AutoPlaceCoral(
+                    new AutoPlaceCoralAuto(
                                     config,
                                     Level.L4,
                                     pivot,
