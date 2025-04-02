@@ -23,6 +23,7 @@ import frc.robot.AutoTeleopConstants.Level;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
+import frc.robot.commands.autoteleop.AutoNetAlgaeAuto;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
 import frc.robot.commands.autoteleop.AutoPlaceCoralAuto;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
@@ -537,6 +538,8 @@ public class RobotContainer {
                                                         : new ChassisSpeeds(-1, 0, 0)),
                                 drive),
                         Commands.waitSeconds(0.5)));
+
+        NamedCommands.registerCommand("Net Algae", new AutoNetAlgaeAuto(drive, elevator, pivot, algaeClaw));
     }
 
     /**

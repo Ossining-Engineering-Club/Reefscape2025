@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center Start"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "G_L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GH"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "move back slightly"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Net Algae"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

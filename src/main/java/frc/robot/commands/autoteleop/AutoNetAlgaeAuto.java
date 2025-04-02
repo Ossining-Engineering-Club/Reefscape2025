@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoTeleopConstants;
 import frc.robot.commands.gamepiecemanipulation.GoToNetAlgaePosition;
+import frc.robot.commands.gamepiecemanipulation.GoToStoredPosition;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
@@ -23,16 +24,21 @@ public class AutoNetAlgaeAuto extends SequentialCommandGroup {
         Pose2d targetPoseRed = new Pose2d(9.925, 3.021, Rotation2d.fromDegrees(-90));
         Command pathfindingCommandBlue = AutoBuilder.pathfindToPose(targetPoseBlue, AutoTeleopConstants.netAlignmentConstraints);
         Command pathfindingCommandRed = AutoBuilder.pathfindToPose(targetPoseRed, AutoTeleopConstants.netAlignmentConstraints);
-        // addCommands(
-        //     new ConditionalCommand(
-        //         new SequentialCommandGroup(
-        //             new ParallelCommandGroup(pathfindingCommandBlue, new GoToNetAlgaePosition(pivot, elevator)),
-        //             algaeClaw
-        //         ),
-        //         new SequentialCommandGroup(),
-        //             () ->
-        //                     DriverStation.getAlliance().orElse(Alliance.Blue)
-        //                             == Alliance.Blue)
-        // );
+        addCommands(
+            new ConditionalCommand(
+                new SequentialCommandGroup(
+                    new ParallelCommandGroup(pathfindingCommandBlue, new GoToNetAlgaePosition(pivot, elevator)),
+                    algaeClaw.release(),
+                    new GoToStoredPosition(elevator, pivot)
+                ),
+                new SequentialCommandGroup(
+                    new ParallelCommandGroup(pathfindingCommandRed, new GoToNetAlgaePosition(pivot, elevator)),
+                    algaeClaw.release(),
+                    new GoToStoredPosition(elevator, pivot)
+                ),
+                    () ->
+                            DriverStation.getAlliance().orElse(Alliance.Blue)
+                                    == Alliance.Blue)
+        );
     }
 }
