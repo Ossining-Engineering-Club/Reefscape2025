@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.elevator.ElevatorGoToHeight;
 import frc.robot.commands.pivot.PivotGoToAngle;
 import frc.robot.subsystems.coralholder.CoralHolder;
@@ -18,8 +19,10 @@ public class IntakeCoralAuto extends SequentialCommandGroup {
                 new ConditionalCommand(
                         new ParallelDeadlineGroup(
                                 coralHolder.intake(),
-                                new ElevatorGoToHeight(
-                                        elevator, ElevatorConstants.intakeCoralAutoHeight),
+                                new SequentialCommandGroup(
+                                        new WaitCommand(0.5),
+                                        new ElevatorGoToHeight(
+                                                elevator, ElevatorConstants.intakeCoralAutoHeight)),
                                 new PivotGoToAngle(pivot, PivotConstants.intakeCoralAutoAngle)),
                         Commands.runOnce(() -> {}),
                         () -> !coralHolder.hasCoral()));

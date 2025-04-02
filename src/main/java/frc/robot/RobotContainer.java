@@ -20,12 +20,14 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.AutoTeleopConstants.Level;
+import frc.robot.AutoTeleopConstants.PositioningConfig;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
 import frc.robot.commands.autoteleop.AutoNetAlgaeAuto;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
 import frc.robot.commands.autoteleop.AutoPlaceCoralAuto;
+import frc.robot.commands.autoteleop.AutoPlaceCoralAutoNoDelay;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
 import frc.robot.commands.climber.ExtendClimber;
 import frc.robot.commands.climber.RetractClimber;
@@ -36,6 +38,7 @@ import frc.robot.commands.gamepiecemanipulation.GoToNetAlgaePosition;
 import frc.robot.commands.gamepiecemanipulation.GoToStoredPosition;
 import frc.robot.commands.gamepiecemanipulation.IntakeCoral;
 import frc.robot.commands.gamepiecemanipulation.IntakeGroundAlgae;
+import frc.robot.commands.pivot.PivotGoToAngle;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.algaeclaw.AlgaeClawConstants;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIO;
@@ -71,6 +74,7 @@ import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOSim;
 import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.pivot.PivotConstants;
 import frc.robot.subsystems.pivot.PivotIO;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOTalonFX;
@@ -384,6 +388,9 @@ public class RobotContainer {
         netButton.onTrue(new GoToNetAlgaePosition(pivot, elevator));
         // processorButton.onTrue(new GoToProcessingPosition(pivot, elevator));
 
+        NamedCommands.registerCommand(
+                "tip L4", new PivotGoToAngle(pivot, PivotConstants.knockL4CoralAngle));
+
         // Pathfinding
         configurePathfindingCommands();
     }
@@ -430,6 +437,42 @@ public class RobotContainer {
             NamedCommands.registerCommand(
                     config.namedCommandName() + "_L4",
                     new AutoPlaceCoralAuto(
+                                    config,
+                                    Level.L4,
+                                    pivot,
+                                    elevator,
+                                    coralHolder,
+                                    drive,
+                                    vision,
+                                    led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
+            NamedCommands.registerCommand(
+                    config.namedCommandName() + "_L2_NoDelay",
+                    new AutoPlaceCoralAutoNoDelay(
+                                    config,
+                                    Level.L2,
+                                    pivot,
+                                    elevator,
+                                    coralHolder,
+                                    drive,
+                                    vision,
+                                    led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
+            NamedCommands.registerCommand(
+                    config.namedCommandName() + "_L3_NoDelay",
+                    new AutoPlaceCoralAutoNoDelay(
+                                    config,
+                                    Level.L3,
+                                    pivot,
+                                    elevator,
+                                    coralHolder,
+                                    drive,
+                                    vision,
+                                    led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
+            NamedCommands.registerCommand(
+                    config.namedCommandName() + "_L4_NoDelay",
+                    new AutoPlaceCoralAutoNoDelay(
                                     config,
                                     Level.L4,
                                     pivot,
@@ -539,7 +582,8 @@ public class RobotContainer {
                                 drive),
                         Commands.waitSeconds(0.5)));
 
-        NamedCommands.registerCommand("Net Algae", new AutoNetAlgaeAuto(drive, elevator, pivot, algaeClaw));
+        NamedCommands.registerCommand(
+                "Net Algae", new AutoNetAlgaeAuto(drive, elevator, pivot, algaeClaw));
     }
 
     /**

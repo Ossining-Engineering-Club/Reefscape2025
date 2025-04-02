@@ -1,7 +1,6 @@
 package frc.robot.commands.autoteleop;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -22,23 +21,26 @@ public class AutoNetAlgaeAuto extends SequentialCommandGroup {
     public AutoNetAlgaeAuto(Drive drive, Elevator elevator, Pivot pivot, AlgaeClaw algaeClaw) {
         Pose2d targetPoseBlue = new Pose2d(7.663, 5.039, Rotation2d.fromDegrees(90));
         Pose2d targetPoseRed = new Pose2d(9.925, 3.021, Rotation2d.fromDegrees(-90));
-        Command pathfindingCommandBlue = AutoBuilder.pathfindToPose(targetPoseBlue, AutoTeleopConstants.netAlignmentConstraints);
-        Command pathfindingCommandRed = AutoBuilder.pathfindToPose(targetPoseRed, AutoTeleopConstants.netAlignmentConstraints);
+        Command pathfindingCommandBlue =
+                AutoBuilder.pathfindToPose(
+                        targetPoseBlue, AutoTeleopConstants.netAlignmentConstraints);
+        Command pathfindingCommandRed =
+                AutoBuilder.pathfindToPose(
+                        targetPoseRed, AutoTeleopConstants.netAlignmentConstraints);
         addCommands(
-            new ConditionalCommand(
-                new SequentialCommandGroup(
-                    new ParallelCommandGroup(pathfindingCommandBlue, new GoToNetAlgaePosition(pivot, elevator)),
-                    algaeClaw.release(),
-                    new GoToStoredPosition(elevator, pivot)
-                ),
-                new SequentialCommandGroup(
-                    new ParallelCommandGroup(pathfindingCommandRed, new GoToNetAlgaePosition(pivot, elevator)),
-                    algaeClaw.release(),
-                    new GoToStoredPosition(elevator, pivot)
-                ),
-                    () ->
-                            DriverStation.getAlliance().orElse(Alliance.Blue)
-                                    == Alliance.Blue)
-        );
+                new ConditionalCommand(
+                        new SequentialCommandGroup(
+                                new ParallelCommandGroup(
+                                        pathfindingCommandBlue,
+                                        new GoToNetAlgaePosition(pivot, elevator)),
+                                algaeClaw.release(),
+                                new GoToStoredPosition(elevator, pivot)),
+                        new SequentialCommandGroup(
+                                new ParallelCommandGroup(
+                                        pathfindingCommandRed,
+                                        new GoToNetAlgaePosition(pivot, elevator)),
+                                algaeClaw.release(),
+                                new GoToStoredPosition(elevator, pivot)),
+                        () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue));
     }
 }

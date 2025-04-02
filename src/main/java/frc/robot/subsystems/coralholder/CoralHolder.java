@@ -75,6 +75,14 @@ public class CoralHolder extends SubsystemBase {
         io.setVoltage(reverseVoltageL23);
     }
 
+    public void reverseL4Auto() {
+        state = CoralHolderState.REVERSE;
+        if (Constants.currentMode == Mode.SIM) {
+            CoralVisualizer.shootCoral(false);
+        }
+        io.setVoltage(reverseVoltageL4Auto);
+    }
+
     public boolean hasCoral() {
         return photoelectricSensor.isTripped();
     }
@@ -114,6 +122,28 @@ public class CoralHolder extends SubsystemBase {
                     .andThen(Commands.runOnce(() -> this.stop(), this));
         } else {
             return Commands.runOnce(() -> this.reverse(), this)
+                    .andThen(Commands.waitUntil(() -> !this.hasCoral()))
+                    .andThen(
+                            Commands.waitTime(Seconds.of(CoralHolderConstants.releaseDelaySeconds)))
+                    .andThen(Commands.runOnce(() -> this.stop(), this));
+        }
+    }
+
+    public Command releaseAuto(Level level) {
+        if (level == Level.L1) {
+            return Commands.runOnce(() -> this.reverseL1(), this)
+                    .andThen(Commands.waitUntil(() -> !this.hasCoral()))
+                    .andThen(
+                            Commands.waitTime(Seconds.of(CoralHolderConstants.releaseDelaySeconds)))
+                    .andThen(Commands.runOnce(() -> this.stop(), this));
+        } else if (level == Level.L2 || level == Level.L3) {
+            return Commands.runOnce(() -> this.reverseL23(), this)
+                    .andThen(Commands.waitUntil(() -> !this.hasCoral()))
+                    .andThen(
+                            Commands.waitTime(Seconds.of(CoralHolderConstants.releaseDelaySeconds)))
+                    .andThen(Commands.runOnce(() -> this.stop(), this));
+        } else {
+            return Commands.runOnce(() -> this.reverseL4Auto(), this)
                     .andThen(Commands.waitUntil(() -> !this.hasCoral()))
                     .andThen(
                             Commands.waitTime(Seconds.of(CoralHolderConstants.releaseDelaySeconds)))
