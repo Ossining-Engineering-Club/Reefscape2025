@@ -71,12 +71,43 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                 depthOffset,
                                 false)
                         .get();
+        Pose2d targetPoseBluePrep =
+                GoToPositionSpecialized.getTargetPose(
+                                getTagIdOfPosition(config.position(), Alliance.Blue),
+                                sidewaysOffset,
+                                depthOffset,
+                                false)
+                        .get();
+        Pose2d targetPoseRedPrep =
+                GoToPositionSpecialized.getTargetPose(
+                                getTagIdOfPosition(config.position(), Alliance.Red),
+                                sidewaysOffset,
+                                depthOffset,
+                                false)
+                        .get();
+        targetPoseBluePrep =
+                new Pose2d(
+                        targetPoseBluePrep.getX() - 0.8,
+                        targetPoseBluePrep.getY() + 0.58,
+                        targetPoseBluePrep.getRotation());
+        targetPoseRedPrep =
+                new Pose2d(
+                        targetPoseRedPrep.getX() + 0.8,
+                        targetPoseRedPrep.getY() - 0.58,
+                        targetPoseRedPrep.getRotation());
         Command pathfindingCommandBlue =
                 AutoBuilder.pathfindToPose(
                         targetPoseBlue, reefCoralAutoPathfindingAlignmentConstraints, 0.0);
         Command pathfindingCommandRed =
                 AutoBuilder.pathfindToPose(
                         targetPoseRed, reefCoralAutoPathfindingAlignmentConstraints, 0.0);
+
+        Command pathfindingCommandBluePrep =
+                AutoBuilder.pathfindToPose(
+                        targetPoseBluePrep, reefCoralAutoPathfindingAlignmentConstraints, 1.0);
+        Command pathfindingCommandRedPrep =
+                AutoBuilder.pathfindToPose(
+                        targetPoseRedPrep, reefCoralAutoPathfindingAlignmentConstraints, 1.0);
 
         double height =
                 switch (level) {
@@ -100,6 +131,7 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                                             "initial target pose", targetPoseBlue)),
                                     new ParallelCommandGroup(
                                             new SequentialCommandGroup(
+                                                    pathfindingCommandBluePrep,
                                                     pathfindingCommandBlue.until(
                                                             () ->
                                                                     Math.hypot(
@@ -141,6 +173,7 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                                             "initial target pose", targetPoseRed)),
                                     new ParallelCommandGroup(
                                             new SequentialCommandGroup(
+                                                    pathfindingCommandRedPrep,
                                                     pathfindingCommandRed.until(
                                                             () ->
                                                                     Math.hypot(
@@ -191,6 +224,7 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                                             "initial target pose", targetPoseBlue)),
                                     new ParallelCommandGroup(
                                             new SequentialCommandGroup(
+                                                    pathfindingCommandBluePrep,
                                                     pathfindingCommandBlue.until(
                                                             () ->
                                                                     Math.hypot(
@@ -232,6 +266,7 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                                             "initial target pose", targetPoseRed)),
                                     new ParallelCommandGroup(
                                             new SequentialCommandGroup(
+                                                    pathfindingCommandRedPrep,
                                                     pathfindingCommandRed.until(
                                                             () ->
                                                                     Math.hypot(
