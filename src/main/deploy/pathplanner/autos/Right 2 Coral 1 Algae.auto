@@ -7,25 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Center Start"
+            "pathName": "Right Start"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "G_L4"
+            "name": "E_L4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "GH"
+            "name": "Coral Station Right"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "move back slightly"
+            "name": "D_L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CD"
           }
         },
         {

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AutoTeleopConstants.PositioningConfig;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
@@ -19,7 +20,6 @@ import frc.robot.FieldSimulationManager;
 import frc.robot.FieldSimulationManager.Objective;
 import frc.robot.commands.drive.DriveBackAlgae;
 import frc.robot.commands.gamepiecemanipulation.IntakeReefAlgae;
-import frc.robot.commands.gamepiecemanipulation.IntakeReefAlgaePrep;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
@@ -31,8 +31,8 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.Logger;
 
-public class AutoGetReefAlgae extends SequentialCommandGroup {
-    public AutoGetReefAlgae(
+public class AutoGetReefAlgaeWithDelay extends SequentialCommandGroup {
+    public AutoGetReefAlgaeWithDelay(
             PositioningConfig config,
             Pivot pivot,
             Elevator elevator,
@@ -127,9 +127,10 @@ public class AutoGetReefAlgae extends SequentialCommandGroup {
                                                                                         .upperAlgaeHeight),
                                                         Commands.runOnce(() -> {}),
                                                         () -> Constants.currentMode == Mode.SIM)),
-                                        new IntakeReefAlgaePrep(
-                                                height, pivot, elevator, algaeClaw)),
-                                new IntakeReefAlgae(height, pivot, elevator, algaeClaw),
+                                        new SequentialCommandGroup(
+                                                new WaitCommand(0.5),
+                                                new IntakeReefAlgae(
+                                                        height, pivot, elevator, algaeClaw))),
                                 new DriveBackAlgae(drive)),
                         new SequentialCommandGroup(
                                 new ParallelCommandGroup(
@@ -186,9 +187,10 @@ public class AutoGetReefAlgae extends SequentialCommandGroup {
                                                                                         .upperAlgaeHeight),
                                                         Commands.runOnce(() -> {}),
                                                         () -> Constants.currentMode == Mode.SIM)),
-                                        new IntakeReefAlgaePrep(
-                                                height, pivot, elevator, algaeClaw)),
-                                new IntakeReefAlgae(height, pivot, elevator, algaeClaw),
+                                        new SequentialCommandGroup(
+                                                new WaitCommand(0.5),
+                                                new IntakeReefAlgae(
+                                                        height, pivot, elevator, algaeClaw))),
                                 new DriveBackAlgae(drive)),
                         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue),
                 new ConditionalCommand(

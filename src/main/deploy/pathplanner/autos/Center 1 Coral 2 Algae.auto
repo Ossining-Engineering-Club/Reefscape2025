@@ -7,37 +7,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Start"
+            "pathName": "Center Start"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "J_L4"
+            "name": "G_L4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Coral Station Left"
+            "name": "GH"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "K_L4"
+            "name": "Process Algae"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Coral Station Left"
+            "name": "EFWithDelay"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L_L4"
+            "name": "Process Algae"
           }
         }
       ]

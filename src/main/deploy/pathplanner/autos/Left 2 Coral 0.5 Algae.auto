@@ -7,37 +7,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Start"
+            "pathName": "Left Start"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "E_L4"
+            "name": "J_L4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Coral Station Right"
+            "name": "Coral Station Left"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "D_L4"
+            "name": "K_L4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Coral Station Right"
+            "name": "KL"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "C_L4"
+            "name": "Store Arm"
           }
         }
       ]

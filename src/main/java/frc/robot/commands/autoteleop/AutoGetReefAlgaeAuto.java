@@ -19,7 +19,6 @@ import frc.robot.FieldSimulationManager;
 import frc.robot.FieldSimulationManager.Objective;
 import frc.robot.commands.drive.DriveBackAlgae;
 import frc.robot.commands.gamepiecemanipulation.IntakeReefAlgae;
-import frc.robot.commands.gamepiecemanipulation.IntakeReefAlgaePrep;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
@@ -31,8 +30,8 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.Logger;
 
-public class AutoGetReefAlgae extends SequentialCommandGroup {
-    public AutoGetReefAlgae(
+public class AutoGetReefAlgaeAuto extends SequentialCommandGroup {
+    public AutoGetReefAlgaeAuto(
             PositioningConfig config,
             Pivot pivot,
             Elevator elevator,
@@ -127,9 +126,7 @@ public class AutoGetReefAlgae extends SequentialCommandGroup {
                                                                                         .upperAlgaeHeight),
                                                         Commands.runOnce(() -> {}),
                                                         () -> Constants.currentMode == Mode.SIM)),
-                                        new IntakeReefAlgaePrep(
-                                                height, pivot, elevator, algaeClaw)),
-                                new IntakeReefAlgae(height, pivot, elevator, algaeClaw),
+                                        new IntakeReefAlgae(height, pivot, elevator, algaeClaw)),
                                 new DriveBackAlgae(drive)),
                         new SequentialCommandGroup(
                                 new ParallelCommandGroup(
@@ -186,9 +183,7 @@ public class AutoGetReefAlgae extends SequentialCommandGroup {
                                                                                         .upperAlgaeHeight),
                                                         Commands.runOnce(() -> {}),
                                                         () -> Constants.currentMode == Mode.SIM)),
-                                        new IntakeReefAlgaePrep(
-                                                height, pivot, elevator, algaeClaw)),
-                                new IntakeReefAlgae(height, pivot, elevator, algaeClaw),
+                                        new IntakeReefAlgae(height, pivot, elevator, algaeClaw)),
                                 new DriveBackAlgae(drive)),
                         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue),
                 new ConditionalCommand(

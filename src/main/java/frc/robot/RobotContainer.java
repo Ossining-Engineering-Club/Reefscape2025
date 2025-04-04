@@ -23,6 +23,8 @@ import frc.robot.AutoTeleopConstants.Level;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
+import frc.robot.commands.autoteleop.AutoGetReefAlgaeAuto;
+import frc.robot.commands.autoteleop.AutoGetReefAlgaeWithDelay;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
 import frc.robot.commands.autoteleop.AutoPlaceCoralAuto;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
@@ -494,7 +496,12 @@ public class RobotContainer {
         for (PositioningConfig config : reefAlgaePositioningConfigs) {
             NamedCommands.registerCommand(
                     config.namedCommandName(),
-                    new AutoGetReefAlgae(config, pivot, elevator, algaeClaw, drive, vision, led)
+                    new AutoGetReefAlgaeAuto(config, pivot, elevator, algaeClaw, drive, vision, led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
+            NamedCommands.registerCommand(
+                    config.namedCommandName() + "WithDelay",
+                    new AutoGetReefAlgaeWithDelay(
+                                    config, pivot, elevator, algaeClaw, drive, vision, led)
                             .finallyDo(() -> led.setIsPathfinding(false)));
             config.trigger()
                     .onTrue(
@@ -537,6 +544,8 @@ public class RobotContainer {
                                                         : new ChassisSpeeds(-1, 0, 0)),
                                 drive),
                         Commands.waitSeconds(0.5)));
+
+        NamedCommands.registerCommand("Store Arm", new GoToStoredPosition(elevator, pivot));
     }
 
     /**
