@@ -40,7 +40,7 @@ public class PivotConstants {
     public static final double knockL4CoralAngle = 0.272;
     public static final double preIntakeReefAlgaeAngle = Units.degreesToRadians(-90);
     public static final double intakeReefAlgaeAngle = -2.9073;
-    public static final double removeReefAlgaeAngle = -2.82 + Units.degreesToRadians(5.0);
+    public static final double removeReefAlgaeAngle = -2.82 + Units.degreesToRadians(10.0);
     public static final double processorAngle = Units.degreesToRadians(47.0);
     public static final double netAngle = Units.degreesToRadians(-115.0);
     public static final double groundAlgaeAngle = -3.9744;
