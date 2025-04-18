@@ -28,7 +28,7 @@ public class ElevatorConstants {
 
     // height setpoints
     public static final double startHeight = 0.0;
-    public static final double maxHeight = 1.215;
+    public static final double maxHeight = 1.205;
     public static final double minHeight = 0.0;
     public static final double storedHeight = 0.0;
     public static final double l1Height = Units.inchesToMeters(3.0);
@@ -39,7 +39,7 @@ public class ElevatorConstants {
     public static final double intakeCoralAutoHeight = Units.inchesToMeters(0);
     public static final double lowerAlgaeHeight = Units.inchesToMeters(0);
     public static final double upperAlgaeHeight = Units.inchesToMeters(16);
-    public static final double netHeight = 1.215;
+    public static final double netHeight = 1.205;
     public static final double processorHeight = 0.0;
     public static final double groundAlgaeHeight = 0.0;
 
