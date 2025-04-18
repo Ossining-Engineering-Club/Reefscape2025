@@ -3,6 +3,7 @@ package frc.robot.commands.autoteleop;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,12 +23,12 @@ import frc.robot.subsystems.pivot.Pivot;
 public class AutoNetAlgaeAuto extends SequentialCommandGroup {
     private final Pose2d targetPoseBlue =
             new Pose2d(
-                    FieldConstants.centerX - 1.0 /*7.636*/,
+                    FieldConstants.centerX - 1.0 + Units.inchesToMeters(3.0) /*7.636*/,
                     FieldConstants.centerY + 1.0 /*5.098*/,
                     Rotation2d.fromDegrees(90.0));
     private final Pose2d targetPoseRed =
             new Pose2d(
-                    FieldConstants.centerX + 1.0 /*9.950*/,
+                    FieldConstants.centerX + 1.0 - Units.inchesToMeters(3.0) /*9.950*/,
                     FieldConstants.centerY - 1.0 /*3.036*/,
                     Rotation2d.fromDegrees(-90.0));
 
