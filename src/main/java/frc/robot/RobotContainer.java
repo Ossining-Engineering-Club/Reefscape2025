@@ -25,6 +25,7 @@ import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
 import frc.robot.commands.autoteleop.AutoGetReefAlgaeAuto;
 import frc.robot.commands.autoteleop.AutoGetReefAlgaeWithDelay;
+import frc.robot.commands.autoteleop.AutoGetReefAlgaeWithPrepAndDelay;
 import frc.robot.commands.autoteleop.AutoNetAlgaeAuto;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
 import frc.robot.commands.autoteleop.AutoPlaceCoralAuto;
@@ -503,6 +504,11 @@ public class RobotContainer {
             NamedCommands.registerCommand(
                     config.namedCommandName() + "WithDelay",
                     new AutoGetReefAlgaeWithDelay(
+                                    config, pivot, elevator, algaeClaw, drive, vision, led)
+                            .finallyDo(() -> led.setIsPathfinding(false)));
+            NamedCommands.registerCommand(
+                    config.namedCommandName() + "WithPrepAndDelay",
+                    new AutoGetReefAlgaeWithPrepAndDelay(
                                     config, pivot, elevator, algaeClaw, drive, vision, led)
                             .finallyDo(() -> led.setIsPathfinding(false)));
             config.trigger()
