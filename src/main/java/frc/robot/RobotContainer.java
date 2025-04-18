@@ -25,12 +25,14 @@ import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
 import frc.robot.commands.autoteleop.AutoGetReefAlgaeAuto;
 import frc.robot.commands.autoteleop.AutoGetReefAlgaeWithDelay;
+import frc.robot.commands.autoteleop.AutoNetAlgaeAuto;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
 import frc.robot.commands.autoteleop.AutoPlaceCoralAuto;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
 import frc.robot.commands.climber.ExtendClimber;
 import frc.robot.commands.climber.RetractClimber;
 import frc.robot.commands.climber.StoreClimber;
+import frc.robot.commands.drive.DriveBackAfterNet;
 import frc.robot.commands.drive.DriveCommands;
 import frc.robot.commands.elevator.ElevatorGoToHeight;
 import frc.robot.commands.gamepiecemanipulation.GoToNetAlgaePosition;
@@ -531,6 +533,12 @@ public class RobotContainer {
                                         drive,
                                         led)
                                 .finallyDo(() -> led.setIsPathfinding(false)));
+
+        NamedCommands.registerCommand(
+                "Net Algae",
+                new AutoNetAlgaeAuto(drive, elevator, pivot, algaeClaw, led)
+                        .finallyDo(() -> led.setIsPathfinding(false)));
+        NamedCommands.registerCommand("Drive Back After Net", new DriveBackAfterNet(drive));
 
         NamedCommands.registerCommand(
                 "move back slightly",

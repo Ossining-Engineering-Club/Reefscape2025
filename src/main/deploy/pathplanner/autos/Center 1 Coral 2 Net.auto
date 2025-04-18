@@ -1,0 +1,68 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center Start"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "G_L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GH"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Net Algae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IJ"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Net Algae"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Store Arm"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Drive Back After Net"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
