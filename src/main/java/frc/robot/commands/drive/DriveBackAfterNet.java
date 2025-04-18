@@ -11,7 +11,7 @@ public class DriveBackAfterNet extends SequentialCommandGroup {
         addCommands(
                 Commands.race(
                                 Commands.run(() -> drive.runVelocity(new ChassisSpeeds(0, 1, 0))),
-                                new WaitCommand(1.0))
+                                new WaitCommand(1.5))
                         .andThen(Commands.runOnce(() -> drive.stop())));
     }
 }

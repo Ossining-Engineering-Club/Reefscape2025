@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AutoTeleopConstants;
+import frc.robot.FieldConstants;
 import frc.robot.commands.gamepiecemanipulation.GoToNetAlgaePosition;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.drive.Drive;
@@ -19,8 +21,16 @@ import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.pivot.Pivot;
 
 public class AutoNetAlgaeAuto extends SequentialCommandGroup {
-    private final Pose2d targetPoseBlue = new Pose2d(7.636, 5.098, Rotation2d.fromDegrees(90.0));
-    private final Pose2d targetPoseRed = new Pose2d(9.950, 3.036, Rotation2d.fromDegrees(-90.0));
+    private final Pose2d targetPoseBlue =
+            new Pose2d(
+                    FieldConstants.centerX - 1.0 /*7.636*/,
+                    FieldConstants.centerY + 1.0 /*5.098*/,
+                    Rotation2d.fromDegrees(90.0));
+    private final Pose2d targetPoseRed =
+            new Pose2d(
+                    FieldConstants.centerX + 1.0 /*9.950*/,
+                    FieldConstants.centerY - 1.0 /*3.036*/,
+                    Rotation2d.fromDegrees(-90.0));
 
     public AutoNetAlgaeAuto(
             Drive drive, Elevator elevator, Pivot pivot, AlgaeClaw algaeClaw, LED led) {
@@ -36,13 +46,15 @@ public class AutoNetAlgaeAuto extends SequentialCommandGroup {
                 new ConditionalCommand(
                         new SequentialCommandGroup(
                                 new ParallelCommandGroup(
-                                        pathfindingCommandBlue,
-                                        new GoToNetAlgaePosition(pivot, elevator)),
+                                                pathfindingCommandBlue,
+                                                new GoToNetAlgaePosition(pivot, elevator))
+                                        .raceWith(new WaitCommand(5.0)),
                                 algaeClaw.release()),
                         new SequentialCommandGroup(
                                 new ParallelCommandGroup(
-                                        pathfindingCommandRed,
-                                        new GoToNetAlgaePosition(pivot, elevator)),
+                                                pathfindingCommandRed,
+                                                new GoToNetAlgaePosition(pivot, elevator))
+                                        .raceWith(new WaitCommand(5.0)),
                                 algaeClaw.release()),
                         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue));
     }
