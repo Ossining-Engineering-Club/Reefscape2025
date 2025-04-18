@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AutoTeleopConstants;
 import frc.robot.FieldConstants;
 import frc.robot.commands.gamepiecemanipulation.GoToNetAlgaePosition;
@@ -46,15 +45,13 @@ public class AutoNetAlgaeAuto extends SequentialCommandGroup {
                 new ConditionalCommand(
                         new SequentialCommandGroup(
                                 new ParallelCommandGroup(
-                                                pathfindingCommandBlue,
-                                                new GoToNetAlgaePosition(pivot, elevator))
-                                        .raceWith(new WaitCommand(5.0)),
+                                        pathfindingCommandBlue,
+                                        new GoToNetAlgaePosition(pivot, elevator)),
                                 algaeClaw.release()),
                         new SequentialCommandGroup(
                                 new ParallelCommandGroup(
-                                                pathfindingCommandRed,
-                                                new GoToNetAlgaePosition(pivot, elevator))
-                                        .raceWith(new WaitCommand(5.0)),
+                                        pathfindingCommandRed,
+                                        new GoToNetAlgaePosition(pivot, elevator)),
                                 algaeClaw.release()),
                         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue));
     }
