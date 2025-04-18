@@ -37,26 +37,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Net Algae"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Store Arm"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Drive Back After Net"
-                }
-              }
-            ]
+            "name": "Store Arm"
           }
         }
       ]
