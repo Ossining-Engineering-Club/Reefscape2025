@@ -4,35 +4,26 @@ import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.AutoTeleopConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.AutoTeleopConstants.Level;
 import frc.robot.Constants.Mode;
-import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
-import frc.robot.commands.autoteleop.AutoGetReefAlgaeAuto;
-import frc.robot.commands.autoteleop.AutoGetReefAlgaeWithDelay;
-import frc.robot.commands.autoteleop.AutoNetAlgaeAuto;
 import frc.robot.commands.autoteleop.AutoPlaceCoral;
-import frc.robot.commands.autoteleop.AutoPlaceCoralAuto;
 import frc.robot.commands.autoteleop.AutoProcessAlgae;
 import frc.robot.commands.climber.ExtendClimber;
 import frc.robot.commands.climber.RetractClimber;
 import frc.robot.commands.climber.StoreClimber;
-import frc.robot.commands.drive.DriveBackAfterNet;
 import frc.robot.commands.drive.DriveCommands;
 import frc.robot.commands.elevator.ElevatorGoToHeight;
 import frc.robot.commands.gamepiecemanipulation.GoToNetAlgaePosition;
@@ -267,9 +258,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
                 DriveCommands.joystickDrive(
                         drive,
-                        () -> -1.0 * controller.getLeftY(),
-                        () -> -1.0 * controller.getLeftX(),
-                        () -> -1.0 * controller.getRightX()));
+                        () -> -Math.sqrt(0.5) * controller.getLeftY(),
+                        () -> -Math.sqrt(0.5) * controller.getLeftX(),
+                        () -> -Math.sqrt(0.5) * controller.getRightX()));
 
         // Reset gyro to 0° when A button is pressed
         controller
@@ -342,7 +333,7 @@ public class RobotContainer {
                 Commands.runOnce(
                         () ->
                                 elevator.setVoltage(
-                                        1.0
+                                        0.6
                                                 * 12.0
                                                 * MathUtil.applyDeadband(
                                                         -mechanismController.getRightY(), 0.2)),
@@ -352,7 +343,7 @@ public class RobotContainer {
                 Commands.runOnce(
                         () ->
                                 pivot.setVoltage(
-                                        0.5
+                                        0.6
                                                 * 12.0
                                                 * MathUtil.applyDeadband(
                                                         -mechanismController.getLeftY(), 0.2)),
@@ -394,54 +385,6 @@ public class RobotContainer {
     private void configurePathfindingCommands()
             throws FileVersionException, IOException, ParseException {
         for (PositioningConfig config : reefCoralPositioningConfigs) {
-            // NamedCommands.registerCommand(
-            //         config.namedCommandName() + "_L1",
-            //         new AutoPlaceCoral(
-            //                         config,
-            //                         Level.L1,
-            //                         pivot,
-            //                         elevator,
-            //                         coralHolder,
-            //                         drive,
-            //                         vision,
-            //                         led)
-            //                 .finallyDo(() -> led.setIsPathfinding(false)));
-            NamedCommands.registerCommand(
-                    config.namedCommandName() + "_L2",
-                    new AutoPlaceCoralAuto(
-                                    config,
-                                    Level.L2,
-                                    pivot,
-                                    elevator,
-                                    coralHolder,
-                                    drive,
-                                    vision,
-                                    led)
-                            .finallyDo(() -> led.setIsPathfinding(false)));
-            NamedCommands.registerCommand(
-                    config.namedCommandName() + "_L3",
-                    new AutoPlaceCoralAuto(
-                                    config,
-                                    Level.L3,
-                                    pivot,
-                                    elevator,
-                                    coralHolder,
-                                    drive,
-                                    vision,
-                                    led)
-                            .finallyDo(() -> led.setIsPathfinding(false)));
-            NamedCommands.registerCommand(
-                    config.namedCommandName() + "_L4",
-                    new AutoPlaceCoralAuto(
-                                    config,
-                                    Level.L4,
-                                    pivot,
-                                    elevator,
-                                    coralHolder,
-                                    drive,
-                                    vision,
-                                    led)
-                            .finallyDo(() -> led.setIsPathfinding(false)));
             // config.trigger()
             //         .and(l1Button)
             //         .onTrue(
@@ -496,32 +439,12 @@ public class RobotContainer {
                                     .finallyDo(() -> led.setIsPathfinding(false)));
         }
         for (PositioningConfig config : reefAlgaePositioningConfigs) {
-            NamedCommands.registerCommand(
-                    config.namedCommandName(),
-                    new AutoGetReefAlgaeAuto(config, pivot, elevator, algaeClaw, drive, vision, led)
-                            .finallyDo(() -> led.setIsPathfinding(false)));
-            NamedCommands.registerCommand(
-                    config.namedCommandName() + "WithDelay",
-                    new AutoGetReefAlgaeWithDelay(
-                                    config, pivot, elevator, algaeClaw, drive, vision, led)
-                            .finallyDo(() -> led.setIsPathfinding(false)));
             config.trigger()
                     .onTrue(
                             new AutoGetReefAlgae(
                                             config, pivot, elevator, algaeClaw, drive, vision, led)
                                     .finallyDo(() -> led.setIsPathfinding(false)));
         }
-        for (PositioningConfig config : coralStationPositioningConfigs) {
-            NamedCommands.registerCommand(
-                    config.namedCommandName(),
-                    new AutoGetCoral(config, pivot, elevator, coralHolder, drive, vision, led)
-                            .finallyDo(() -> led.setIsPathfinding(false)));
-        }
-        NamedCommands.registerCommand(
-                processorPositioningConfig.namedCommandName(),
-                new AutoProcessAlgae(
-                                processorPositioningConfig, pivot, elevator, algaeClaw, drive, led)
-                        .finallyDo(() -> led.setIsPathfinding(false)));
         processorPositioningConfig
                 .trigger()
                 .onTrue(
@@ -533,27 +456,6 @@ public class RobotContainer {
                                         drive,
                                         led)
                                 .finallyDo(() -> led.setIsPathfinding(false)));
-
-        NamedCommands.registerCommand(
-                "Net Algae",
-                new AutoNetAlgaeAuto(drive, elevator, pivot, algaeClaw, led)
-                        .finallyDo(() -> led.setIsPathfinding(false)));
-        NamedCommands.registerCommand("Drive Back After Net", new DriveBackAfterNet(drive));
-
-        NamedCommands.registerCommand(
-                "move back slightly",
-                Commands.race(
-                        Commands.run(
-                                () ->
-                                        drive.runVelocityFieldRelative(
-                                                (DriverStation.getAlliance().orElse(Alliance.Blue)
-                                                                == Alliance.Blue)
-                                                        ? new ChassisSpeeds(1, 0, 0)
-                                                        : new ChassisSpeeds(-1, 0, 0)),
-                                drive),
-                        Commands.waitSeconds(0.5)));
-
-        NamedCommands.registerCommand("Store Arm", new GoToStoredPosition(elevator, pivot));
     }
 
     /**
