@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.AutoTeleopConstants.Level;
+import frc.robot.AutoTeleopConstants.PositioningConfig;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.autoteleop.AutoGetCoral;
 import frc.robot.commands.autoteleop.AutoGetReefAlgae;
@@ -39,11 +40,11 @@ import frc.robot.commands.gamepiecemanipulation.GoToNetAlgaePosition;
 import frc.robot.commands.gamepiecemanipulation.GoToStoredPosition;
 import frc.robot.commands.gamepiecemanipulation.IntakeCoral;
 import frc.robot.commands.gamepiecemanipulation.IntakeGroundAlgae;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.algaeclaw.AlgaeClaw;
 import frc.robot.subsystems.algaeclaw.AlgaeClawConstants;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIO;
 import frc.robot.subsystems.algaeclaw.AlgaeClawIOReal;
-import frc.robot.subsystems.algaeclaw.AlgaeClawIOSim;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOReal;
@@ -51,18 +52,14 @@ import frc.robot.subsystems.coralholder.CoralHolder;
 import frc.robot.subsystems.coralholder.CoralHolderConstants;
 import frc.robot.subsystems.coralholder.CoralHolderIO;
 import frc.robot.subsystems.coralholder.CoralHolderIOReal;
-import frc.robot.subsystems.coralholder.CoralHolderIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeonIMU;
-import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
-import frc.robot.subsystems.drive.ModuleIOReal;
-import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIORealTalonFX;
-import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.gamepiecevisualizers.AlgaeVisualizer;
 import frc.robot.subsystems.gamepiecevisualizers.AlgaeVisualizer.AlgaeState;
 import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer;
@@ -72,16 +69,13 @@ import frc.robot.subsystems.led.LEDIO;
 import frc.robot.subsystems.led.LEDIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOReal;
-import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOSim;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIO;
-import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOReal;
-import frc.robot.subsystems.vision.VisionIOSim;
 import java.io.IOException;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -124,10 +118,10 @@ public class RobotContainer {
                 drive =
                         new Drive(
                                 new GyroIOPigeonIMU(),
-                                new ModuleIOReal(0),
-                                new ModuleIOReal(1),
-                                new ModuleIOReal(2),
-                                new ModuleIOReal(3),
+                                new ModuleIOTalonFX(TunerConstants.FrontLeft),
+                                new ModuleIOTalonFX(TunerConstants.FrontRight),
+                                new ModuleIOTalonFX(TunerConstants.BackLeft),
+                                new ModuleIOTalonFX(TunerConstants.BackRight),
                                 vision,
                                 (robotPose) -> {});
                 pivot = new Pivot(new PivotIOTalonFX());
@@ -154,48 +148,49 @@ public class RobotContainer {
                 // climber = new Climber(new ClimberIO() {});
                 break;
 
-            case SIM:
+                // case SIM:
                 // Sim robot, instantiate physics sim IO implementations
-                driveSimulation =
-                        new SwerveDriveSimulation(
-                                Drive.mapleSimConfig, new Pose2d(0, 0, new Rotation2d()));
-                SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-                vision =
-                        new Vision(
-                                new VisionIOSim(
-                                        VisionConstants.FRONT_LEFT_CAMERA_CONFIG,
-                                        driveSimulation::getSimulatedDriveTrainPose),
-                                new VisionIOSim(
-                                        VisionConstants.FRONT_RIGHT_CAMERA_CONFIG,
-                                        driveSimulation::getSimulatedDriveTrainPose),
-                                new VisionIOSim(
-                                        VisionConstants.BACK_LEFT_CAMERA_CONFIG,
-                                        driveSimulation::getSimulatedDriveTrainPose),
-                                new VisionIOSim(
-                                        VisionConstants.BACK_RIGHT_CAMERA_CONFIG,
-                                        driveSimulation::getSimulatedDriveTrainPose));
-                drive =
-                        new Drive(
-                                new GyroIOSim(driveSimulation.getGyroSimulation()),
-                                new ModuleIOSim(driveSimulation.getModules()[0]),
-                                new ModuleIOSim(driveSimulation.getModules()[1]),
-                                new ModuleIOSim(driveSimulation.getModules()[2]),
-                                new ModuleIOSim(driveSimulation.getModules()[3]),
-                                vision,
-                                driveSimulation::setSimulationWorldPose);
-                pivot = new Pivot(new PivotIOSim());
-                elevator = new Elevator(new ElevatorIOSim());
-                coralHolder =
-                        new CoralHolder(
-                                new CoralHolderIOSim(),
-                                new PhotoelectricSensorIOSim(CoralHolderConstants.coralHolderPEId));
-                algaeClaw =
-                        new AlgaeClaw(
-                                new AlgaeClawIOSim(),
-                                new PhotoelectricSensorIOSim(AlgaeClawConstants.algaeClawPEID));
-                climber = new Climber(new ClimberIO() {});
-                led = new LED(new LEDIO() {}, algaeClaw, coralHolder);
-                break;
+                // driveSimulation =
+                //         new SwerveDriveSimulation(
+                //                 Drive.mapleSimConfig, new Pose2d(0, 0, new Rotation2d()));
+                // SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+                // vision =
+                //         new Vision(
+                //                 new VisionIOSim(
+                //                         VisionConstants.FRONT_LEFT_CAMERA_CONFIG,
+                //                         driveSimulation::getSimulatedDriveTrainPose),
+                //                 new VisionIOSim(
+                //                         VisionConstants.FRONT_RIGHT_CAMERA_CONFIG,
+                //                         driveSimulation::getSimulatedDriveTrainPose),
+                //                 new VisionIOSim(
+                //                         VisionConstants.BACK_LEFT_CAMERA_CONFIG,
+                //                         driveSimulation::getSimulatedDriveTrainPose),
+                //                 new VisionIOSim(
+                //                         VisionConstants.BACK_RIGHT_CAMERA_CONFIG,
+                //                         driveSimulation::getSimulatedDriveTrainPose));
+                // drive =
+                //         new Drive(
+                //                 new GyroIOSim(driveSimulation.getGyroSimulation()),
+                //                 new ModuleIOSim(driveSimulation.getModules()[0]),
+                //                 new ModuleIOSim(driveSimulation.getModules()[1]),
+                //                 new ModuleIOSim(driveSimulation.getModules()[2]),
+                //                 new ModuleIOSim(driveSimulation.getModules()[3]),
+                //                 vision,
+                //                 driveSimulation::setSimulationWorldPose);
+                // pivot = new Pivot(new PivotIOSim());
+                // elevator = new Elevator(new ElevatorIOSim());
+                // coralHolder =
+                //         new CoralHolder(
+                //                 new CoralHolderIOSim(),
+                //                 new
+                // PhotoelectricSensorIOSim(CoralHolderConstants.coralHolderPEId));
+                // algaeClaw =
+                //         new AlgaeClaw(
+                //                 new AlgaeClawIOSim(),
+                //                 new PhotoelectricSensorIOSim(AlgaeClawConstants.algaeClawPEID));
+                // climber = new Climber(new ClimberIO() {});
+                // led = new LED(new LEDIO() {}, algaeClaw, coralHolder);
+                //    break;
 
             default:
                 // Replayed robot, disable IO implementations

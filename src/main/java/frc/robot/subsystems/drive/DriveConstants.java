@@ -1,8 +1,5 @@
 package frc.robot.subsystems.drive;
 
-import com.pathplanner.lib.config.ModuleConfig;
-import com.pathplanner.lib.config.RobotConfig;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 
@@ -19,30 +16,6 @@ public class DriveConstants {
                 new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
                 new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)
             };
-
-    // Zeroed rotation values for each module, see setup instructions
-    public static final Rotation2d frontLeftZeroRotation = new Rotation2d(-2.415);
-    public static final Rotation2d frontRightZeroRotation = new Rotation2d(-2.896 + Math.PI);
-    public static final Rotation2d backLeftZeroRotation = new Rotation2d(-2.950);
-    public static final Rotation2d backRightZeroRotation = new Rotation2d(-0.510 + Math.PI);
-
-    // Device CAN IDs
-    public static final int pigeonCanId = 13;
-
-    public static final int frontLeftDriveCanId = 2;
-    public static final int frontRightDriveCanId = 3;
-    public static final int backLeftDriveCanId = 1;
-    public static final int backRightDriveCanId = 4;
-
-    public static final int frontLeftTurnCanId = 6;
-    public static final int frontRightTurnCanId = 7;
-    public static final int backLeftTurnCanId = 5;
-    public static final int backRightTurnCanId = 8;
-
-    public static final int frontLeftAbsCanId = 10;
-    public static final int frontRightAbsCanId = 11;
-    public static final int backLeftAbsCanId = 9;
-    public static final int backRightAbsCanId = 12;
 
     // Drive motor configuration
     public static final int driveMotorCurrentLimit = 48;
@@ -86,16 +59,4 @@ public class DriveConstants {
     public static final double robotMassKg = 52.806;
     public static final double robotMOI = 4.14;
     public static final double wheelCOF = 1.0;
-    public static final RobotConfig ppConfig =
-            new RobotConfig(
-                    robotMassKg,
-                    robotMOI,
-                    new ModuleConfig(
-                            wheelRadiusMeters,
-                            maxSpeedMetersPerSec,
-                            wheelCOF,
-                            driveGearbox.withReduction(driveMotorReduction),
-                            driveMotorCurrentLimit,
-                            1),
-                    moduleTranslations);
 }

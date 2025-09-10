@@ -85,31 +85,27 @@ public class ModuleIOSim implements ModuleIO {
         inputs.driveVelocityRadPerSec =
                 moduleSimulation.getDriveWheelFinalSpeed().in(RadiansPerSecond);
         inputs.driveAppliedVolts = driveAppliedVolts;
-        inputs.driveStatorCurrent =
-                Math.abs(moduleSimulation.getDriveMotorStatorCurrent().in(Amps));
-        inputs.driveSupplyCurrent =
-                Math.abs(moduleSimulation.getDriveMotorSupplyCurrent().in(Amps));
+        inputs.driveCurrentAmps = Math.abs(moduleSimulation.getDriveMotorSupplyCurrent().in(Amps));
 
         // Update turn inputs
         inputs.turnPosition = moduleSimulation.getSteerAbsoluteFacing();
         inputs.turnVelocityRadPerSec =
                 moduleSimulation.getSteerAbsoluteEncoderSpeed().in(RadiansPerSecond);
         inputs.turnAppliedVolts = turnAppliedVolts;
-        inputs.turnStatorCurrent = Math.abs(moduleSimulation.getSteerMotorStatorCurrent().in(Amps));
-        inputs.turnSupplyCurrent = Math.abs(moduleSimulation.getSteerMotorSupplyCurrent().in(Amps));
+        inputs.turnCurrentAmps = Math.abs(moduleSimulation.getSteerMotorStatorCurrent().in(Amps));
     }
 
-    @Override
-    public void setDriveVoltage(double voltage) {
-        driveClosedLoop = false;
-        driveAppliedVolts = voltage;
-    }
+    // @Override
+    // public void setDriveVoltage(double voltage) {
+    //     driveClosedLoop = false;
+    //     driveAppliedVolts = voltage;
+    // }
 
-    @Override
-    public void setTurnVoltage(double voltage) {
-        turnClosedLoop = false;
-        turnAppliedVolts = voltage;
-    }
+    // @Override
+    // public void setTurnVoltage(double voltage) {
+    //     turnClosedLoop = false;
+    //     turnAppliedVolts = voltage;
+    // }
 
     @Override
     public void setTurnPosition(Rotation2d rotation) {
