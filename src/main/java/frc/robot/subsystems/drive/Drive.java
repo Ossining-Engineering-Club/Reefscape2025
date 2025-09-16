@@ -71,50 +71,12 @@ public class Drive extends SubsystemBase {
                                     turnGearbox,
                                     driveMotorReduction,
                                     turnMotorReduction,
-                                    Volts.of(0.01),
-                                    Volts.of(0.01),
+                                    driveFrictionVoltage,
+                                    steerFrictionVoltage,
                                     Meters.of(wheelRadiusMeters),
                                     KilogramSquareMeters.of(0.01),
                                     wheelCOF))
                     .withBumperSize(Inches.of(3 + 32 + 3), Inches.of(3 + 27 + 3));
-
-    // TunerConstants doesn't include these constants, so they are declared locally
-    static final double ODOMETRY_FREQUENCY =
-            new CANBus(TunerConstants.DrivetrainConstants.CANBusName).isNetworkFD() ? 250.0 : 100.0;
-    public static final double DRIVE_BASE_RADIUS =
-            Math.max(
-                    Math.max(
-                            Math.hypot(
-                                    TunerConstants.FrontLeft.LocationX,
-                                    TunerConstants.FrontLeft.LocationY),
-                            Math.hypot(
-                                    TunerConstants.FrontRight.LocationX,
-                                    TunerConstants.FrontRight.LocationY)),
-                    Math.max(
-                            Math.hypot(
-                                    TunerConstants.BackLeft.LocationX,
-                                    TunerConstants.BackLeft.LocationY),
-                            Math.hypot(
-                                    TunerConstants.BackRight.LocationX,
-                                    TunerConstants.BackRight.LocationY)));
-
-    // PathPlanner config constants
-    private static final double ROBOT_MASS_KG = 52.806;
-    private static final double ROBOT_MOI = 4.14;
-    private static final double WHEEL_COF = 1.0;
-    private static final RobotConfig PP_CONFIG =
-            new RobotConfig(
-                    ROBOT_MASS_KG,
-                    ROBOT_MOI,
-                    new ModuleConfig(
-                            TunerConstants.FrontLeft.WheelRadius,
-                            TunerConstants.kSpeedAt12Volts.in(MetersPerSecond),
-                            WHEEL_COF,
-                            DCMotor.getKrakenX60(1)
-                                    .withReduction(TunerConstants.FrontLeft.DriveMotorGearRatio),
-                            TunerConstants.FrontLeft.SlipCurrent,
-                            1),
-                    getModuleTranslations());
 
     static final Lock odometryLock = new ReentrantLock();
     private final GyroIO gyroIO;
@@ -173,8 +135,8 @@ public class Drive extends SubsystemBase {
                 this::getChassisSpeeds,
                 this::runVelocity,
                 new PPHolonomicDriveController(
-                        new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
-                PP_CONFIG,
+                        new PIDConstants(7.0, 0.0, 0.0), new PIDConstants(6.0, 0.0, 0.0)),
+                ppConfig,
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this);
         Pathfinding.setPathfinder(new LocalADStarAK());
@@ -414,7 +376,9 @@ public class Drive extends SubsystemBase {
 
     /** Resets the current odometry pose. */
     public void setPose(Pose2d pose) {
+        resetSimulationPoseCallBack.accept(pose);
         poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
+        specializedPoseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
     }
 
     /** Returns the maximum linear speed in meters per sec. */
@@ -424,7 +388,7 @@ public class Drive extends SubsystemBase {
 
     /** Returns the maximum angular speed in radians per sec. */
     public double getMaxAngularSpeedRadPerSec() {
-        return getMaxLinearSpeedMetersPerSec() / DRIVE_BASE_RADIUS;
+        return getMaxLinearSpeedMetersPerSec() / driveBaseRadius;
     }
 
     /** Returns an array of module translations. */

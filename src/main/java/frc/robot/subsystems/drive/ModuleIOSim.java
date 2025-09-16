@@ -34,11 +34,11 @@ public class ModuleIOSim implements ModuleIO {
         driveSim =
                 moduleSimulation
                         .useGenericMotorControllerForDrive()
-                        .withCurrentLimit(Amps.of(driveMotorCurrentLimit));
+                        .withCurrentLimit(Amps.of(driveMotorStatorCurrentLimit));
         turnSim =
                 moduleSimulation
                         .useGenericControllerForSteer()
-                        .withCurrentLimit(Amps.of(turnMotorCurrentLimit));
+                        .withCurrentLimit(Amps.of(turnMotorStatorCurrentLimit));
         // Create drive and turn sim models
         // driveSim =
         //     new DCMotorSim(
@@ -95,17 +95,24 @@ public class ModuleIOSim implements ModuleIO {
         inputs.turnCurrentAmps = Math.abs(moduleSimulation.getSteerMotorStatorCurrent().in(Amps));
     }
 
-    // @Override
-    // public void setDriveVoltage(double voltage) {
-    //     driveClosedLoop = false;
-    //     driveAppliedVolts = voltage;
-    // }
+    @Override
+    public void setDriveOpenLoop(double voltage) {
+        driveClosedLoop = false;
+        driveAppliedVolts = voltage;
+    }
 
-    // @Override
-    // public void setTurnVoltage(double voltage) {
-    //     turnClosedLoop = false;
-    //     turnAppliedVolts = voltage;
-    // }
+    @Override
+    public void setTurnOpenLoop(double voltage) {
+        turnClosedLoop = false;
+        turnAppliedVolts = voltage;
+    }
+
+    @Override
+    public void setDriveVelocity(double velocityRadPerSec) {
+        driveClosedLoop = true;
+        driveFFVolts = DriveConstants.driveSimKs * Math.signum(velocityRadPerSec) + DriveConstants.driveSimKv * velocityRadPerSec;
+        driveController.setSetpoint(velocityRadPerSec);
+    }
 
     @Override
     public void setTurnPosition(Rotation2d rotation) {

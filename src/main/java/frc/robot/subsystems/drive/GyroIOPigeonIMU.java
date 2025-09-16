@@ -35,7 +35,7 @@ public class GyroIOPigeonIMU implements GyroIO {
 
         pigeon.setStatusFramePeriod(
                 PigeonIMU_StatusFrame.CondStatus_9_SixDeg_YPR,
-                1000 / ((int) Drive.ODOMETRY_FREQUENCY));
+                1000 / ((int) DriveConstants.odometryFrequency));
     }
 
     @Override
