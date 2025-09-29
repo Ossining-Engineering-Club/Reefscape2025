@@ -3,14 +3,11 @@ package frc.robot.subsystems.drive;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
 
-import com.ctre.phoenix6.CANBus;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
@@ -20,10 +17,9 @@ import edu.wpi.first.units.measure.MomentOfInertia;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.generated.TunerConstants;
 
-public class DriveConstants {
+public final class DriveConstants {
     public static final double maxSpeedMetersPerSec = 4.8;
-    public static final double odometryFrequency =
-            new CANBus(TunerConstants.DrivetrainConstants.CANBusName).isNetworkFD() ? 250.0 : 100.0;
+    public static final double odometryFrequency = 100.0;
     public static final double trackWidth = 0.455; // meters
     public static final double wheelBase = 0.55; // meters
     public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
@@ -69,7 +65,7 @@ public class DriveConstants {
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
-    public static final double kCoupleRatio = 0.14815;
+    public static final double coupleRatio = 0.14815;
 
     // Turn PID configuration
     public static final double turnP = 100;
@@ -145,15 +141,15 @@ public class DriveConstants {
     public static final double wheelCOF = 1.0;
     public static final RobotConfig ppConfig =
             new RobotConfig(
-                robotMassKg,
-                robotMOI,
+                    robotMassKg,
+                    robotMOI,
                     new ModuleConfig(
-                            TunerConstants.FrontLeft.WheelRadius,
-                            TunerConstants.kSpeedAt12Volts.in(MetersPerSecond),
+                            wheelRadiusMeters,
+                            maxSpeedMetersPerSec,
                             wheelCOF,
                             DCMotor.getKrakenX60(1)
                                     .withReduction(TunerConstants.FrontLeft.DriveMotorGearRatio),
-                            TunerConstants.FrontLeft.SlipCurrent,
+                            slipCurrent.in(Amps),
                             1),
                     moduleTranslations);
 }

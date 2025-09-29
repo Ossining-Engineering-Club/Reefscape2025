@@ -53,6 +53,7 @@ import frc.robot.subsystems.coralholder.CoralHolderConstants;
 import frc.robot.subsystems.coralholder.CoralHolderIO;
 import frc.robot.subsystems.coralholder.CoralHolderIOReal;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeonIMU;
 import frc.robot.subsystems.drive.ModuleIO;
@@ -106,6 +107,7 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() throws IOException, ParseException {
+        System.out.println("TRYHUJILHYTFRGYHJGCFHJNK: " + DriveConstants.slipCurrent);
         switch (Constants.currentMode) {
             case REAL:
                 // Real robot, instantiate hardware IO implementations
