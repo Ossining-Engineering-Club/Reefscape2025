@@ -9,6 +9,7 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.RobotController;
 import org.ironmaple.simulation.drivesims.SwerveModuleSimulation;
 import org.ironmaple.simulation.motorsims.SimulatedMotorController;
 
@@ -81,6 +82,7 @@ public class ModuleIOSim implements ModuleIO {
         // turnSim.update(0.02);
 
         // Update drive inputs
+        inputs.driveConnected = true;
         inputs.drivePositionRad = moduleSimulation.getDriveWheelFinalPosition().in(Radians);
         inputs.driveVelocityRadPerSec =
                 moduleSimulation.getDriveWheelFinalSpeed().in(RadiansPerSecond);
@@ -88,11 +90,18 @@ public class ModuleIOSim implements ModuleIO {
         inputs.driveCurrentAmps = Math.abs(moduleSimulation.getDriveMotorSupplyCurrent().in(Amps));
 
         // Update turn inputs
+        inputs.turnConnected = true;
+        inputs.turnEncoderConnected = true;
+        inputs.turnAbsolutePosition = moduleSimulation.getSteerAbsoluteFacing();
         inputs.turnPosition = moduleSimulation.getSteerAbsoluteFacing();
         inputs.turnVelocityRadPerSec =
                 moduleSimulation.getSteerAbsoluteEncoderSpeed().in(RadiansPerSecond);
         inputs.turnAppliedVolts = turnAppliedVolts;
         inputs.turnCurrentAmps = Math.abs(moduleSimulation.getSteerMotorStatorCurrent().in(Amps));
+
+        inputs.odometryTimestamps = new double[] {RobotController.getFPGATime() / 1e6};
+        inputs.odometryDrivePositionsRad = new double[] {inputs.drivePositionRad};
+        inputs.odometryTurnPositions = new Rotation2d[] {inputs.turnPosition};
     }
 
     @Override
