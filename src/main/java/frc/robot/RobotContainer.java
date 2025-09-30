@@ -236,9 +236,9 @@ public class RobotContainer {
         autoChooser.addOption(
                 "Drive Wheel Radius Characterization",
                 DriveCommands.wheelRadiusCharacterization(drive));
-        // autoChooser.addOption(
-        //     "Drive Simple FF Characterization",
-        // DriveCommands.feedforwardCharacterization(drive));
+        autoChooser.addOption(
+                "Drive Simple FF Characterization",
+                DriveCommands.feedforwardCharacterization(drive));
         // autoChooser.addOption(
         //     "Drive SysId (Quasistatic Forward)",
         //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
