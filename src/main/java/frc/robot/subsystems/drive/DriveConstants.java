@@ -10,6 +10,7 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
@@ -20,10 +21,10 @@ import frc.robot.generated.TunerConstants;
 public final class DriveConstants {
     public static final double maxSpeedMetersPerSec = 4.8;
     public static final double odometryFrequency = 100.0;
-    public static final double trackWidth = 0.455; // meters
-    public static final double wheelBase = 0.55; // meters
+    public static final double trackWidth = Units.inchesToMeters(21.75); // meters
+    public static final double wheelBase = Units.inchesToMeters(26.75); // meters
     public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
-    public static final double wheelRadiusMeters = 0.0967 / 2.0;
+    public static final double wheelRadiusMeters = 0.0482;
     public static final Translation2d[] moduleTranslations =
             new Translation2d[] {
                 new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
@@ -48,7 +49,7 @@ public final class DriveConstants {
     public static final double driveI = 0;
     public static final double driveD = 0;
     public static final double driveS = 0;
-    public static final double driveV = 0.5;
+    public static final double driveV = 1.5;
     public static final double driveSimP = 0.05;
     public static final double driveSimD = 0.0;
     public static final double driveSimKs = 0.0;
