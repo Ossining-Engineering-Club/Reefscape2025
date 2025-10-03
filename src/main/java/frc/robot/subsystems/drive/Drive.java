@@ -13,8 +13,24 @@
 
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.*;
-import static frc.robot.subsystems.drive.DriveConstants.*;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.KilogramSquareMeters;
+import static edu.wpi.first.units.Units.Kilograms;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+import static frc.robot.subsystems.drive.DriveConstants.driveBaseRadius;
+import static frc.robot.subsystems.drive.DriveConstants.driveFrictionVoltage;
+import static frc.robot.subsystems.drive.DriveConstants.driveGearbox;
+import static frc.robot.subsystems.drive.DriveConstants.driveMotorReduction;
+import static frc.robot.subsystems.drive.DriveConstants.moduleTranslations;
+import static frc.robot.subsystems.drive.DriveConstants.ppConfig;
+import static frc.robot.subsystems.drive.DriveConstants.robotMassKg;
+import static frc.robot.subsystems.drive.DriveConstants.steerFrictionVoltage;
+import static frc.robot.subsystems.drive.DriveConstants.turnGearbox;
+import static frc.robot.subsystems.drive.DriveConstants.turnMotorReduction;
+import static frc.robot.subsystems.drive.DriveConstants.wheelCOF;
+import static frc.robot.subsystems.drive.DriveConstants.wheelRadiusMeters;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -25,6 +41,7 @@ import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -98,6 +115,8 @@ public class Drive extends SubsystemBase {
             new SwerveDrivePoseEstimator(
                     kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
     private final Vision vision;
+    LinearFilter specializedVisionXFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
+    LinearFilter specializedVisionYFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
 
     private final Consumer<Pose2d> resetSimulationPoseCallBack;
 
@@ -235,7 +254,25 @@ public class Drive extends SubsystemBase {
 
             // correct odometry with vision
             updateEstimates(vision.getEstimatedGlobalPoses(getPose()));
-            updateSpecializedEstimate(vision.getSpecializedRobotPose(getRotation()));
+            // getting and filtering specialized vision pose and updating specialized pose estimate
+            // with it
+            PoseEstimate specializedVisionPose = vision.getSpecializedRobotPose(getRotation());
+            if (!specializedVisionPose.estimatedPose().equals(new Pose2d())) {
+                PoseEstimate filteredSpecializedVisionPose =
+                        new PoseEstimate(
+                                new Pose2d(
+                                        specializedVisionXFilter.calculate(
+                                                specializedVisionPose.estimatedPose().getX()),
+                                        specializedVisionYFilter.calculate(
+                                                specializedVisionPose.estimatedPose().getY()),
+                                        specializedVisionPose.estimatedPose().getRotation()),
+                                specializedVisionPose.timestampSeconds(),
+                                specializedVisionPose.standardDev());
+                updateSpecializedEstimate(filteredSpecializedVisionPose);
+                Logger.recordOutput("Raw Specialized Pose", specializedVisionPose);
+                Logger.recordOutput("Filtered Specialized Pose", filteredSpecializedVisionPose);
+            }
+            // updateSpecializedEstimate(vision.getSpecializedRobotPose(getRotation()));
 
             getSpecializedPose(); // calling get specialized pose for logging purposes
         }
@@ -403,8 +440,9 @@ public class Drive extends SubsystemBase {
     /** Returns the current specialized odometry pose. */
     @AutoLogOutput(key = "Odometry/Specialized")
     public Pose2d getSpecializedPose() {
-        if (vision.getFocusTag() == 0) return getPose();
-        return specializedPoseEstimator.getEstimatedPosition();
+        // if (vision.getFocusTag() == 0) return getPose();
+        // return specializedPoseEstimator.getEstimatedPosition();
+        return getPose();
     }
 
     /** Updates pose estimator with vision measurements. */

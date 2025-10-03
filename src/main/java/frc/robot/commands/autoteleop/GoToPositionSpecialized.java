@@ -50,7 +50,7 @@ public class GoToPositionSpecialized extends Command {
                 new ProfiledPIDController(
                         7.0,
                         0,
-                        0,
+                        0.75,
                         new TrapezoidProfile.Constraints(
                                 pathConstraints.maxVelocityMPS(),
                                 pathConstraints.maxAccelerationMPSSq()));
@@ -58,7 +58,7 @@ public class GoToPositionSpecialized extends Command {
                 new ProfiledPIDController(
                         7.0,
                         0,
-                        0,
+                        0.75,
                         new TrapezoidProfile.Constraints(
                                 pathConstraints.maxVelocityMPS(),
                                 pathConstraints.maxAccelerationMPSSq()));
