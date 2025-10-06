@@ -32,6 +32,9 @@ public class GoToPositionSpecialized extends Command {
 
     private Optional<Pose2d> targetPose;
 
+    // private final LinearFilter xfilter = LinearFilter.movingAverage(5);
+    // private final LinearFilter yfilter = LinearFilter.movingAverage(5);
+
     public GoToPositionSpecialized(
             Drive drive,
             Vision vision,
@@ -50,7 +53,7 @@ public class GoToPositionSpecialized extends Command {
                 new ProfiledPIDController(
                         7.0,
                         0,
-                        0.75,
+                        0,
                         new TrapezoidProfile.Constraints(
                                 pathConstraints.maxVelocityMPS(),
                                 pathConstraints.maxAccelerationMPSSq()));
@@ -58,7 +61,7 @@ public class GoToPositionSpecialized extends Command {
                 new ProfiledPIDController(
                         7.0,
                         0,
-                        0.75,
+                        0,
                         new TrapezoidProfile.Constraints(
                                 pathConstraints.maxVelocityMPS(),
                                 pathConstraints.maxAccelerationMPSSq()));
@@ -98,6 +101,14 @@ public class GoToPositionSpecialized extends Command {
         ypid.setGoal(targetPose.get().getY());
         rotpid.setGoal(targetPose.get().getRotation().getRadians());
 
+        // double[] xForFilter = new double[5];
+        // double[] yForFilter = new double[5];
+        // for (int i = 0; i < 5; i++) xForFilter[i] = drive.getSpecializedPose().getX();
+        // for (int i = 0; i < 5; i++) yForFilter[i] = drive.getSpecializedPose().getY();
+
+        // xfilter.reset(xForFilter, new double[] {});
+        // yfilter.reset(yForFilter, new double[] {});
+
         Logger.recordOutput("target pose", targetPose.get());
 
         vision.setFocusTag(getTagIdOfPosition(position));
@@ -105,6 +116,12 @@ public class GoToPositionSpecialized extends Command {
 
     @Override
     public void execute() {
+        // double filteredX = xfilter.calculate(drive.getSpecializedPose().getX());
+        // double filteredY = yfilter.calculate(drive.getSpecializedPose().getY());
+
+        // Logger.recordOutput("filteredX", filteredX);
+        // Logger.recordOutput("filteredY", filteredY);
+
         drive.runVelocityFieldRelative(
                 new ChassisSpeeds(
                         xpid.calculate(drive.getSpecializedPose().getX())
@@ -180,7 +197,13 @@ public class GoToPositionSpecialized extends Command {
                     && Math.abs(
                                     drive.getRotation().getRadians()
                                             - targetPose.get().getRotation().getRadians())
-                            <= AutoTeleopConstants.rotationalTolerance) {
+                            <= AutoTeleopConstants.rotationalTolerance
+                    && Math.hypot(
+                                    drive.getChassisSpeeds().vxMetersPerSecond,
+                                    drive.getChassisSpeeds().vyMetersPerSecond)
+                            <= AutoTeleopConstants.translationalVelocityTolerance
+                    && drive.getChassisSpeeds().omegaRadiansPerSecond
+                            <= AutoTeleopConstants.rotationVelocityTolerance) {
                 return true;
             }
             return false;
