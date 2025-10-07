@@ -38,7 +38,8 @@ public final class TunerConstants {
                     .withKI(DriveConstants.driveI)
                     .withKD(DriveConstants.driveD)
                     .withKS(DriveConstants.driveS)
-                    .withKV(DriveConstants.driveV);
+                    .withKV(DriveConstants.driveV)
+                    .withKA(DriveConstants.driveA);
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors

@@ -122,14 +122,24 @@ public class GoToPositionSpecialized extends Command {
         // Logger.recordOutput("filteredX", filteredX);
         // Logger.recordOutput("filteredY", filteredY);
 
+        // drive.runVelocityFieldRelative(
+        //         new ChassisSpeeds(
+        //                 xpid.calculate(drive.getSpecializedPose().getX())
+        //                         + xpid.getSetpoint().velocity,
+        //                 ypid.calculate(drive.getSpecializedPose().getY())
+        //                         + ypid.getSetpoint().velocity,
+        //                 rotpid.calculate(drive.getRotation().getRadians())
+        //                         + rotpid.getSetpoint().velocity));
+
+        xpid.calculate(drive.getSpecializedPose().getX());
+        ypid.calculate(drive.getSpecializedPose().getY());
+        rotpid.calculate(drive.getRotation().getRadians());
+
         drive.runVelocityFieldRelative(
                 new ChassisSpeeds(
-                        xpid.calculate(drive.getSpecializedPose().getX())
-                                + xpid.getSetpoint().velocity,
-                        ypid.calculate(drive.getSpecializedPose().getY())
-                                + ypid.getSetpoint().velocity,
-                        rotpid.calculate(drive.getRotation().getRadians())
-                                + rotpid.getSetpoint().velocity));
+                        xpid.getSetpoint().velocity,
+                        ypid.getSetpoint().velocity,
+                        rotpid.getSetpoint().velocity));
 
         Logger.recordOutput("xpid setpoint", xpid.getSetpoint().position);
         Logger.recordOutput("ypid setpoint", ypid.getSetpoint().position);

@@ -50,6 +50,7 @@ public final class DriveConstants {
     public static final double driveD = 0;
     public static final double driveS = 0.14314;
     public static final double driveV = 0.795;
+    public static final double driveA = 0.1;
     public static final double driveSimP = 0.05;
     public static final double driveSimD = 0.0;
     public static final double driveSimKs = 0.0;

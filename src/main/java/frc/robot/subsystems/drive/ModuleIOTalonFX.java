@@ -37,6 +37,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.generated.TunerConstants;
 import java.util.Queue;
 
@@ -90,6 +91,9 @@ public class ModuleIOTalonFX implements ModuleIO {
     private final Debouncer driveConnectedDebounce = new Debouncer(0.5);
     private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
     private final Debouncer turnEncoderConnectedDebounce = new Debouncer(0.5);
+
+    private double prevSetVelocity = 0.0;
+    private double prevSetVelocityTimestamp = 0.0;
 
     public ModuleIOTalonFX(
             SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
@@ -253,11 +257,27 @@ public class ModuleIOTalonFX implements ModuleIO {
     @Override
     public void setDriveVelocity(double velocityRadPerSec) {
         double velocityRotPerSec = Units.radiansToRotations(velocityRadPerSec);
-        driveTalon.setControl(
-                switch (constants.DriveMotorClosedLoopOutput) {
-                    case Voltage -> velocityVoltageRequest.withVelocity(velocityRotPerSec);
-                    case TorqueCurrentFOC -> null; // velocityTorqueCurrentRequest.withVelocity(velocityRotPerSec);
-                });
+        double accelerationRotPerSecSquared = 0.0;
+        if (Timer.getFPGATimestamp() - prevSetVelocityTimestamp < 0.1) {
+            accelerationRotPerSecSquared = (velocityRotPerSec - prevSetVelocity) / 0.02;
+        }
+        if (velocityRotPerSec == 0) {
+            driveTalon.setControl(
+                    switch (constants.DriveMotorClosedLoopOutput) {
+                        case Voltage -> velocityVoltageRequest.withVelocity(velocityRotPerSec);
+                        case TorqueCurrentFOC -> null; // velocityTorqueCurrentRequest.withVelocity(velocityRotPerSec);
+                    });
+        } else {
+            driveTalon.setControl(
+                    switch (constants.DriveMotorClosedLoopOutput) {
+                        case Voltage -> velocityVoltageRequest
+                                .withVelocity(velocityRotPerSec)
+                                .withAcceleration(accelerationRotPerSecSquared);
+                        case TorqueCurrentFOC -> null; // velocityTorqueCurrentRequest.withVelocity(velocityRotPerSec);
+                    });
+        }
+        prevSetVelocity = velocityRotPerSec;
+        prevSetVelocityTimestamp = Timer.getFPGATimestamp();
     }
 
     @Override
