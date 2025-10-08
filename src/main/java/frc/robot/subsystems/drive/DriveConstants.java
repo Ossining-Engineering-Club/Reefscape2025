@@ -45,12 +45,12 @@ public final class DriveConstants {
             1 / (2 * Math.PI / driveMotorReduction); // Rotor Rotations -> Wheel Radians
 
     // Drive PID configuration
-    public static final double driveP = 0.1;
+    public static final double driveP = 0.0; // 0.1;
     public static final double driveI = 0;
     public static final double driveD = 0;
-    public static final double driveS = 0.14314;
-    public static final double driveV = 0.795;
-    public static final double driveA = 0.1;
+    public static final double driveS = 0.11966;
+    public static final double driveV = 0.8;
+    public static final double driveA = 0.04;
     public static final double driveSimP = 0.05;
     public static final double driveSimD = 0.0;
     public static final double driveSimKs = 0.0;

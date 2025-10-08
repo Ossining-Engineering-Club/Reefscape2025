@@ -264,7 +264,9 @@ public class ModuleIOTalonFX implements ModuleIO {
         if (velocityRotPerSec == 0) {
             driveTalon.setControl(
                     switch (constants.DriveMotorClosedLoopOutput) {
-                        case Voltage -> velocityVoltageRequest.withVelocity(velocityRotPerSec);
+                        case Voltage -> velocityVoltageRequest
+                                .withVelocity(velocityRotPerSec)
+                                .withAcceleration(0.0);
                         case TorqueCurrentFOC -> null; // velocityTorqueCurrentRequest.withVelocity(velocityRotPerSec);
                     });
         } else {

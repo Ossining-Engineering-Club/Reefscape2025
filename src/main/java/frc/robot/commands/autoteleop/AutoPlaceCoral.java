@@ -127,7 +127,13 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             config.position(),
                                                             sidewaysOffset,
                                                             depthOffset,
-                                                            reefCoralPIDAlignmentConstraints)),
+                                                            reefCoralPIDAlignmentConstraints),
+                                                    new GoToPositionSpecializedFinalAdjustment(
+                                                            drive,
+                                                            vision,
+                                                            config.position(),
+                                                            sidewaysOffset,
+                                                            depthOffset)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
@@ -168,7 +174,13 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             config.position(),
                                                             sidewaysOffset,
                                                             depthOffset,
-                                                            reefCoralPIDAlignmentConstraints)),
+                                                            reefCoralPIDAlignmentConstraints),
+                                                    new GoToPositionSpecializedFinalAdjustment(
+                                                            drive,
+                                                            vision,
+                                                            config.position(),
+                                                            sidewaysOffset,
+                                                            depthOffset)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
@@ -218,7 +230,13 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             config.position(),
                                                             sidewaysOffset,
                                                             depthOffset,
-                                                            reefCoralPIDAlignmentConstraints)),
+                                                            reefCoralPIDAlignmentConstraints),
+                                                    new GoToPositionSpecializedFinalAdjustment(
+                                                            drive,
+                                                            vision,
+                                                            config.position(),
+                                                            sidewaysOffset,
+                                                            depthOffset)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
@@ -259,7 +277,13 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                             config.position(),
                                                             sidewaysOffset,
                                                             depthOffset,
-                                                            reefCoralPIDAlignmentConstraints)),
+                                                            reefCoralPIDAlignmentConstraints),
+                                                    new GoToPositionSpecializedFinalAdjustment(
+                                                            drive,
+                                                            vision,
+                                                            config.position(),
+                                                            sidewaysOffset,
+                                                            depthOffset)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
