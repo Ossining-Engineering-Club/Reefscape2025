@@ -51,7 +51,7 @@ public class GoToPositionSpecialized extends Command {
 
         xpid =
                 new ProfiledPIDController(
-                        0.5,
+                        0,
                         0,
                         0,
                         new TrapezoidProfile.Constraints(
@@ -59,7 +59,7 @@ public class GoToPositionSpecialized extends Command {
                                 pathConstraints.maxAccelerationMPSSq()));
         ypid =
                 new ProfiledPIDController(
-                        0.5,
+                        0,
                         0,
                         0,
                         new TrapezoidProfile.Constraints(
@@ -203,11 +203,11 @@ public class GoToPositionSpecialized extends Command {
             if (Math.hypot(
                                     drive.getSpecializedPose().getX() - targetPose.get().getX(),
                                     drive.getSpecializedPose().getY() - targetPose.get().getY())
-                            <= AutoTeleopConstants.translationalTolerance
+                            <= AutoTeleopConstants.coralInitialTranslationalTolerance
                     && Math.abs(
                                     drive.getRotation().getRadians()
                                             - targetPose.get().getRotation().getRadians())
-                            <= AutoTeleopConstants.rotationalTolerance) {
+                            <= AutoTeleopConstants.coralInitialRotationalTolerance) {
                 return true;
             }
             return false;

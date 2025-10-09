@@ -176,11 +176,11 @@ public class GoToPositionSpecializedAuto extends Command {
             if (Math.hypot(
                                     drive.getSpecializedPose().getX() - targetPose.get().getX(),
                                     drive.getSpecializedPose().getY() - targetPose.get().getY())
-                            <= AutoTeleopConstants.translationalTolerance
+                            <= AutoTeleopConstants.coralFinalTranslationalTolerance
                     && Math.abs(
                                     drive.getRotation().getRadians()
                                             - targetPose.get().getRotation().getRadians())
-                            <= AutoTeleopConstants.rotationalTolerance) {
+                            <= AutoTeleopConstants.coralFinalRotationalTolerance) {
                 return true;
             }
             return false;

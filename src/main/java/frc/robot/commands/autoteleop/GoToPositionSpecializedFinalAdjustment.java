@@ -44,8 +44,8 @@ public class GoToPositionSpecializedFinalAdjustment extends Command {
         this.sidewaysOffset = sidewaysOffset;
         this.depthOffset = depthOffset;
 
-        xpid = new PIDController(5.0, 0, 0);
-        ypid = new PIDController(5.0, 0, 0);
+        xpid = new PIDController(3.0, 0, 0);
+        ypid = new PIDController(3.0, 0, 0);
         rotpid = new PIDController(2.0, 0, 0);
         rotpid.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -161,17 +161,17 @@ public class GoToPositionSpecializedFinalAdjustment extends Command {
             if (Math.hypot(
                                     drive.getSpecializedPose().getX() - targetPose.get().getX(),
                                     drive.getSpecializedPose().getY() - targetPose.get().getY())
-                            <= AutoTeleopConstants.translationalFinalTolerance
+                            <= AutoTeleopConstants.coralFinalTranslationalTolerance
                     && Math.abs(
                                     drive.getRotation().getRadians()
                                             - targetPose.get().getRotation().getRadians())
-                            <= AutoTeleopConstants.rotationalFinalTolerance
+                            <= AutoTeleopConstants.coralFinalRotationalTolerance
                     && Math.hypot(
                                     drive.getChassisSpeeds().vxMetersPerSecond,
                                     drive.getChassisSpeeds().vyMetersPerSecond)
-                            <= AutoTeleopConstants.translationalVelocityTolerance
+                            <= AutoTeleopConstants.coralFinalTranslationalVelocityTolerance
                     && drive.getChassisSpeeds().omegaRadiansPerSecond
-                            <= AutoTeleopConstants.rotationVelocityTolerance) {
+                            <= AutoTeleopConstants.coralFinalRotationVelocityTolerance) {
                 return true;
             }
             return false;

@@ -111,23 +111,16 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                                                                             .getY()
                                                                                                     - targetPoseBlue
                                                                                                             .getY())
-                                                                                    <= switchingToSpecializedTranslationalTolerance
+                                                                                    <= switchingToCoralFinalTranslationalTolerance
                                                                             && Math.abs(
                                                                                             drive.getRotation()
                                                                                                             .getRadians()
                                                                                                     - targetPoseBlue
                                                                                                             .getRotation()
                                                                                                             .getRadians())
-                                                                                    <= switchingToSpecializedRotationalTolerance
+                                                                                    <= switchingToCoralFinalRotationalTolerance
                                                                             && vision
                                                                                     .seesFocusTag()),
-                                                    new GoToPositionSpecialized(
-                                                            drive,
-                                                            vision,
-                                                            config.position(),
-                                                            sidewaysOffset,
-                                                            depthOffset,
-                                                            reefCoralPIDAlignmentConstraints),
                                                     new GoToPositionSpecializedFinalAdjustment(
                                                             drive,
                                                             vision,
@@ -158,23 +151,16 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                                                                             .getY()
                                                                                                     - targetPoseRed
                                                                                                             .getY())
-                                                                                    <= switchingToSpecializedTranslationalTolerance
+                                                                                    <= switchingToCoralFinalTranslationalTolerance
                                                                             && Math.abs(
                                                                                             drive.getRotation()
                                                                                                             .getRadians()
                                                                                                     - targetPoseRed
                                                                                                             .getRotation()
                                                                                                             .getRadians())
-                                                                                    <= switchingToSpecializedRotationalTolerance
+                                                                                    <= switchingToCoralFinalRotationalTolerance
                                                                             && vision
                                                                                     .seesFocusTag()),
-                                                    new GoToPositionSpecialized(
-                                                            drive,
-                                                            vision,
-                                                            config.position(),
-                                                            sidewaysOffset,
-                                                            depthOffset,
-                                                            reefCoralPIDAlignmentConstraints),
                                                     new GoToPositionSpecializedFinalAdjustment(
                                                             drive,
                                                             vision,
@@ -214,23 +200,16 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                                                                             .getY()
                                                                                                     - targetPoseBlue
                                                                                                             .getY())
-                                                                                    <= switchingToSpecializedTranslationalTolerance
+                                                                                    <= switchingToCoralFinalTranslationalTolerance
                                                                             && Math.abs(
                                                                                             drive.getRotation()
                                                                                                             .getRadians()
                                                                                                     - targetPoseBlue
                                                                                                             .getRotation()
                                                                                                             .getRadians())
-                                                                                    <= switchingToSpecializedRotationalTolerance
+                                                                                    <= switchingToCoralFinalRotationalTolerance
                                                                             && vision
                                                                                     .seesFocusTag()),
-                                                    new GoToPositionSpecialized(
-                                                            drive,
-                                                            vision,
-                                                            config.position(),
-                                                            sidewaysOffset,
-                                                            depthOffset,
-                                                            reefCoralPIDAlignmentConstraints),
                                                     new GoToPositionSpecializedFinalAdjustment(
                                                             drive,
                                                             vision,
@@ -261,23 +240,16 @@ public class AutoPlaceCoral extends SequentialCommandGroup {
                                                                                                             .getY()
                                                                                                     - targetPoseRed
                                                                                                             .getY())
-                                                                                    <= switchingToSpecializedTranslationalTolerance
+                                                                                    <= switchingToCoralFinalTranslationalTolerance
                                                                             && Math.abs(
                                                                                             drive.getRotation()
                                                                                                             .getRadians()
                                                                                                     - targetPoseRed
                                                                                                             .getRotation()
                                                                                                             .getRadians())
-                                                                                    <= switchingToSpecializedRotationalTolerance
+                                                                                    <= switchingToCoralFinalRotationalTolerance
                                                                             && vision
                                                                                     .seesFocusTag()),
-                                                    new GoToPositionSpecialized(
-                                                            drive,
-                                                            vision,
-                                                            config.position(),
-                                                            sidewaysOffset,
-                                                            depthOffset,
-                                                            reefCoralPIDAlignmentConstraints),
                                                     new GoToPositionSpecializedFinalAdjustment(
                                                             drive,
                                                             vision,

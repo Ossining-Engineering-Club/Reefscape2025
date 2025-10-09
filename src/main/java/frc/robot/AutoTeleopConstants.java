@@ -115,7 +115,7 @@ public final class AutoTeleopConstants {
     public static final double depthReefCoralOffset =
             Units.inchesToMeters(3.0) + Constants.robotWidth / 2.0;
     public static final double depthReefCoralL23Offset =
-            Units.inchesToMeters(1.5) + Constants.robotWidth / 2.0;
+            Units.inchesToMeters(2.0) + Constants.robotWidth / 2.0;
 
     public static final double sidewaysReefAlgaeOffset = Units.inchesToMeters(0);
     public static final double depthReefAlgaeOffset =
@@ -127,12 +127,15 @@ public final class AutoTeleopConstants {
     public static final double depthProcessorOffset =
             Units.inchesToMeters(0.0) + Constants.robotWidth / 2.0;
 
-    public static final double translationalTolerance = 0.1;
-    public static final double rotationalTolerance = Units.degreesToRadians(5);
-    public static final double translationalFinalTolerance = 0.01;
-    public static final double rotationalFinalTolerance = Units.degreesToRadians(3);
-    public static final double translationalVelocityTolerance = 0.4; // m/s
-    public static final double rotationVelocityTolerance = 0.2; // rad/s
+    public static final double coralInitialTranslationalTolerance = 0.3;
+    public static final double coralInitialRotationalTolerance = Units.degreesToRadians(10);
+    public static final double coralFinalTranslationalTolerance = 0.01;
+    public static final double coralFinalRotationalTolerance = Units.degreesToRadians(1);
+    public static final double coralFinalTranslationalVelocityTolerance = 0.1; // m/s
+    public static final double coralFinalRotationVelocityTolerance = 0.5; // rad/s
+    public static final double switchingToCoralFinalTranslationalTolerance = 0.5;
+    public static final double switchingToCoralFinalRotationalTolerance =
+            Units.degreesToRadians(10);
 
     public static final double coralStationTranslationalTolerance = 0.2;
     public static final double coralStationRotationalTolerance = Units.degreesToRadians(20);
