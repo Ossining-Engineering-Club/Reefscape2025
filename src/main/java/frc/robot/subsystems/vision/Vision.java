@@ -1,16 +1,12 @@
 package frc.robot.subsystems.vision;
 
-import static frc.robot.subsystems.vision.VisionConstants.TAG_LAYOUT;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.vision.VisionConstants.PoseEstimate;
@@ -40,8 +36,6 @@ public class Vision extends SubsystemBase {
             ios[i].updateInputs(inputs[i]);
             Logger.processInputs("Vision/" + inputs[i].cameraName, inputs[i]);
         }
-        Logger.recordOutput("focus tag", getFocusTag());
-        Logger.recordOutput("sees focus tag", seesFocusTag());
     }
 
     public PoseEstimate[] getEstimatedGlobalPoses(Pose2d robotPose) {
@@ -113,6 +107,63 @@ public class Vision extends SubsystemBase {
         return estimates.toArray(PoseEstimate[]::new);
     }
 
+    public PoseEstimate[] getFocusedEstimatedGlobalPoses(Pose2d robotPose) {
+        List<PoseEstimate> estimates = new ArrayList<>();
+        for (int i = 0; i < ios.length; i++) {
+            boolean addedPose = false;
+            if (inputs[i].seesFocusTag) {
+                // don't use if estimate is outside the field
+                if (!(inputs[i].focusedEstimatedPose.getX() > 0.0
+                        && inputs[i].focusedEstimatedPose.getX() <= FieldConstants.fieldLengthMeters
+                        && inputs[i].focusedEstimatedPose.getY() > 0.0
+                        && inputs[i].focusedEstimatedPose.getY()
+                                <= FieldConstants.fieldWidthMeters)) continue;
+                // don't use if estimate is too high, or too tilted
+                if (Math.abs(inputs[i].focusedEstimatedPose.getZ()) > VisionConstants.MAX_HEIGHT)
+                    continue;
+                if (Math.abs(inputs[i].focusedEstimatedPose.getRotation().getX())
+                        > VisionConstants.MAX_ANGLE) continue;
+                if (Math.abs(inputs[i].focusedEstimatedPose.getRotation().getY())
+                        > VisionConstants.MAX_ANGLE) continue;
+
+                double translationalDelta =
+                        Math.hypot(
+                                inputs[i].focusedEstimatedPose.getX() - robotPose.getX(),
+                                inputs[i].focusedEstimatedPose.getY() - robotPose.getY());
+
+                Matrix<N3, N1> stddevs =
+                        getEstimationStdDevs(
+                                inputs[i].focusedEstimatedPose.toPose2d(),
+                                new int[] {inputs[i].focusTag},
+                                translationalDelta);
+
+                addedPose = true;
+                Logger.recordOutput(
+                        "/Vision/" + inputs[i].cameraName + "/Focused Raw Vision",
+                        inputs[i].focusedEstimatedPose.toPose2d());
+                Logger.recordOutput(
+                        "/Vision/" + inputs[i].cameraName + "/Focused Vision Timestamp",
+                        inputs[i].focusedTimestampSeconds);
+                Logger.recordOutput(
+                        "/Vision/" + inputs[i].cameraName + "/Focused Vision Std Dev",
+                        new double[] {stddevs.get(0, 0), stddevs.get(1, 0), stddevs.get(2, 0)});
+
+                estimates.add(
+                        new PoseEstimate(
+                                inputs[i].focusedEstimatedPose.toPose2d(),
+                                inputs[i].focusedTimestampSeconds,
+                                stddevs));
+            }
+            if (!addedPose) {
+                Logger.recordOutput(
+                        "/Vision/" + inputs[i].cameraName + "/Focused Raw Vision",
+                        new Pose2d(-1000, -1000, new Rotation2d()));
+            }
+        }
+
+        return estimates.toArray(PoseEstimate[]::new);
+    }
+
     public Matrix<N3, N1> getEstimationStdDevs(
             Pose2d estimatedPose, int[] tagIds, double translationalDelta) {
         var estStdDevs = VisionConstants.SINGLE_TAG_STD_DEVS;
@@ -156,93 +207,6 @@ public class Vision extends SubsystemBase {
             if (inputs[i].seesFocusTag) return true;
         }
         return false;
-    }
-
-    public PoseEstimate getSpecializedRobotPose(Rotation2d robotRotation) {
-        List<Pose2d> robotPoses = new ArrayList<Pose2d>();
-        double averageTimestamp = 0.0;
-        for (int i = 0; i < inputs.length; i++) {
-            var input = inputs[i];
-            if (input.seesFocusTag) {
-                averageTimestamp += input.timestampSeconds;
-                Translation3d robotToTag =
-                        new Translation3d(
-                                input.distance
-                                                * Math.cos(
-                                                        Units.degreesToRadians(input.pitch)
-                                                                - input.robotToCam
-                                                                        .getRotation()
-                                                                        .getY())
-                                                * Math.cos(
-                                                        Units.degreesToRadians(-input.yaw)
-                                                                + input.robotToCam
-                                                                        .getRotation()
-                                                                        .getZ())
-                                        + input.robotToCam.getX(),
-                                input.distance
-                                                * Math.cos(
-                                                        Units.degreesToRadians(input.pitch)
-                                                                - input.robotToCam
-                                                                        .getRotation()
-                                                                        .getY())
-                                                * Math.sin(
-                                                        Units.degreesToRadians(-input.yaw)
-                                                                + input.robotToCam
-                                                                        .getRotation()
-                                                                        .getZ())
-                                        + input.robotToCam.getY(),
-                                input.distance
-                                                * Math.cos(
-                                                        Units.degreesToRadians(input.pitch)
-                                                                - input.robotToCam
-                                                                        .getRotation()
-                                                                        .getY())
-                                        + input.robotToCam.getZ());
-                Pose2d robotToTagFieldRelative =
-                        new Pose2d(
-                                robotToTag.getX() * Math.cos(robotRotation.getRadians())
-                                        - robotToTag.getY() * Math.sin(robotRotation.getRadians()),
-                                robotToTag.getX() * Math.sin(robotRotation.getRadians())
-                                        + robotToTag.getY() * Math.cos(robotRotation.getRadians()),
-                                robotRotation);
-                Logger.recordOutput("/Camera" + i + "/robotToTag", robotToTag);
-                Logger.recordOutput(
-                        "/Camera" + i + "/robotToTagFieldRelative", robotToTagFieldRelative);
-                TAG_LAYOUT
-                        .getTagPose(focusTag)
-                        .ifPresent(
-                                (Pose3d tagPose) -> {
-                                    Pose2d robotPose =
-                                            new Pose2d(
-                                                    tagPose.getX() - robotToTagFieldRelative.getX(),
-                                                    tagPose.getY() - robotToTagFieldRelative.getY(),
-                                                    robotToTagFieldRelative.getRotation());
-                                    robotPoses.add(robotPose);
-                                });
-            }
-        }
-        Logger.recordOutput("specialized pose estimates", robotPoses.toArray(Pose2d[]::new));
-        if (robotPoses.size() == 0)
-            return new PoseEstimate(
-                    new Pose2d(),
-                    0.0,
-                    VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE));
-        double sumX = 0.0;
-        double sumY = 0.0;
-        double sumRotation = 0.0;
-        for (Pose2d pose : robotPoses) {
-            sumX += pose.getX();
-            sumY += pose.getY();
-            sumRotation += pose.getRotation().getRadians();
-        }
-        Pose2d averagePose =
-                new Pose2d(
-                        sumX / robotPoses.size(),
-                        sumY / robotPoses.size(),
-                        new Rotation2d(sumRotation / robotPoses.size()));
-        averageTimestamp /= robotPoses.size();
-        Logger.recordOutput("average specialized pose estimate", averagePose);
-        return new PoseEstimate(averagePose, averageTimestamp, VecBuilder.fill(0, 0, 0));
     }
 
     public void setFocusTag(int tag) {

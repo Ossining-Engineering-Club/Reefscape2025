@@ -58,14 +58,14 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
             depthOffset = config.depthOffset();
         }
         Pose2d targetPoseBlue =
-                GoToPositionSpecialized.getTargetPose(
+                GoToPositionFocused.getTargetPose(
                                 getTagIdOfPosition(config.position(), Alliance.Blue),
                                 sidewaysOffset,
                                 depthOffset,
                                 false)
                         .get();
         Pose2d targetPoseRed =
-                GoToPositionSpecialized.getTargetPose(
+                GoToPositionFocused.getTargetPose(
                                 getTagIdOfPosition(config.position(), Alliance.Red),
                                 sidewaysOffset,
                                 depthOffset,
@@ -91,7 +91,7 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
             addCommands(
                     Commands.runOnce(() -> led.setIsPathfinding(true)),
                     Commands.runOnce(
-                            () -> vision.setFocusTag(getTagIdOfPosition(config.position()))),
+                            () -> drive.setFocusTag(getTagIdOfPosition(config.position()))),
                     new ConditionalCommand(
                             new SequentialCommandGroup(
                                     Commands.runOnce(
@@ -111,23 +111,22 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                                                                                             .getY()
                                                                                                     - targetPoseBlue
                                                                                                             .getY())
-                                                                                    <= switchingToSpecializedTranslationalTolerance
+                                                                                    <= switchingToCoralFocusedTranslationalTolerance
                                                                             && Math.abs(
                                                                                             drive.getRotation()
                                                                                                             .getRadians()
                                                                                                     - targetPoseBlue
                                                                                                             .getRotation()
                                                                                                             .getRadians())
-                                                                                    <= switchingToSpecializedRotationalTolerance
-                                                                            && vision
+                                                                                    <= switchingToCoralFocusedRotationalTolerance
+                                                                            && drive
                                                                                     .seesFocusTag()),
-                                                    new GoToPositionSpecialized(
+                                                    new GoToPositionFocused(
                                                             drive,
                                                             vision,
                                                             config.position(),
                                                             sidewaysOffset,
-                                                            depthOffset,
-                                                            reefCoralAutoPIDAlignmentConstraints)),
+                                                            depthOffset)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
@@ -152,23 +151,22 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                                                                                             .getY()
                                                                                                     - targetPoseRed
                                                                                                             .getY())
-                                                                                    <= switchingToSpecializedTranslationalTolerance
+                                                                                    <= switchingToCoralFocusedTranslationalTolerance
                                                                             && Math.abs(
                                                                                             drive.getRotation()
                                                                                                             .getRadians()
                                                                                                     - targetPoseRed
                                                                                                             .getRotation()
                                                                                                             .getRadians())
-                                                                                    <= switchingToSpecializedRotationalTolerance
-                                                                            && vision
+                                                                                    <= switchingToCoralFocusedRotationalTolerance
+                                                                            && drive
                                                                                     .seesFocusTag()),
-                                                    new GoToPositionSpecialized(
+                                                    new GoToPositionFocused(
                                                             drive,
                                                             vision,
                                                             config.position(),
                                                             sidewaysOffset,
-                                                            depthOffset,
-                                                            reefCoralAutoPIDAlignmentConstraints)),
+                                                            depthOffset)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
@@ -182,7 +180,7 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
             addCommands(
                     Commands.runOnce(() -> led.setIsPathfinding(true)),
                     Commands.runOnce(
-                            () -> vision.setFocusTag(getTagIdOfPosition(config.position()))),
+                            () -> drive.setFocusTag(getTagIdOfPosition(config.position()))),
                     new ConditionalCommand(
                             new SequentialCommandGroup(
                                     Commands.runOnce(
@@ -202,23 +200,22 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                                                                                             .getY()
                                                                                                     - targetPoseBlue
                                                                                                             .getY())
-                                                                                    <= switchingToSpecializedTranslationalTolerance
+                                                                                    <= switchingToCoralFocusedTranslationalTolerance
                                                                             && Math.abs(
                                                                                             drive.getRotation()
                                                                                                             .getRadians()
                                                                                                     - targetPoseBlue
                                                                                                             .getRotation()
                                                                                                             .getRadians())
-                                                                                    <= switchingToSpecializedRotationalTolerance
-                                                                            && vision
+                                                                                    <= switchingToCoralFocusedRotationalTolerance
+                                                                            && drive
                                                                                     .seesFocusTag()),
-                                                    new GoToPositionSpecialized(
+                                                    new GoToPositionFocused(
                                                             drive,
                                                             vision,
                                                             config.position(),
                                                             sidewaysOffset,
-                                                            depthOffset,
-                                                            reefCoralAutoPIDAlignmentConstraints)),
+                                                            depthOffset)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(
@@ -243,23 +240,22 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                                                                                             .getY()
                                                                                                     - targetPoseRed
                                                                                                             .getY())
-                                                                                    <= switchingToSpecializedTranslationalTolerance
+                                                                                    <= switchingToCoralFocusedTranslationalTolerance
                                                                             && Math.abs(
                                                                                             drive.getRotation()
                                                                                                             .getRadians()
                                                                                                     - targetPoseRed
                                                                                                             .getRotation()
                                                                                                             .getRadians())
-                                                                                    <= switchingToSpecializedRotationalTolerance
-                                                                            && vision
+                                                                                    <= switchingToCoralFocusedRotationalTolerance
+                                                                            && drive
                                                                                     .seesFocusTag()),
-                                                    new GoToPositionSpecialized(
+                                                    new GoToPositionFocused(
                                                             drive,
                                                             vision,
                                                             config.position(),
                                                             sidewaysOffset,
-                                                            depthOffset,
-                                                            reefCoralAutoPIDAlignmentConstraints)),
+                                                            depthOffset)),
                                             new SequentialCommandGroup(
                                                     new WaitCommand(0.5),
                                                     new GoToPlacingCoralPosition(

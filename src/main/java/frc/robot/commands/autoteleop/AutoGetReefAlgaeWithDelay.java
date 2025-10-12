@@ -42,14 +42,14 @@ public class AutoGetReefAlgaeWithDelay extends SequentialCommandGroup {
             LED led)
             throws FileVersionException, IOException, ParseException {
         Pose2d targetPoseBlue =
-                GoToPositionSpecialized.getTargetPose(
+                GoToPositionFocused.getTargetPose(
                                 getTagIdOfPosition(config.position(), Alliance.Blue),
                                 config.sidewaysOffset(),
                                 config.depthOffset(),
                                 false)
                         .get();
         Pose2d targetPoseRed =
-                GoToPositionSpecialized.getTargetPose(
+                GoToPositionFocused.getTargetPose(
                                 getTagIdOfPosition(config.position(), Alliance.Red),
                                 config.sidewaysOffset(),
                                 config.depthOffset(),
@@ -91,22 +91,21 @@ public class AutoGetReefAlgaeWithDelay extends SequentialCommandGroup {
                                                                                                         .getY()
                                                                                                 - targetPoseBlue
                                                                                                         .getY())
-                                                                                <= switchingToSpecializedTranslationalTolerance
+                                                                                <= switchingToAlgaeFocusedTranslationalTolerance
                                                                         && Math.abs(
                                                                                         drive.getRotation()
                                                                                                         .getRadians()
                                                                                                 - targetPoseBlue
                                                                                                         .getRotation()
                                                                                                         .getRadians())
-                                                                                <= switchingToSpecializedRotationalTolerance
-                                                                        && vision.seesFocusTag()),
-                                                new GoToPositionSpecialized(
+                                                                                <= switchingToAlgaeFocusedRotationalTolerance
+                                                                        && drive.seesFocusTag()),
+                                                new GoToPositionFocused(
                                                         drive,
                                                         vision,
                                                         config.position(),
                                                         config.sidewaysOffset(),
-                                                        config.depthOffset(),
-                                                        reefAlgaePIDAlignmentConstraints),
+                                                        config.depthOffset()),
                                                 new ConditionalCommand(
                                                         new ConditionalCommand(
                                                                 Commands.runOnce(
@@ -151,22 +150,21 @@ public class AutoGetReefAlgaeWithDelay extends SequentialCommandGroup {
                                                                                                         .getY()
                                                                                                 - targetPoseRed
                                                                                                         .getY())
-                                                                                <= switchingToSpecializedTranslationalTolerance
+                                                                                <= switchingToAlgaeFocusedTranslationalTolerance
                                                                         && Math.abs(
                                                                                         drive.getRotation()
                                                                                                         .getRadians()
                                                                                                 - targetPoseRed
                                                                                                         .getRotation()
                                                                                                         .getRadians())
-                                                                                <= switchingToSpecializedRotationalTolerance
-                                                                        && vision.seesFocusTag()),
-                                                new GoToPositionSpecialized(
+                                                                                <= switchingToAlgaeFocusedRotationalTolerance
+                                                                        && drive.seesFocusTag()),
+                                                new GoToPositionFocused(
                                                         drive,
                                                         vision,
                                                         config.position(),
                                                         config.sidewaysOffset(),
-                                                        config.depthOffset(),
-                                                        reefAlgaePIDAlignmentConstraints),
+                                                        config.depthOffset()),
                                                 new ConditionalCommand(
                                                         new ConditionalCommand(
                                                                 Commands.runOnce(

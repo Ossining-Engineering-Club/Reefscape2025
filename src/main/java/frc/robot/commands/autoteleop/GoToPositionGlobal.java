@@ -147,11 +147,11 @@ public class GoToPositionGlobal extends Command {
             if (Math.hypot(
                                     drive.getPose().getX() - targetPose.get().getX(),
                                     drive.getPose().getY() - targetPose.get().getY())
-                            <= AutoTeleopConstants.coralFinalTranslationalTolerance
+                            <= AutoTeleopConstants.coralTranslationalTolerance
                     && Math.abs(
                                     drive.getRotation().getRadians()
                                             - targetPose.get().getRotation().getRadians())
-                            <= AutoTeleopConstants.coralFinalRotationalTolerance) {
+                            <= AutoTeleopConstants.coralRotationalTolerance) {
                 return true;
             }
             return false;

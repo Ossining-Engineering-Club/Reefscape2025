@@ -29,7 +29,6 @@ import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -99,12 +98,11 @@ public class Drive extends SubsystemBase {
     private SwerveDrivePoseEstimator poseEstimator =
             new SwerveDrivePoseEstimator(
                     kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
-    private SwerveDrivePoseEstimator specializedPoseEstimator =
+    private SwerveDrivePoseEstimator focusedPoseEstimator =
             new SwerveDrivePoseEstimator(
                     kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
     private final Vision vision;
-    LinearFilter specializedVisionXFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
-    LinearFilter specializedVisionYFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
+    private int focusTag = 0;
 
     private final Consumer<Pose2d> resetSimulationPoseCallBack;
 
@@ -220,32 +218,17 @@ public class Drive extends SubsystemBase {
 
             // Apply update
             poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
-            specializedPoseEstimator.updateWithTime(
+            focusedPoseEstimator.updateWithTime(
                     sampleTimestamps[i], rawGyroRotation, modulePositions);
 
             // correct odometry with vision
             updateEstimates(vision.getEstimatedGlobalPoses(getPose()));
-            // getting and filtering specialized vision pose and updating specialized pose estimate
-            // with it
-            PoseEstimate specializedVisionPose = vision.getSpecializedRobotPose(getRotation());
-            if (!specializedVisionPose.estimatedPose().equals(new Pose2d())) {
-                PoseEstimate filteredSpecializedVisionPose =
-                        new PoseEstimate(
-                                new Pose2d(
-                                        specializedVisionXFilter.calculate(
-                                                specializedVisionPose.estimatedPose().getX()),
-                                        specializedVisionYFilter.calculate(
-                                                specializedVisionPose.estimatedPose().getY()),
-                                        specializedVisionPose.estimatedPose().getRotation()),
-                                specializedVisionPose.timestampSeconds(),
-                                specializedVisionPose.standardDev());
-                updateSpecializedEstimate(filteredSpecializedVisionPose);
-                Logger.recordOutput("Raw Specialized Pose", specializedVisionPose);
-                Logger.recordOutput("Filtered Specialized Pose", filteredSpecializedVisionPose);
-            }
-            // updateSpecializedEstimate(vision.getSpecializedRobotPose(getRotation()));
+            updateFocusedEstimate(vision.getFocusedEstimatedGlobalPoses(getPose()));
 
-            getSpecializedPose(); // calling get specialized pose for logging purposes
+            // calling methods for logging purposes
+            getFocusedPose();
+            getFocusTag();
+            seesFocusTag();
         }
 
         // Update gyro alert
@@ -382,7 +365,7 @@ public class Drive extends SubsystemBase {
     public void setPose(Pose2d pose) {
         resetSimulationPoseCallBack.accept(pose);
         poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
-        specializedPoseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
+        focusedPoseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
     }
 
     /** Returns the maximum linear speed in meters per sec. */
@@ -408,12 +391,32 @@ public class Drive extends SubsystemBase {
         };
     }
 
-    /** Returns the current specialized odometry pose. */
-    @AutoLogOutput(key = "Odometry/Specialized")
-    public Pose2d getSpecializedPose() {
-        // if (vision.getFocusTag() == 0) return getPose();
-        // return specializedPoseEstimator.getEstimatedPosition();
-        return getPose();
+    /** Returns the current focus tag. */
+    @AutoLogOutput(key = "Focused Vision/Focus Tag")
+    public int getFocusTag() {
+        return focusTag;
+    }
+
+    /** Returns the whether vision sees the focus tag. */
+    @AutoLogOutput(key = "Focused Vision/Sees Focus Tag")
+    public boolean seesFocusTag() {
+        return vision.seesFocusTag();
+    }
+
+    /** Sets the focus tag. */
+    public void setFocusTag(int newFocusTag) {
+        if (newFocusTag != focusTag) {
+            focusedPoseEstimator.resetPose(getPose()); // resetting focused pose
+            vision.setFocusTag(newFocusTag);
+            focusTag = newFocusTag;
+        }
+    }
+
+    /** Returns the current focused odometry pose. */
+    @AutoLogOutput(key = "Odometry/Focused")
+    public Pose2d getFocusedPose() {
+        if (focusTag == 0) return getPose();
+        return focusedPoseEstimator.getEstimatedPosition();
     }
 
     /** Updates pose estimator with vision measurements. */
@@ -424,11 +427,11 @@ public class Drive extends SubsystemBase {
         }
     }
 
-    /** Updates specialized pose estimator with vision measurements. */
-    public void updateSpecializedEstimate(PoseEstimate poseEstimate) {
-        specializedPoseEstimator.addVisionMeasurement(
-                poseEstimate.estimatedPose(),
-                poseEstimate.timestampSeconds(),
-                poseEstimate.standardDev());
+    /** Updates focused pose estimator with vision measurements. */
+    public void updateFocusedEstimate(PoseEstimate... poses) {
+        for (int i = 0; i < poses.length; i++) {
+            focusedPoseEstimator.addVisionMeasurement(
+                    poses[i].estimatedPose(), poses[i].timestampSeconds(), poses[i].standardDev());
+        }
     }
 }

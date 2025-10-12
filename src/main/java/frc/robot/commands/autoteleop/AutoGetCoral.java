@@ -32,14 +32,14 @@ public class AutoGetCoral extends SequentialCommandGroup {
             Vision vision,
             LED led) {
         Pose2d targetPoseBlue =
-                GoToPositionSpecialized.getTargetPose(
+                GoToPositionFocused.getTargetPose(
                                 getTagIdOfPosition(config.position(), Alliance.Blue),
                                 config.sidewaysOffset(),
                                 config.depthOffset(),
                                 false)
                         .get();
         Pose2d targetPoseRed =
-                GoToPositionSpecialized.getTargetPose(
+                GoToPositionFocused.getTargetPose(
                                 getTagIdOfPosition(config.position(), Alliance.Red),
                                 config.sidewaysOffset(),
                                 config.depthOffset(),
@@ -54,7 +54,7 @@ public class AutoGetCoral extends SequentialCommandGroup {
 
         addCommands(
                 Commands.runOnce(() -> led.setIsPathfinding(true)),
-                Commands.runOnce(() -> vision.setFocusTag(getTagIdOfPosition(config.position()))),
+                Commands.runOnce(() -> drive.setFocusTag(getTagIdOfPosition(config.position()))),
                 new ConditionalCommand(
                         new ParallelCommandGroup(
                                 new SequentialCommandGroup(
@@ -74,22 +74,21 @@ public class AutoGetCoral extends SequentialCommandGroup {
                                                                                                 .getY()
                                                                                         - targetPoseBlue
                                                                                                 .getY())
-                                                                        <= switchingToSpecializedTranslationalTolerance
+                                                                        <= switchingToCoralStationFocusedTranslationalTolerance
                                                                 && Math.abs(
                                                                                 drive.getRotation()
                                                                                                 .getRadians()
                                                                                         - targetPoseBlue
                                                                                                 .getRotation()
                                                                                                 .getRadians())
-                                                                        <= switchingToSpecializedRotationalTolerance
-                                                                && vision.seesFocusTag()),
-                                        new GoToPositionSpecialized(
+                                                                        <= switchingToCoralStationFocusedRotationalTolerance
+                                                                && drive.seesFocusTag()),
+                                        new GoToPositionFocused(
                                                 drive,
                                                 vision,
                                                 config.position(),
                                                 config.sidewaysOffset(),
-                                                config.depthOffset(),
-                                                coralStationPIDAlignmentConstraints)),
+                                                config.depthOffset())),
                                 new IntakeCoralAuto(pivot, elevator, coralHolder)),
                         new ParallelCommandGroup(
                                 new SequentialCommandGroup(
@@ -109,22 +108,21 @@ public class AutoGetCoral extends SequentialCommandGroup {
                                                                                                 .getY()
                                                                                         - targetPoseRed
                                                                                                 .getY())
-                                                                        <= switchingToSpecializedTranslationalTolerance
+                                                                        <= switchingToCoralStationFocusedTranslationalTolerance
                                                                 && Math.abs(
                                                                                 drive.getRotation()
                                                                                                 .getRadians()
                                                                                         - targetPoseRed
                                                                                                 .getRotation()
                                                                                                 .getRadians())
-                                                                        <= switchingToSpecializedRotationalTolerance
-                                                                && vision.seesFocusTag()),
-                                        new GoToPositionSpecialized(
+                                                                        <= switchingToCoralStationFocusedRotationalTolerance
+                                                                && drive.seesFocusTag()),
+                                        new GoToPositionFocused(
                                                 drive,
                                                 vision,
                                                 config.position(),
                                                 config.sidewaysOffset(),
-                                                config.depthOffset(),
-                                                coralStationPIDAlignmentConstraints)),
+                                                config.depthOffset())),
                                 new IntakeCoralAuto(pivot, elevator, coralHolder)),
                         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue));
     }

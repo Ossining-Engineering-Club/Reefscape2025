@@ -33,14 +33,14 @@ public class AutoProcessAlgae extends SequentialCommandGroup {
             LED led)
             throws FileVersionException, IOException, ParseException {
         Pose2d targetPoseBlue =
-                GoToPositionSpecialized.getTargetPose(
+                GoToPositionFocused.getTargetPose(
                                 getTagIdOfPosition(config.position(), Alliance.Blue),
                                 config.sidewaysOffset(),
                                 config.depthOffset(),
                                 true)
                         .get();
         Pose2d targetPoseRed =
-                GoToPositionSpecialized.getTargetPose(
+                GoToPositionFocused.getTargetPose(
                                 getTagIdOfPosition(config.position(), Alliance.Red),
                                 config.sidewaysOffset(),
                                 config.depthOffset(),
@@ -75,14 +75,14 @@ public class AutoProcessAlgae extends SequentialCommandGroup {
                                                                                                         .getY()
                                                                                                 - targetPoseBlue
                                                                                                         .getY())
-                                                                                <= switchingToSpecializedTranslationalTolerance
+                                                                                <= switchingToPIDProcessorTranslationalTolerance
                                                                         && Math.abs(
                                                                                         drive.getRotation()
                                                                                                         .getRadians()
                                                                                                 - targetPoseBlue
                                                                                                         .getRotation()
                                                                                                         .getRadians())
-                                                                                <= switchingToSpecializedRotationalTolerance),
+                                                                                <= switchingToPIDProcessorRotationalTolerance),
                                                 new GoToPositionGlobal(
                                                         drive,
                                                         config.position(),
@@ -109,14 +109,14 @@ public class AutoProcessAlgae extends SequentialCommandGroup {
                                                                                                         .getY()
                                                                                                 - targetPoseRed
                                                                                                         .getY())
-                                                                                <= switchingToSpecializedTranslationalTolerance
+                                                                                <= switchingToPIDProcessorTranslationalTolerance
                                                                         && Math.abs(
                                                                                         drive.getRotation()
                                                                                                         .getRadians()
                                                                                                 - targetPoseRed
                                                                                                         .getRotation()
                                                                                                         .getRadians())
-                                                                                <= switchingToSpecializedRotationalTolerance),
+                                                                                <= switchingToPIDProcessorRotationalTolerance),
                                                 new GoToPositionGlobal(
                                                         drive,
                                                         config.position(),

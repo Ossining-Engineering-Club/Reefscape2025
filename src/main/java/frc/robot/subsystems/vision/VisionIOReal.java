@@ -1,6 +1,5 @@
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionConstants.CameraConfig;
 import java.util.List;
 import org.photonvision.PhotonCamera;
@@ -12,7 +11,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class VisionIOReal implements VisionIO {
     private final PhotonCamera camera;
     private final PhotonPoseEstimator estimator;
-    private final Transform3d robotToCam;
+    private final PhotonPoseEstimator focusedEstimator;
     private final String cameraName;
     private int focusTag = 0;
 
@@ -24,14 +23,17 @@ public class VisionIOReal implements VisionIO {
                         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                         config.robotToCam());
         estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-        robotToCam = config.robotToCam();
+        focusedEstimator =
+                new PhotonPoseEstimator(
+                        VisionConstants.TAG_LAYOUT,
+                        PoseStrategy.LOWEST_AMBIGUITY,
+                        config.robotToCam());
         cameraName = config.name();
     }
 
     @Override
     public void updateInputs(VisionIOInputs inputs) {
         inputs.cameraName = cameraName;
-        inputs.robotToCam = robotToCam;
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
         if (results.size() > 0) {
             PhotonPipelineResult result = results.get(results.size() - 1);
@@ -39,17 +41,19 @@ public class VisionIOReal implements VisionIO {
             boolean resultHadFocusTag = false;
             for (var tag : result.getTargets()) {
                 if (tag.fiducialId == focusTag) {
-                    inputs.pitch = tag.pitch;
-                    inputs.yaw = tag.yaw;
-                    inputs.distance =
-                            Math.hypot(
-                                    tag.getBestCameraToTarget().getX(),
-                                    Math.hypot(
-                                            tag.getBestCameraToTarget().getY(),
-                                            tag.getBestCameraToTarget().getZ()));
-                    inputs.seesFocusTag = true;
-                    inputs.focusTag = focusTag;
-                    resultHadFocusTag = true;
+                    var optionalFocusedEstimate =
+                            focusedEstimator.update(
+                                    new PhotonPipelineResult(
+                                            result.metadata, List.of(tag), result.multitagResult));
+                    if (optionalFocusedEstimate.isPresent()) {
+                        inputs.focusedEstimatedPose = optionalFocusedEstimate.get().estimatedPose;
+                        inputs.focusedTimestampSeconds =
+                                optionalFocusedEstimate.get().timestampSeconds;
+                        inputs.focusedStrategy = optionalFocusedEstimate.get().strategy;
+                        inputs.seesFocusTag = true;
+                        inputs.focusTag = focusTag;
+                        resultHadFocusTag = true;
+                    }
                 }
             }
             if (!resultHadFocusTag) inputs.seesFocusTag = false;

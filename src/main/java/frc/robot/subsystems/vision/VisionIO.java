@@ -1,7 +1,6 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import org.littletonrobotics.junction.AutoLog;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
@@ -14,13 +13,12 @@ public interface VisionIO {
         public PoseStrategy strategy;
         public boolean estimateIsPresent = false;
 
-        // specialized pose estimation
-        public double pitch = 0.0;
-        public double yaw = 0.0;
-        public double distance = 0.0;
+        // focused pose estimation
+        public Pose3d focusedEstimatedPose;
+        public double focusedTimestampSeconds;
+        public PoseStrategy focusedStrategy;
         public boolean seesFocusTag = false;
         public int focusTag = 0;
-        public Transform3d robotToCam;
 
         public String cameraName = "";
     }

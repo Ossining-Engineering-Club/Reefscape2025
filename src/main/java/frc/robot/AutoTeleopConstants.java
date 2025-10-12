@@ -84,22 +84,14 @@ public final class AutoTeleopConstants {
 
     public static final PathConstraints reefCoralPathfindingAlignmentConstraints =
             new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
-    public static final PathConstraints reefCoralPIDAlignmentConstraints =
-            new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
     public static final PathConstraints reefCoralAutoPathfindingAlignmentConstraints =
-            new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
-    public static final PathConstraints reefCoralAutoPIDAlignmentConstraints =
             new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
     public static final PathConstraints reefAlgaePathfindingAlignmentConstraints =
             new PathConstraints(3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
-    public static final PathConstraints reefAlgaePIDAlignmentConstraints =
-            new PathConstraints(3.0, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
     public static final PathConstraints coralStationPathfindingAlignmentConstraints =
-            new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
-    public static final PathConstraints coralStationPIDAlignmentConstraints =
             new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(540));
 
     public static final PathConstraints processorPathfindingAlignmentConstraints =
@@ -127,28 +119,31 @@ public final class AutoTeleopConstants {
     public static final double depthProcessorOffset =
             Units.inchesToMeters(0.0) + Constants.robotWidth / 2.0;
 
-    public static final double coralInitialTranslationalTolerance = 0.3;
-    public static final double coralInitialRotationalTolerance = Units.degreesToRadians(10);
-    public static final double coralFinalTranslationalTolerance = 0.01;
-    public static final double coralFinalRotationalTolerance = Units.degreesToRadians(1);
-    public static final double coralFinalTranslationalVelocityTolerance = 0.1; // m/s
-    public static final double coralFinalRotationVelocityTolerance = 0.5; // rad/s
-    public static final double switchingToCoralFinalTranslationalTolerance = 0.5;
-    public static final double switchingToCoralFinalRotationalTolerance =
+    public static final double coralTranslationalTolerance = 0.01;
+    public static final double coralRotationalTolerance = Units.degreesToRadians(1);
+    public static final double coralTranslationalVelocityTolerance = 0.1; // m/s
+    public static final double coralRotationVelocityTolerance = 0.5; // rad/s
+    public static final double switchingToCoralFocusedTranslationalTolerance = 0.5;
+    public static final double switchingToCoralFocusedRotationalTolerance =
             Units.degreesToRadians(10);
 
     public static final double coralStationTranslationalTolerance = 0.2;
     public static final double coralStationRotationalTolerance = Units.degreesToRadians(20);
+    public static final double switchingToCoralStationFocusedTranslationalTolerance = 0.5;
+    public static final double switchingToCoralStationFocusedRotationalTolerance =
+            Units.degreesToRadians(10);
 
     public static final double processorTranslationalTolerance = 0.1;
     public static final double processorRotationalTolerance = Units.degreesToRadians(10);
+    public static final double switchingToPIDProcessorTranslationalTolerance = 2.0;
+    public static final double switchingToPIDProcessorRotationalTolerance =
+            Units.degreesToRadians(10.0);
 
     public static final double reefAlgaeTranslationalTolerance = 0.05;
     public static final double reefAlgaeRotationalTolerance = Units.degreesToRadians(10);
-
-    public static final double switchingToSpecializedTranslationalTolerance = 2.0;
-    public static final double switchingToSpecializedRotationalTolerance =
-            Units.degreesToRadians(10.0);
+    public static final double switchingToAlgaeFocusedTranslationalTolerance = 0.5;
+    public static final double switchingToAlgaeFocusedRotationalTolerance =
+            Units.degreesToRadians(10);
 
     public static final PositioningConfig[] reefCoralPositioningConfigs =
             new PositioningConfig[] {
