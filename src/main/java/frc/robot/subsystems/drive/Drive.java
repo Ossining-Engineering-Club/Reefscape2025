@@ -14,23 +14,11 @@
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.subsystems.drive.DriveConstants.driveBaseRadius;
-import static frc.robot.subsystems.drive.DriveConstants.driveFrictionVoltage;
-import static frc.robot.subsystems.drive.DriveConstants.driveGearbox;
-import static frc.robot.subsystems.drive.DriveConstants.driveMotorReduction;
-import static frc.robot.subsystems.drive.DriveConstants.moduleTranslations;
-import static frc.robot.subsystems.drive.DriveConstants.ppConfig;
-import static frc.robot.subsystems.drive.DriveConstants.robotMassKg;
-import static frc.robot.subsystems.drive.DriveConstants.steerFrictionVoltage;
-import static frc.robot.subsystems.drive.DriveConstants.turnGearbox;
-import static frc.robot.subsystems.drive.DriveConstants.turnMotorReduction;
-import static frc.robot.subsystems.drive.DriveConstants.wheelCOF;
-import static frc.robot.subsystems.drive.DriveConstants.wheelRadiusMeters;
+import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -87,7 +75,7 @@ public class Drive extends SubsystemBase {
                                     driveFrictionVoltage,
                                     steerFrictionVoltage,
                                     Meters.of(wheelRadiusMeters),
-                                    KilogramSquareMeters.of(0.01),
+                                    steerInertia,
                                     wheelCOF))
                     .withBumperSize(Inches.of(3 + 32 + 3), Inches.of(3 + 27 + 3));
 
@@ -232,25 +220,8 @@ public class Drive extends SubsystemBase {
 
             // Apply update
             poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
-            // update odometry
-            poseEstimator.updateWithTime(
-                    sampleTimestamps[i],
-                    rawGyroRotation,
-                    new SwerveModulePosition[] {
-                        modules[0].getPosition(),
-                        modules[1].getPosition(),
-                        modules[2].getPosition(),
-                        modules[3].getPosition()
-                    });
             specializedPoseEstimator.updateWithTime(
-                    sampleTimestamps[i],
-                    rawGyroRotation,
-                    new SwerveModulePosition[] {
-                        modules[0].getPosition(),
-                        modules[1].getPosition(),
-                        modules[2].getPosition(),
-                        modules[3].getPosition()
-                    });
+                    sampleTimestamps[i], rawGyroRotation, modulePositions);
 
             // correct odometry with vision
             updateEstimates(vision.getEstimatedGlobalPoses(getPose()));

@@ -16,7 +16,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.generated.TunerConstants;
 
 public final class DriveConstants {
     public static final double maxSpeedMetersPerSec = 4.8;
@@ -40,10 +39,6 @@ public final class DriveConstants {
     public static final double driveMotorReduction = 6.75 / 1.0;
     public static final DCMotor driveGearbox = DCMotor.getKrakenX60(1);
 
-    // Drive encoder configuration
-    public static final double driveSensorMechanismRatio =
-            1 / (2 * Math.PI / driveMotorReduction); // Rotor Rotations -> Wheel Radians
-
     // Drive PID configuration
     public static final double driveP = 0.0; // 0.1;
     public static final double driveI = 0;
@@ -51,19 +46,15 @@ public final class DriveConstants {
     public static final double driveS = 0.11966;
     public static final double driveV = 0.8;
     public static final double driveA = 0.04;
-    public static final double driveSimP = 0.05;
+    public static final double driveSimP = 0.0;
     public static final double driveSimD = 0.0;
-    public static final double driveSimKs = 0.0;
-    public static final double driveSimKv = 0.0789;
+    public static final double driveSimKs = 0.04522;
+    public static final double driveSimKv = 0.87475;
 
     // Turn motor configuration
     public static final int turnMotorStatorCurrentLimit = 40;
     public static final double turnMotorReduction = 150.0 / 7.0;
     public static final DCMotor turnGearbox = DCMotor.getKrakenX60(1);
-
-    // Turn encoder configuration
-    public static final double turnSensorMechanismRatio =
-            1 / (2 * Math.PI / turnMotorReduction); // Rotor Rotations -> Radians
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
@@ -76,13 +67,15 @@ public final class DriveConstants {
     public static final double turnS = 0;
     public static final double turnV = 0;
     public static final double turnA = 0;
-    public static final double turnSimP = 8.0;
+    public static final double turnSimP = 40;
     public static final double turnSimD = 0.0;
+    public static final double turnSimKs = 0.0;
+    public static final double turnSimKv = 0.0;
     public static final double turnPIDMinInput = -Math.PI; // Radians
     public static final double turnPIDMaxInput = Math.PI; // Radians
 
     // These are only used for simulation
-    public static final MomentOfInertia steerInertia = KilogramSquareMeters.of(0.004);
+    public static final MomentOfInertia steerInertia = KilogramSquareMeters.of(0.015);
     public static final MomentOfInertia driveInertia = KilogramSquareMeters.of(0.025);
     // Simulated voltage necessary to overcome friction
     public static final Voltage steerFrictionVoltage = Volts.of(0.2);
@@ -149,9 +142,8 @@ public final class DriveConstants {
                             wheelRadiusMeters,
                             maxSpeedMetersPerSec,
                             wheelCOF,
-                            DCMotor.getKrakenX60(1)
-                                    .withReduction(TunerConstants.FrontLeft.DriveMotorGearRatio),
-                            slipCurrent.in(Amps),
+                            DCMotor.getKrakenX60(1).withReduction(driveMotorReduction),
+                            driveMotorStatorCurrentLimit,
                             1),
                     moduleTranslations);
 }

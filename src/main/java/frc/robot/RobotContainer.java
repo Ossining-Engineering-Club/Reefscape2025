@@ -147,20 +147,13 @@ public class RobotContainer {
                 climber = new Climber(new ClimberIOReal());
 
                 led = new LED(new LEDIOReal(), algaeClaw, coralHolder);
-
-                // pivot = new Pivot(new PivotIO() {});
-                // elevator = new Elevator(new ElevatorIO() {});
-                // coralHolder = new CoralHolder(new CoralHolderIO() {}, new PhotoelectricSensorIO()
-                // {});
-                // algaeClaw = new AlgaeClaw(new AlgaeClawIO() {}, new PhotoelectricSensorIO() {});
-                // climber = new Climber(new ClimberIO() {});
                 break;
 
             case SIM:
                 // Sim robot, instantiate physics sim IO implementations
                 driveSimulation =
                         new SwerveDriveSimulation(
-                                Drive.mapleSimConfig, new Pose2d(0, 0, new Rotation2d()));
+                                Drive.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
                 vision =
                         new Vision(
@@ -179,10 +172,14 @@ public class RobotContainer {
                 drive =
                         new Drive(
                                 new GyroIOSim(driveSimulation.getGyroSimulation()),
-                                new ModuleIOSim(driveSimulation.getModules()[0]),
-                                new ModuleIOSim(driveSimulation.getModules()[1]),
-                                new ModuleIOSim(driveSimulation.getModules()[2]),
-                                new ModuleIOSim(driveSimulation.getModules()[3]),
+                                new ModuleIOSim(
+                                        TunerConstants.FrontLeft, driveSimulation.getModules()[0]),
+                                new ModuleIOSim(
+                                        TunerConstants.FrontRight, driveSimulation.getModules()[1]),
+                                new ModuleIOSim(
+                                        TunerConstants.BackLeft, driveSimulation.getModules()[2]),
+                                new ModuleIOSim(
+                                        TunerConstants.BackRight, driveSimulation.getModules()[3]),
                                 vision,
                                 driveSimulation::setSimulationWorldPose);
                 pivot = new Pivot(new PivotIOSim());
@@ -233,12 +230,12 @@ public class RobotContainer {
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
         // Set up SysId routines
-        autoChooser.addOption(
-                "Drive Wheel Radius Characterization",
-                DriveCommands.wheelRadiusCharacterization(drive));
-        autoChooser.addOption(
-                "Drive Simple FF Characterization",
-                DriveCommands.feedforwardCharacterization(drive));
+        // autoChooser.addOption(
+        //         "Drive Wheel Radius Characterization",
+        //         DriveCommands.wheelRadiusCharacterization(drive));
+        // autoChooser.addOption(
+        //         "Drive Simple FF Characterization",
+        //         DriveCommands.feedforwardCharacterization(drive));
         // autoChooser.addOption(
         //     "Drive SysId (Quasistatic Forward)",
         //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
