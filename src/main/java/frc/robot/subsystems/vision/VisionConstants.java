@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
@@ -11,7 +12,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VisionConstants {
     public static record CameraConfig(String name, Transform3d robotToCam) {}
@@ -19,17 +21,25 @@ public class VisionConstants {
     public static record PoseEstimate(
             Pose2d estimatedPose, double timestampSeconds, Matrix<N3, N1> standardDev) {}
 
-    public static final AprilTagFieldLayout TAG_LAYOUT = // getTagLayout();
+    public static final AprilTagFieldLayout FULL_TAG_LAYOUT =
             AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+    public static final List<AprilTag> WHITELISTED_APRILTAGS = new ArrayList<>();
+    public static final List<Integer> BLACKLISTED_IDS =
+            new ArrayList<>(List.of(14, 15, 4, 5)); // blacklisting barge tags
 
-    private static AprilTagFieldLayout getTagLayout() {
-        try {
-            return new AprilTagFieldLayout("C:\\Users\\eric\\Downloads\\field_calibration.json");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+    static {
+        for (AprilTag tag : FULL_TAG_LAYOUT.getTags()) {
+            if (!BLACKLISTED_IDS.contains(tag.ID)) {
+                WHITELISTED_APRILTAGS.add(tag);
+            }
         }
     }
+
+    public static final AprilTagFieldLayout TAG_LAYOUT =
+            new AprilTagFieldLayout(
+                    WHITELISTED_APRILTAGS,
+                    FULL_TAG_LAYOUT.getFieldLength(),
+                    FULL_TAG_LAYOUT.getFieldWidth());
 
     public static final CameraConfig FRONT_LEFT_CAMERA_CONFIG =
             new CameraConfig(

@@ -386,6 +386,22 @@ public class RobotContainer {
         netButton.onTrue(new GoToNetAlgaePosition(pivot, elevator));
         // processorButton.onTrue(new GoToProcessingPosition(pivot, elevator));
 
+        controller
+                .x()
+                .onTrue(
+                        new AutoPlaceCoral(
+                                        reefCoralPositioningConfigs[10],
+                                        Level.L4,
+                                        pivot,
+                                        elevator,
+                                        coralHolder,
+                                        drive,
+                                        vision,
+                                        led)
+                                .finallyDo(() -> led.setIsPathfinding(false)));
+
+        controller.y().onTrue(new IntakeCoral(pivot, elevator, coralHolder));
+
         // Pathfinding
         configurePathfindingCommands();
     }
