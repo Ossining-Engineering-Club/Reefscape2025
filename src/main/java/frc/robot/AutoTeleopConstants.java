@@ -127,8 +127,8 @@ public final class AutoTeleopConstants {
     public static final double switchingToCoralFocusedRotationalTolerance =
             Units.degreesToRadians(10);
 
-    public static final double coralStationTranslationalTolerance = 0.2;
-    public static final double coralStationRotationalTolerance = Units.degreesToRadians(20);
+    public static final double coralStationTranslationalTolerance = 0.03;
+    public static final double coralStationRotationalTolerance = Units.degreesToRadians(5);
     public static final double switchingToCoralStationFocusedTranslationalTolerance = 0.5;
     public static final double switchingToCoralStationFocusedRotationalTolerance =
             Units.degreesToRadians(10);

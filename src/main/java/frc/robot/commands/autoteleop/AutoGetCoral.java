@@ -54,7 +54,7 @@ public class AutoGetCoral extends SequentialCommandGroup {
 
         addCommands(
                 Commands.runOnce(() -> led.setIsPathfinding(true)),
-                Commands.runOnce(() -> drive.setFocusTag(getTagIdOfPosition(config.position()))),
+                // Commands.runOnce(() -> drive.setFocusTag(getTagIdOfPosition(config.position()))),
                 new ConditionalCommand(
                         new ParallelCommandGroup(
                                 new SequentialCommandGroup(
