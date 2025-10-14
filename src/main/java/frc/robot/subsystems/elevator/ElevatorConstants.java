@@ -32,8 +32,8 @@ public class ElevatorConstants {
     public static final double minHeight = 0.0;
     public static final double storedHeight = 0.0;
     public static final double l1Height = Units.inchesToMeters(3.0);
-    public static final double l2Height = 0.36;
-    public static final double l3Height = 0.75;
+    public static final double l2Height = 0.38;
+    public static final double l3Height = 0.77;
     public static final double l4Height = 1.193;
     public static final double intakeCoralHeight = Units.inchesToMeters(0);
     public static final double intakeCoralAutoHeight = Units.inchesToMeters(0);
