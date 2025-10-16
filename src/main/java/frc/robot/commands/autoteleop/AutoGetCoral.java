@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.AutoTeleopConstants;
 import frc.robot.AutoTeleopConstants.PositioningConfig;
 import frc.robot.commands.gamepiecemanipulation.IntakeCoralAuto;
 import frc.robot.subsystems.coralholder.CoralHolder;
@@ -45,12 +46,27 @@ public class AutoGetCoral extends SequentialCommandGroup {
                                 config.depthOffset(),
                                 false)
                         .get();
+
+        Pose2d targetPoseBlueInitial =
+                GoToPositionFocused.getTargetPose(
+                                getTagIdOfPosition(config.position(), Alliance.Blue),
+                                config.sidewaysOffset(),
+                                AutoTeleopConstants.depthCoralStationInitialOffset,
+                                false)
+                        .get();
+        Pose2d targetPoseRedInitial =
+                GoToPositionFocused.getTargetPose(
+                                getTagIdOfPosition(config.position(), Alliance.Red),
+                                config.sidewaysOffset(),
+                                AutoTeleopConstants.depthCoralStationInitialOffset,
+                                false)
+                        .get();
         Command pathfindingCommandBlue =
                 AutoBuilder.pathfindToPose(
-                        targetPoseBlue, coralStationPathfindingAlignmentConstraints, 0.0);
+                        targetPoseBlueInitial, coralStationPathfindingAlignmentConstraints, 0.0);
         Command pathfindingCommandRed =
                 AutoBuilder.pathfindToPose(
-                        targetPoseRed, coralStationPathfindingAlignmentConstraints, 0.0);
+                        targetPoseRedInitial, coralStationPathfindingAlignmentConstraints, 0.0);
 
         addCommands(
                 Commands.runOnce(() -> led.setIsPathfinding(true)),
@@ -62,7 +78,7 @@ public class AutoGetCoral extends SequentialCommandGroup {
                                                 () ->
                                                         Logger.recordOutput(
                                                                 "initial target pose",
-                                                                targetPoseBlue)),
+                                                                targetPoseBlueInitial)),
                                         pathfindingCommandBlue.until(
                                                 () ->
                                                         Math.hypot(
@@ -96,7 +112,7 @@ public class AutoGetCoral extends SequentialCommandGroup {
                                                 () ->
                                                         Logger.recordOutput(
                                                                 "initial target pose",
-                                                                targetPoseRed)),
+                                                                targetPoseRedInitial)),
                                         pathfindingCommandRed.until(
                                                 () ->
                                                         Math.hypot(

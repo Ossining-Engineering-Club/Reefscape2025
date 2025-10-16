@@ -23,7 +23,7 @@ public final class DriveConstants {
     public static final double trackWidth = Units.inchesToMeters(21.75); // meters
     public static final double wheelBase = Units.inchesToMeters(26.75); // meters
     public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
-    public static final double wheelRadiusMeters = 0.0482;
+    public static final double wheelRadiusMeters = 0.0473964;
     public static final Translation2d[] moduleTranslations =
             new Translation2d[] {
                 new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
@@ -43,8 +43,8 @@ public final class DriveConstants {
     public static final double driveP = 0.0; // 0.1;
     public static final double driveI = 0;
     public static final double driveD = 0;
-    public static final double driveS = 0.11966;
-    public static final double driveV = 0.8;
+    public static final double driveS = 0.13233;
+    public static final double driveV = 0.81857;
     public static final double driveA = 0.04;
     public static final double driveSimP = 0.0;
     public static final double driveSimD = 0.0;

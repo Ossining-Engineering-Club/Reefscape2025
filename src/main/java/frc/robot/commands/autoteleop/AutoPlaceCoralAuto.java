@@ -71,12 +71,26 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                 depthOffset,
                                 false)
                         .get();
+        Pose2d targetPoseBlueInitial =
+                GoToPositionFocused.getTargetPose(
+                                getTagIdOfPosition(config.position(), Alliance.Blue),
+                                sidewaysOffset,
+                                AutoTeleopConstants.depthReefCoralInitialAutoOffset,
+                                false)
+                        .get();
+        Pose2d targetPoseRedInitial =
+                GoToPositionFocused.getTargetPose(
+                                getTagIdOfPosition(config.position(), Alliance.Red),
+                                sidewaysOffset,
+                                AutoTeleopConstants.depthReefCoralInitialAutoOffset,
+                                false)
+                        .get();
         Command pathfindingCommandBlue =
                 AutoBuilder.pathfindToPose(
-                        targetPoseBlue, reefCoralAutoPathfindingAlignmentConstraints, 0.0);
+                        targetPoseBlueInitial, reefCoralAutoPathfindingAlignmentConstraints, 0.0);
         Command pathfindingCommandRed =
                 AutoBuilder.pathfindToPose(
-                        targetPoseRed, reefCoralAutoPathfindingAlignmentConstraints, 0.0);
+                        targetPoseRedInitial, reefCoralAutoPathfindingAlignmentConstraints, 0.0);
 
         double height =
                 switch (level) {
@@ -97,7 +111,8 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                     Commands.runOnce(
                                             () ->
                                                     Logger.recordOutput(
-                                                            "initial target pose", targetPoseBlue)),
+                                                            "initial target pose",
+                                                            targetPoseBlueInitial)),
                                     new ParallelCommandGroup(
                                             new SequentialCommandGroup(
                                                     pathfindingCommandBlue.until(
@@ -137,7 +152,8 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                     Commands.runOnce(
                                             () ->
                                                     Logger.recordOutput(
-                                                            "initial target pose", targetPoseRed)),
+                                                            "initial target pose",
+                                                            targetPoseRedInitial)),
                                     new ParallelCommandGroup(
                                             new SequentialCommandGroup(
                                                     pathfindingCommandRed.until(
@@ -186,7 +202,8 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                     Commands.runOnce(
                                             () ->
                                                     Logger.recordOutput(
-                                                            "initial target pose", targetPoseBlue)),
+                                                            "initial target pose",
+                                                            targetPoseBlueInitial)),
                                     new ParallelCommandGroup(
                                             new SequentialCommandGroup(
                                                     pathfindingCommandBlue.until(
@@ -226,7 +243,8 @@ public class AutoPlaceCoralAuto extends SequentialCommandGroup {
                                     Commands.runOnce(
                                             () ->
                                                     Logger.recordOutput(
-                                                            "initial target pose", targetPoseRed)),
+                                                            "initial target pose",
+                                                            targetPoseRedInitial)),
                                     new ParallelCommandGroup(
                                             new SequentialCommandGroup(
                                                     pathfindingCommandRed.until(
