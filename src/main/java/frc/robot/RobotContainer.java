@@ -72,6 +72,10 @@ import frc.robot.subsystems.gamepiecevisualizers.CoralVisualizer.CoralState;
 import frc.robot.subsystems.led.LED;
 import frc.robot.subsystems.led.LEDIO;
 import frc.robot.subsystems.led.LEDIOReal;
+import frc.robot.subsystems.objectdetector.ObjectDetector;
+import frc.robot.subsystems.objectdetector.ObjectDetectorConstants;
+import frc.robot.subsystems.objectdetector.ObjectDetectorIO;
+import frc.robot.subsystems.objectdetector.ObjectDetectorIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIO;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOReal;
 import frc.robot.subsystems.photoelectricsensor.PhotoelectricSensorIOSim;
@@ -102,6 +106,7 @@ public class RobotContainer {
     private final Drive drive;
     private SwerveDriveSimulation driveSimulation = null;
     private final Vision vision;
+    private final ObjectDetector objectDetector;
     private final Pivot pivot;
     private final Elevator elevator;
     private final CoralHolder coralHolder;
@@ -121,7 +126,7 @@ public class RobotContainer {
                         new Vision(
                                 new VisionIOReal(VisionConstants.FRONT_LEFT_CAMERA_CONFIG),
                                 new VisionIOReal(VisionConstants.FRONT_RIGHT_CAMERA_CONFIG),
-                                new VisionIOReal(VisionConstants.BACK_LEFT_CAMERA_CONFIG),
+                                // new VisionIOReal(VisionConstants.BACK_LEFT_CAMERA_CONFIG),
                                 new VisionIOReal(VisionConstants.BACK_RIGHT_CAMERA_CONFIG));
                 drive =
                         new Drive(
@@ -145,8 +150,13 @@ public class RobotContainer {
                                 new PhotoelectricSensorIOReal(
                                         AlgaeClawConstants.algaeClawPEChannel));
                 climber = new Climber(new ClimberIOReal());
-
                 led = new LED(new LEDIOReal(), algaeClaw, coralHolder);
+                objectDetector =
+                        new ObjectDetector(
+                                new ObjectDetectorIOReal(
+                                        ObjectDetectorConstants.OBJECT_CAMERA_CONFIG.name()),
+                                ObjectDetectorConstants.OBJECT_CAMERA_CONFIG,
+                                drive::getPose);
                 break;
 
             case SIM:
@@ -163,9 +173,9 @@ public class RobotContainer {
                                 new VisionIOSim(
                                         VisionConstants.FRONT_RIGHT_CAMERA_CONFIG,
                                         driveSimulation::getSimulatedDriveTrainPose),
-                                new VisionIOSim(
-                                        VisionConstants.BACK_LEFT_CAMERA_CONFIG,
-                                        driveSimulation::getSimulatedDriveTrainPose),
+                                // new VisionIOSim(
+                                //         VisionConstants.BACK_LEFT_CAMERA_CONFIG,
+                                //         driveSimulation::getSimulatedDriveTrainPose),
                                 new VisionIOSim(
                                         VisionConstants.BACK_RIGHT_CAMERA_CONFIG,
                                         driveSimulation::getSimulatedDriveTrainPose));
@@ -194,6 +204,11 @@ public class RobotContainer {
                                 new PhotoelectricSensorIOSim(AlgaeClawConstants.algaeClawPEID));
                 climber = new Climber(new ClimberIO() {});
                 led = new LED(new LEDIO() {}, algaeClaw, coralHolder);
+                objectDetector =
+                        new ObjectDetector(
+                                new ObjectDetectorIO() {},
+                                ObjectDetectorConstants.OBJECT_CAMERA_CONFIG,
+                                drive::getPose);
                 break;
 
             default:
@@ -220,6 +235,11 @@ public class RobotContainer {
                 algaeClaw = new AlgaeClaw(new AlgaeClawIO() {}, new PhotoelectricSensorIO() {});
                 climber = new Climber(new ClimberIO() {});
                 led = new LED(new LEDIO() {}, algaeClaw, coralHolder);
+                objectDetector =
+                        new ObjectDetector(
+                                new ObjectDetectorIO() {},
+                                ObjectDetectorConstants.OBJECT_CAMERA_CONFIG,
+                                drive::getPose);
                 break;
         }
 

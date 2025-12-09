@@ -5,10 +5,13 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ObjectDetectorIO {
     @AutoLog
     public static class ObjectDetectorIOInputs {
-        public double yaw = 0.0;
-        public double pitch = 0.0;
-        public double area = 0.0;
-        public boolean hasTarget = false;
+        // first dimension is object #, second dimension is corner #
+        // yaw/pitch are in radians, x/y are in pixels
+        public double[] centerYaws = {}; // yaw of object center
+        public double[] centerPitches = {}; // pitch of object center
+        public double[][] cornerXs = {}; // x-pixel of corners
+        public double[][] cornerYs = {}; // y-pixel of corners
+        public double[] cornerCounts = {}; // for each object, the number of corners
     }
 
     /** Updates the set of loggable inputs. */

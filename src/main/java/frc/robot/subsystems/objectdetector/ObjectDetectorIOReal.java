@@ -1,5 +1,6 @@
 package frc.robot.subsystems.objectdetector;
 
+import edu.wpi.first.math.util.Units;
 import java.util.List;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -17,13 +18,35 @@ public class ObjectDetectorIOReal implements ObjectDetectorIO {
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
         if (results.size() > 0) {
             PhotonPipelineResult result = results.get(results.size() - 1);
-            PhotonTrackedTarget target = result.getBestTarget();
-            inputs.yaw = target.getYaw();
-            inputs.pitch = target.getPitch();
-            inputs.area = target.getArea();
-            inputs.hasTarget = true;
-        } else {
-            inputs.hasTarget = false;
+
+            List<PhotonTrackedTarget> targets = result.getTargets();
+            double[] centerYaws = new double[targets.size()];
+            double[] centerPitches = new double[targets.size()];
+
+            // second dimension for corners is set to 4 to allow
+            // for a maximum of 4 corners
+            double[][] cornerXs = new double[targets.size()][4];
+            double[][] cornerYs = new double[targets.size()][4];
+            double[] cornerCounts = new double[targets.size()];
+
+            // iterating through targets
+            for (int i = 0; i < targets.size(); i++) {
+                centerYaws[i] = -Units.degreesToRadians(targets.get(i).yaw);
+                centerPitches[i] = -Units.degreesToRadians(targets.get(i).pitch);
+                cornerCounts[i] = targets.get(i).detectedCorners.size();
+
+                // iterating through corners
+                for (int j = 0; j < targets.get(i).detectedCorners.size(); j++) {
+                    cornerXs[i][j] = targets.get(i).detectedCorners.get(j).x;
+                    cornerYs[i][j] = targets.get(i).detectedCorners.get(j).y;
+                }
+            }
+
+            inputs.centerYaws = centerYaws;
+            inputs.centerPitches = centerPitches;
+            inputs.cornerXs = cornerXs;
+            inputs.cornerYs = cornerYs;
+            inputs.cornerCounts = cornerCounts;
         }
     }
 }
