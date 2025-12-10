@@ -11,7 +11,7 @@ public interface ObjectDetectorIO {
         public double[] centerPitches = {}; // pitch of object center
         public double[][] cornerXs = {}; // x-pixel of corners
         public double[][] cornerYs = {}; // y-pixel of corners
-        public double[] cornerCounts = {}; // for each object, the number of corners
+        public int[] cornerCounts = {}; // for each object, the number of corners
     }
 
     /** Updates the set of loggable inputs. */

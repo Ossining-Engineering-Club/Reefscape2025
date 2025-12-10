@@ -23,4 +23,9 @@ public class ObjectDetectorConstants {
     public static final double coralPlaneHeight =
             Units.inchesToMeters(
                     2.25); // height of center of coral off the ground when laid down on the ground
+
+    public static final int imageWidthPx = 0;
+    public static final int imageHeightPx = 0;
+    public static final double horizontalFOV = Units.degreesToRadians(70);
+    public static final double verticalFOV = Units.degreesToRadians(0); // TODO
 }

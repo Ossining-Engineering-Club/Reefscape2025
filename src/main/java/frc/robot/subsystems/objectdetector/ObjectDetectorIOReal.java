@@ -23,11 +23,11 @@ public class ObjectDetectorIOReal implements ObjectDetectorIO {
             double[] centerYaws = new double[targets.size()];
             double[] centerPitches = new double[targets.size()];
 
-            // second dimension for corners is set to 4 to allow
-            // for a maximum of 4 corners
-            double[][] cornerXs = new double[targets.size()][4];
-            double[][] cornerYs = new double[targets.size()][4];
-            double[] cornerCounts = new double[targets.size()];
+            // second dimension for corners is set to 6 to allow
+            // for a maximum of 6 corners
+            double[][] cornerXs = new double[targets.size()][6];
+            double[][] cornerYs = new double[targets.size()][6];
+            int[] cornerCounts = new int[targets.size()];
 
             // iterating through targets
             for (int i = 0; i < targets.size(); i++) {
