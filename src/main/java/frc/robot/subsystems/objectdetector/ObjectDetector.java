@@ -87,6 +87,7 @@ public class ObjectDetector extends SubsystemBase {
             // calculating angle of vector
             // y distance is negated because y+ is down in PhotonVision
             double angle = Math.atan2(-(y[i] - centerY), x[i] - centerX);
+            centerToCornerAngles.add(new Pair<Double, Integer>(angle, i));
         }
         // sorting in counterclockwise order
         centerToCornerAngles.sort((a, b) -> a.getFirst().compareTo(b.getFirst()));
