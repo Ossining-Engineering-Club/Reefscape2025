@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -27,4 +29,6 @@ public final class Constants {
     public static final double robotLength = 0.991; // including bumpers
     public static final double coralIntakeXOffset = -0.023 - 0.02;
     public static final double algaeIntakeXOffset = 0.085 - 0.02;
+    public static final Translation2d intakePosition =
+            new Translation2d(Units.inchesToMeters(16), 0);
 }

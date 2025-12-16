@@ -33,6 +33,7 @@ import frc.robot.commands.autoteleop.AutoProcessAlgae;
 import frc.robot.commands.climber.ExtendClimber;
 import frc.robot.commands.climber.RetractClimber;
 import frc.robot.commands.climber.StoreClimber;
+import frc.robot.commands.drive.CoralAssist;
 import frc.robot.commands.drive.DriveBackAfterNet;
 import frc.robot.commands.drive.DriveCommands;
 import frc.robot.commands.elevator.ElevatorGoToHeight;
@@ -305,14 +306,23 @@ public class RobotContainer {
 
         controller.b().onTrue(cancel());
 
+        // controller
+        //         .rightBumper()
+        //         .whileTrue(
+        //                 DriveCommands.joystickDrive(
+        //                         drive,
+        //                         () -> -0.5 * controller.getLeftY(),
+        //                         () -> -0.5 * controller.getLeftX(),
+        //                         () -> -0.5 * controller.getRightX()));
+
         controller
                 .rightBumper()
                 .whileTrue(
-                        DriveCommands.joystickDrive(
+                        new CoralAssist(
                                 drive,
                                 () -> -0.5 * controller.getLeftY(),
                                 () -> -0.5 * controller.getLeftX(),
-                                () -> -0.5 * controller.getRightX()));
+                                objectDetector));
 
         controller.povUp().onTrue(new ExtendClimber(climber, pivot, elevator));
         controller.povDown().onTrue(new RetractClimber(climber, pivot, elevator));

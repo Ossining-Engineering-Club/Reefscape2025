@@ -12,13 +12,13 @@ public class ObjectDetectorConstants {
                     "OV9782_BL",
                     new Transform3d(
                             new Translation3d(
-                                    Units.inchesToMeters(-11.505845),
-                                    Units.inchesToMeters(-7.254641),
-                                    Units.inchesToMeters(34.738822 - 0.125)),
+                                    Units.inchesToMeters(16 + 1.28), // (-11.505845),
+                                    Units.inchesToMeters(0), // (-7.254641),
+                                    Units.inchesToMeters(15.7)), // (34.738822 - 0.125)),
                             new Rotation3d(
                                     0,
-                                    Units.degreesToRadians(50.0),
-                                    Units.degreesToRadians(-57.5))));
+                                    Units.degreesToRadians(43.0), // (50.0),
+                                    Units.degreesToRadians(0)))); // (-57.5))));
 
     public static final double coralPlaneHeight =
             Units.inchesToMeters(

@@ -6,11 +6,14 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.vision.VisionConstants.CameraConfig;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -58,7 +61,48 @@ public class ObjectDetector extends SubsystemBase {
         }
 
         Logger.recordOutput("Detected Coral", coral.toArray(Pose3d[]::new));
-        SmartDashboard.putData("Object Detector Config", config);
+        // SmartDashboard.putData("Object Detector Config", config);
+    }
+
+    public ArrayList<Pose3d> getCoral() {
+        return coral;
+    }
+
+    public Optional<Pose3d> getClosestCoralToIntake() {
+        if (coral.size() == 0) return Optional.empty();
+        double closestDistance = 9999999;
+        int closestCoralIndex = -1;
+        Translation2d intakePosFieldRelative =
+                new Translation2d(
+                        robotPoseSupplier.get().getX()
+                                + Constants.intakePosition.getX()
+                                        * Math.cos(
+                                                robotPoseSupplier.get().getRotation().getRadians())
+                                + Constants.intakePosition.getY()
+                                        * Math.sin(
+                                                robotPoseSupplier.get().getRotation().getRadians()),
+                        robotPoseSupplier.get().getY()
+                                + Constants.intakePosition.getX()
+                                        * Math.sin(
+                                                robotPoseSupplier.get().getRotation().getRadians())
+                                + Constants.intakePosition.getY()
+                                        * Math.cos(
+                                                robotPoseSupplier
+                                                        .get()
+                                                        .getRotation()
+                                                        .getRadians()));
+        SmartDashboard.putNumber("intakePosFieldRelativeX", intakePosFieldRelative.getX());
+        SmartDashboard.putNumber("intakePosFieldRelativeY", intakePosFieldRelative.getY());
+        for (int i = 0; i < coral.size(); i++) {
+            double distance =
+                    intakePosFieldRelative.getDistance(
+                            coral.get(i).getTranslation().toTranslation2d());
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestCoralIndex = i;
+            }
+        }
+        return Optional.of(coral.get(closestCoralIndex));
     }
 
     /** Calculates the translation of a object with its center planeHeight above the ground */
@@ -162,10 +206,14 @@ public class ObjectDetector extends SubsystemBase {
     /** Calculates the corresponding 3d line given a yaw and pitch angle from the camera */
     public Line3d calculateLine(double yaw, double pitch) {
         // converting camera relative yaw/pitch into field relative yaw/pitch
+        SmartDashboard.putNumber("raw yaw", yaw);
+        SmartDashboard.putNumber("raw pitch", pitch);
         yaw +=
                 config.robotToCam().getRotation().getZ()
                         + robotPoseSupplier.get().getRotation().getRadians();
         pitch += config.robotToCam().getRotation().getY();
+        SmartDashboard.putNumber("fr yaw", yaw);
+        SmartDashboard.putNumber("fr pitch", pitch);
 
         return new Line3d(
                 config.robotToCam().getX()

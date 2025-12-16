@@ -37,7 +37,7 @@ public class DriveCommands {
 
     private DriveCommands() {}
 
-    private static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
+    public static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
         // Apply deadband
         double linearMagnitude = MathUtil.applyDeadband(Math.hypot(x, y), DEADBAND);
         Rotation2d linearDirection = new Rotation2d(Math.atan2(y, x));
@@ -115,7 +115,7 @@ public class DriveCommands {
         // Construct command
         return Commands.run(
                         () -> {
-                            // Get linear velocity
+                            // Get raw linear velocity
                             Translation2d linearVelocity =
                                     getLinearVelocityFromJoysticks(
                                             xSupplier.getAsDouble(), ySupplier.getAsDouble());
@@ -132,6 +132,88 @@ public class DriveCommands {
                                             linearVelocity.getX()
                                                     * drive.getMaxLinearSpeedMetersPerSec(),
                                             linearVelocity.getY()
+                                                    * drive.getMaxLinearSpeedMetersPerSec(),
+                                            omega);
+                            boolean isFlipped =
+                                    DriverStation.getAlliance().isPresent()
+                                            && DriverStation.getAlliance().get() == Alliance.Red;
+                            drive.runVelocity(
+                                    ChassisSpeeds.fromFieldRelativeSpeeds(
+                                            speeds,
+                                            isFlipped
+                                                    ? drive.getRotation()
+                                                            .plus(new Rotation2d(Math.PI))
+                                                    : drive.getRotation()));
+                        },
+                        drive)
+
+                // Reset PID controller when command starts
+                .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
+    }
+
+    /**
+     * Joystick drive at a specified rotation and constrained to only go forwards and backwards at a
+     * specified heading
+     */
+    public static Command joystickDriveAtAngleAndHeading(
+            Drive drive,
+            DoubleSupplier xSupplier,
+            DoubleSupplier ySupplier,
+            Supplier<Rotation2d> rotationSupplier,
+            Supplier<Rotation2d> headingSupplier) {
+
+        // Create PID controller
+        ProfiledPIDController angleController =
+                new ProfiledPIDController(
+                        ANGLE_KP,
+                        0.0,
+                        ANGLE_KD,
+                        new TrapezoidProfile.Constraints(
+                                ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+        angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+        // Construct command
+        return Commands.run(
+                        () -> {
+                            // Get linear velocity
+                            Translation2d linearVelocity =
+                                    getLinearVelocityFromJoysticks(
+                                            xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+                            // Calculate modified linear velocity so
+                            // that robot drives at a specific heading
+                            // and drives at a speed proportional to
+                            // the normal of the raw linear velocity
+                            double linearVelocityNorm = linearVelocity.getNorm();
+                            Rotation2d rawHeading = linearVelocity.getAngle();
+                            double scaledLinearVelocityNorm =
+                                    linearVelocityNorm
+                                            * Math.cos(
+                                                    Math.abs(
+                                                            rotationSupplier
+                                                                    .get()
+                                                                    .minus(rawHeading)
+                                                                    .getRadians()));
+                            Translation2d modifiedLinearVelocity =
+                                    new Translation2d(
+                                            scaledLinearVelocityNorm
+                                                    * Math.cos(rotationSupplier.get().getRadians()),
+                                            scaledLinearVelocityNorm
+                                                    * Math.sin(
+                                                            rotationSupplier.get().getRadians()));
+
+                            // Calculate angular speed
+                            double omega =
+                                    angleController.calculate(
+                                            drive.getRotation().getRadians(),
+                                            rotationSupplier.get().getRadians());
+
+                            // Convert to field relative speeds & send command
+                            ChassisSpeeds speeds =
+                                    new ChassisSpeeds(
+                                            modifiedLinearVelocity.getX()
+                                                    * drive.getMaxLinearSpeedMetersPerSec(),
+                                            modifiedLinearVelocity.getY()
                                                     * drive.getMaxLinearSpeedMetersPerSec(),
                                             omega);
                             boolean isFlipped =
