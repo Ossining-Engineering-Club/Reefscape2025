@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.VisionConstants.CameraConfig;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class ObjectDetector extends SubsystemBase {
 
     private final ObjectDetectorIO io;
     private final ObjectDetectorIOInputsAutoLogged inputs = new ObjectDetectorIOInputsAutoLogged();
-    private final CameraConfig config;
+    private CameraConfig config;
     private final Supplier<Pose2d> robotPoseSupplier;
 
     ArrayList<Pose3d> coral = new ArrayList<>();
@@ -49,17 +50,15 @@ public class ObjectDetector extends SubsystemBase {
             coral.add(
                     new Pose3d(
                             calculateTranslation(
-                                    inputs.centerYaws[i],
-                                    inputs.centerPitches[i],
-                                    coralPlaneHeight),
-                            calculateRotation(
-                                    inputs.cornerXs[i],
-                                    inputs.cornerYs[i],
-                                    inputs.cornerCounts[i],
-                                    coralPlaneHeight)));
+                                            inputs.centerYaws[i],
+                                            inputs.centerPitches[i],
+                                            coralPlaneHeight)
+                                    .plus(new Translation3d(0, 0, -0.1)),
+                            new Rotation3d(0, Math.PI / 2.0, 0)));
         }
 
         Logger.recordOutput("Detected Coral", coral.toArray(Pose3d[]::new));
+        SmartDashboard.putData("Object Detector Config", config);
     }
 
     /** Calculates the translation of a object with its center planeHeight above the ground */
@@ -107,7 +106,6 @@ public class ObjectDetector extends SubsystemBase {
         int secondLongestEdge = -1;
         for (int i = 0; i < numCorners; i++) {
             edgeLengths[i] = calculateDistance(corners.get(i), corners.get((i + 1) % numCorners));
-
             // calculating longest and second longest edges
             if (edgeLengths[i] >= longestEdgeLength) {
                 secondLongestEdge = longestEdge;

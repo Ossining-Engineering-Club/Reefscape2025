@@ -12,11 +12,114 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VisionConstants {
-    public static record CameraConfig(String name, Transform3d robotToCam) {}
+    // public static record CameraConfig(String name, Transform3d robotToCam) {}
+
+    public static class CameraConfig implements Sendable {
+        private final String name;
+        private Transform3d robotToCam;
+
+        public CameraConfig(String name, Transform3d robotToCam) {
+            this.name = name;
+            this.robotToCam = robotToCam;
+        }
+
+        @Override
+        public void initSendable(SendableBuilder builder) {
+            builder.setSmartDashboardType("CameraConfig");
+            builder.addDoubleProperty("x offset", this::getXOffset, this::setXOffset);
+            builder.addDoubleProperty("y offset", this::getYOffset, this::setYOffset);
+            builder.addDoubleProperty("z offset", this::getZOffset, this::setZOffset);
+            builder.addDoubleProperty("roll offset", this::getRollOffset, this::setRollOffset);
+            builder.addDoubleProperty("pitch offset", this::getPitchOffset, this::setPitchOffset);
+            builder.addDoubleProperty("yaw offset", this::getYawOffset, this::setYawOffset);
+        }
+
+        public String name() {
+            return name;
+        }
+
+        public Transform3d robotToCam() {
+            return robotToCam;
+        }
+
+        public double getXOffset() {
+            return robotToCam.getX();
+        }
+
+        public double getYOffset() {
+            return robotToCam.getY();
+        }
+
+        public double getZOffset() {
+            return robotToCam.getZ();
+        }
+
+        public double getRollOffset() {
+            return robotToCam.getRotation().getX();
+        }
+
+        public double getPitchOffset() {
+            return robotToCam.getRotation().getY();
+        }
+
+        public double getYawOffset() {
+            return robotToCam.getRotation().getZ();
+        }
+
+        public void setXOffset(double x) {
+            robotToCam =
+                    new Transform3d(
+                            x, robotToCam.getY(), robotToCam.getZ(), robotToCam.getRotation());
+        }
+
+        public void setYOffset(double y) {
+            robotToCam =
+                    new Transform3d(
+                            robotToCam.getX(), y, robotToCam.getZ(), robotToCam.getRotation());
+        }
+
+        public void setZOffset(double z) {
+            robotToCam =
+                    new Transform3d(
+                            robotToCam.getX(), robotToCam.getY(), z, robotToCam.getRotation());
+        }
+
+        public void setRollOffset(double roll) {
+            robotToCam =
+                    new Transform3d(
+                            robotToCam.getTranslation(),
+                            new Rotation3d(
+                                    roll,
+                                    robotToCam.getRotation().getY(),
+                                    robotToCam.getRotation().getZ()));
+        }
+
+        public void setPitchOffset(double pitch) {
+            robotToCam =
+                    new Transform3d(
+                            robotToCam.getTranslation(),
+                            new Rotation3d(
+                                    robotToCam.getRotation().getX(),
+                                    pitch,
+                                    robotToCam.getRotation().getZ()));
+        }
+
+        public void setYawOffset(double yaw) {
+            robotToCam =
+                    new Transform3d(
+                            robotToCam.getTranslation(),
+                            new Rotation3d(
+                                    robotToCam.getRotation().getX(),
+                                    robotToCam.getRotation().getY(),
+                                    yaw));
+        }
+    }
 
     public static record PoseEstimate(
             Pose2d estimatedPose, double timestampSeconds, Matrix<N3, N1> standardDev) {}
