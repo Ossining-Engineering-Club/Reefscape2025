@@ -32,13 +32,15 @@ public class CoralAssist extends Command {
         this.objectDetector = objectDetector;
 
         angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+        addRequirements(drive);
     }
 
     @Override
     public void execute() {
         Optional<Pose3d> targetCoral = objectDetector.getClosestCoralToIntake();
         if (targetCoral.isPresent()) {
-            Rotation2d angle =
+            Rotation2d desiredAngle =
                     targetCoral
                             .get()
                             .getTranslation()
@@ -57,15 +59,15 @@ public class CoralAssist extends Command {
             double linearVelocityNorm = linearVelocity.getNorm();
             Rotation2d rawHeading = linearVelocity.getAngle();
             double scaledLinearVelocityNorm =
-                    linearVelocityNorm * Math.cos(Math.abs(angle.minus(rawHeading).getRadians()));
+                    linearVelocityNorm * Math.cos(desiredAngle.minus(rawHeading).getRadians());
             Translation2d modifiedLinearVelocity =
                     new Translation2d(
-                            scaledLinearVelocityNorm * Math.cos(angle.getRadians()),
-                            scaledLinearVelocityNorm * Math.sin(angle.getRadians()));
+                            scaledLinearVelocityNorm * Math.cos(desiredAngle.getRadians()),
+                            scaledLinearVelocityNorm * Math.sin(desiredAngle.getRadians()));
 
             // Calculate angular speed
             double omega =
-                    angleController.calculate(drive.getRotation().getRadians(), angle.getRadians());
+                    angleController.calculate(drive.getRotation().getRadians(), desiredAngle.getRadians());
 
             // Convert to field relative speeds & send command
             ChassisSpeeds speeds =
