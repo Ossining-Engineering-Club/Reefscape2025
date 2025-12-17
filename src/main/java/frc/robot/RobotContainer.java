@@ -36,6 +36,7 @@ import frc.robot.commands.climber.StoreClimber;
 import frc.robot.commands.drive.CoralAssist;
 import frc.robot.commands.drive.DriveBackAfterNet;
 import frc.robot.commands.drive.DriveCommands;
+import frc.robot.commands.drive.GoToCoral;
 import frc.robot.commands.elevator.ElevatorGoToHeight;
 import frc.robot.commands.gamepiecemanipulation.GoToNetAlgaePosition;
 import frc.robot.commands.gamepiecemanipulation.GoToStoredPosition;
@@ -324,9 +325,13 @@ public class RobotContainer {
                                 () -> -0.5 * controller.getLeftX(),
                                 objectDetector));
 
-        controller.povUp().onTrue(new ExtendClimber(climber, pivot, elevator));
-        controller.povDown().onTrue(new RetractClimber(climber, pivot, elevator));
-        controller.leftTrigger(0.9).onTrue(new StoreClimber(climber, pivot, elevator));
+        controller.leftBumper().and(() -> objectDetector.getClosestCoralToIntake().isPresent()).whileTrue(
+            new GoToCoral(drive, () -> objectDetector.getClosestCoralToIntake().get().getTranslation().toTranslation2d())
+        );
+
+        // controller.povUp().onTrue(new ExtendClimber(climber, pivot, elevator));
+        // controller.povDown().onTrue(new RetractClimber(climber, pivot, elevator));
+        // controller.leftTrigger(0.9).onTrue(new StoreClimber(climber, pivot, elevator));
 
         // manual mechanism control
         mechanismController
